@@ -1,0 +1,73 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>系统日志</title>
+    <link href="../../statics/css/base.css" rel="stylesheet">
+    <link href="../../statics/css/easyui.css" rel="stylesheet">
+    <link href="../../statics/css/icon.css" rel="stylesheet" type="text/css">
+    <link href="../../statics/css/providers.css" rel="stylesheet">
+    <script type="text/javascript" src="../../statics/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../statics/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../statics/js/easyui-lang-zh_CN.js"></script>
+    <script>
+        $(function(){
+            var curr_time = new Date();
+            var startDate = curr_time.getFullYear()+"-";
+            startDate += curr_time.getMonth()+1+"-";
+            startDate += curr_time.getDate()-1+"-";
+            var endData = curr_time.getFullYear()+"-";
+            endData += curr_time.getMonth()+1+"-";
+            endData += curr_time.getDate()+"-";
+            $("#startTime").datebox("setValue", startDate);
+            $("#endTime").datebox("setValue", endData);
+            $('#tab').datagrid('load',{
+                startTime: $('#startTime').datebox('getValue'),
+                endTime: $('#endTime').datebox('getValue')
+            });
+        })
+        function doSearch(){
+                $('#tab').datagrid('load',{
+                    startTime: $('#startTime').datebox('getValue'),
+                    endTime: $('#endTime').datebox('getValue')
+                });
+            }
+    </script>
+</head> 
+<body>
+    <div class="container">
+       <table id="tab" class="easyui-datagrid" style="width:100%;height:554px" title="系统日志" data-options="url:'/syslogs/findByDate',
+                method:'GET',
+                rownumbers:true,
+                singleSelect:false,
+                autoRowHeight:false,
+                pagination:true,
+                fitColumns:true,
+                striped:true,
+                checkOnSelect:false,
+                selectOnCheck:false,
+                collapsible:true,
+                toolbar:'#tb',
+                pageSize:10"
+                >
+            <thead>
+                <tr>
+                    <th data-options="field:'IP',width:140,align:'center'">IP</th>
+                    <th data-options="field:'ComputerName',width:150,align:'center'" >计算机名称</th>
+                    <th data-options="field:'UserName',width:100,align:'center'" >操作用户</th>
+                    <th data-options="field:'OperationDate',width:180,align:'center',halign:'center'">操作日期</th>
+                    <th data-options="field:'OperationContent',width:350,align:'center',halign:'center'">操作内容</th>
+                    <th data-options="field:'OperationType',width:80,align:'center'">类型</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="tb" style="padding:0 10px;">
+            起止日期:
+            <input class="easyui-datebox" id="startTime" style="width:166px;height:35px;line-height:35px;">
+            <input class="easyui-datebox" id="endTime" style="width:166px;height:35px;line-height:35px;">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+        </div>
+    </div>
+</body> 
+</html>

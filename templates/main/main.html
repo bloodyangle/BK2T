@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>北康生产管理系统</title>
+    <link href="../../statics/css/base.css" rel="stylesheet">
+    <link href="../../statics/css/platform.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../statics/css/easyui.css">
+</head>
+<body>
+    <div class="container">
+        <div id="pf-hd">
+            <div class="pf-logo">
+                <img src="../static/images/jzjt_logo_index.png" alt="logo">
+                <span class="split"></span>
+                <span class="system-name">北康生产管理系统</span>
+            </div>
+                <div class="pf-user">
+                    <div class="pf-user-photo">
+                        <img src="../static/jzmes_images/Customer_Male_Light.png" alt="">
+                    </div>
+                    <h4 class="pf-user-name ellipsis">{{ current_user['Name']}}</h4>
+                    <i class="iconfont xiala">&#xe607;</i>
+                    <div class="pf-user-panel">
+                        <ul class="pf-user-opt">
+                            <li>
+                                <a href="javascript:;">
+                                    <i class="iconfont">&#xe60d;</i>
+                                    <span class="pf-opt-name">用户信息</span>
+                                </a>
+                            </li>
+                            <li class="pf-logout">
+                                <a href="/logout">
+                                    <i class="iconfont">&#xe60e;</i>
+                                    <span class="pf-opt-name">退出</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+
+        <div id="pf-bd">
+            <div id="pf-sider">
+                <h2 class="pf-model-name">
+                    <!-- <span class="iconfont">&#xe64a;</span>-->
+                    <span class="pf-name">导航菜单</span>
+                    <span class="toggle-icon"></span>
+                </h2>
+
+                <ul class="sider-nav">
+                {% if isIn(['7', '8', '9', '10', '11', '12', '13', '14', '15'], session.get('menus')) %}
+                    <li>
+                        <a href="javascript:;">
+                            <span class="iconfont sider-nav-icon">&#xe6ed;</span>
+                            <span class="sider-nav-title">系统管理</span>
+                            <i class="iconfont">&#xe642;</i>
+                        </a>
+                        <ul class="sider-nav-s">
+                            {% if '7' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('组织结构建模','organization')">组织结构建模</a>
+                                </li>
+                            {% endif %}
+                            {% if '8' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('组织结构','organizationMap')">组织结构</a>
+                                </li>
+                            {% endif %}
+                            {% if '9' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('区域建模','Area')">区域建模</a>
+                                </li>
+                            {% endif %}
+                            {% if '10' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('用户管理','userManager')">用户管理</a>
+                                </li>
+                            {% endif %}
+                            {% if '11' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('角色管理','sysrole')">角色管理</a>
+                                </li>
+                            {% endif %}
+                            {% if '12' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('权限分配','roleright')">权限分配</a>
+                                </li>
+                            {% endif %}
+                            {% if '13' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('组织机构','Myorganization')">组织机构</a>
+                                </li>
+                            {% endif %}
+                            {% if '14' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('系统日志','syslogs')">系统日志</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+                {% if isIn(['25', '26', '27', '28', '29', '30'], session.get('menus')) %}
+                    <li>
+                        <a href="javascript:;">
+                            <span class="iconfont sider-nav-icon">&#xe6c3;</span>
+                            <span class="sider-nav-title">生产计划调度管理</span>
+                            <i class="iconfont">&#xe642;</i>
+                        </a>
+                        <ul class="sider-nav-s">
+                            {% if '25' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('制药计划管理','/ZYPlanManage')">制药计划管理</a>
+                                </li>
+                            {% endif %}
+                            {% if '26' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('计划明细','/ZYPlan')">计划明细</a>
+                                </li>
+                            {% endif %}
+                            {% if '27' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('制药任务','ZYTask')">制药任务</a>
+                                </li>
+                            {% endif %}
+                            {% if '28' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onclick="addTab('调度日计划','SchedulePlan')">调度日计划</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+                {% if isIn(['39', '40', '41', '42'], session.get('menus')) %}
+                    <li>
+                        <a href="javascript:;">
+                            <span class="iconfont sider-nav-icon">&#xe611;</span>
+                            <span class="sider-nav-title">生产数据管理</span>
+                            <i class="iconfont">&#xe642;</i>
+                        </a>
+                        <ul class="sider-nav-s">
+                            {% if '39' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onClick="addTab('电子批记录','/ElectronicBatchRecord')">电子批记录</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+                {% if isIn(['44', '45', '46', '47', '48', '49', '50', '96'], session.get('menus')) %}
+                    <li>
+                        <a href="javascript:;">
+                            <span class="iconfont sider-nav-icon">&#xe64c;</span>
+                            <span class="sider-nav-title">过程质量分析</span>
+                            <i class="iconfont">&#xe642;</i>
+                        </a>
+                        <ul class="sider-nav-s">
+                            {% if '44' in session.get('menus') %}
+                                <li>
+                                    <a href="#" onClick="addTab('过程连续数据','/ProcessContinuousData')">过程连续数据</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+                </ul>
+            </div>
+            <div id="pf-page">
+                <div id="tabs_menu" class="easyui-tabs1" style="width:100%;height:100%;">
+                    <div title="首页">
+                        <iframe class="page-iframe" src="workbench" frameborder="no" border="no" height="100%" width="100%" scrolling="auto"></iframe>
+                    </div>
+                </div>
+            </div>
+            <!--关闭tab选项菜单-->
+            <div id="tab_rightmenu" class="easyui-menu" style="width:120px; display:none">
+                <div name="tab_menu-tabcloseall" id="closeAll">
+                    关闭全部标签
+                </div>
+                <div name="tab_menu-tabcloseother" id="closeOthor">
+                    关闭其他标签
+                </div>
+            </div>
+        </div>
+
+        <div id="pf-ft">
+            <div class="system-name">
+                <i class="iconfont">&#xe6fe;</i>
+                <span>北康生产管理系统&nbsp;v1.0</span>
+            </div>
+            <div class="copyright-name">
+                <span>CopyRight&nbsp;2019&nbsp;&nbsp;&nbsp;版权所有&nbsp;&nbsp;</span>
+                <!--<i class="iconfont" >&#xe6ff;</i>-->
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../static/custom/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/custom/jquery.easyui.min.js"></script>
+    <!-- <script type="text/javascript" src="js/menu.js"></script> -->
+    <script type="text/javascript" src="../static/js/main.js"></script>
+    <!--[if IE 7]>
+      <script type="text/javascript">
+        $(window).resize(function(){
+          $('#pf-bd').height($(window).height()-76);
+        }).resize();
+
+      </script>
+    <![endif]-->
+
+
+    <script type="text/javascript">
+        $('.easyui-tabs1').tabs({
+            tabHeight: 34,
+            onContextMenu:function(e, title){
+                //在每个菜单选项中添加title值
+				var $divMenu = $("#tab_rightmenu div[id]");
+				$divMenu.each(function() {
+					$(this).attr("id", title);
+				});
+				//显示menu菜单
+				$('#tab_rightmenu').menu('show', {
+				    left: e.pageX,
+					top: e.pageY
+				});
+				e.preventDefault();
+            }
+        })
+        //实例化menu点击触发事件
+		$('#tab_rightmenu').menu({
+			"onClick":function(item) {
+				closeTab(item.id,item.text);
+			}
+		});
+        //关闭
+        function closeTab(title, text) {
+            if(text == '关闭全部标签') {
+                $(".tabs li").each(function(index, obj) {
+                      //获取所有可关闭的选项卡
+                      var tabTitle = $(".tabs-closable", this).text();
+                      $("#tabs_menu").tabs("close", tabTitle);
+                 });
+            }
+            if(text == '关闭其他标签') {
+                $(".tabs li").each(function(index, obj) {
+                      //获取所有可关闭的选项卡
+                      var tabTitle = $(".tabs-closable", this).text();
+                      if(tabTitle != title) {
+                        $("#tabs_menu").tabs("close", tabTitle);
+                      }
+                 });
+            }
+        }
+
+        $(window).resize(function () {
+            $('.tabs-panels').height($("#pf-page").height() - 46);
+            $('.panel-body').height($("#pf-page").height() - 76)
+        }).resize();
+
+        var page = 0,
+            pages = ($('.pf-nav').height() / 42) - 1;
+
+        if (pages === 0) {
+            $('.pf-nav-prev,.pf-nav-next').hide();
+        }
+        $(document).on('click', '.pf-nav-prev,.pf-nav-next', function () {
+
+
+            if ($(this).hasClass('disabled')) return;
+            if ($(this).hasClass('pf-nav-next')) {
+                page++;
+                $('.pf-nav').stop().animate({ 'margin-top': -42 * page }, 200);
+                if (page == pages) {
+                    $(this).addClass('disabled');
+                    $('.pf-nav-prev').removeClass('disabled');
+                } else {
+                    $('.pf-nav-prev').removeClass('disabled');
+                }
+
+            } else {
+                page--;
+                $('.pf-nav').stop().animate({ 'margin-top': -42 * page }, 200);
+                if (page == 0) {
+                    $(this).addClass('disabled');
+                    $('.pf-nav-next').removeClass('disabled');
+                } else {
+                    $('.pf-nav-next').removeClass('disabled');
+                }
+
+            }
+        })
+
+    // setTimeout(function(){
+    //    $('.tabs-panels').height($("#pf-page").height()-46);
+    //    $('.panel-body').height($("#pf-page").height()-76)
+    // }, 200)
+    </script>
+
+    <script type="text/javascript">
+
+        //按钮点击后添加选项卡
+        function addTab(title, url) {
+            if ($('.easyui-tabs1').tabs('exists', title)) {
+                $('.easyui-tabs1').tabs('select', title);
+            }
+            else {
+                var content = '<iframe class="page-iframe" src="' + url + '" frameborder="no" border="no" height="100%" width="100%" scrolling="auto"></iframe>';
+                $('.easyui-tabs1').tabs('add', {
+                    title: title,
+                    content: content,
+                    closable: true
+                });
+            }
+        }
+    </script>
+</body>
+</html>
