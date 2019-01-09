@@ -11,7 +11,7 @@ from sqlalchemy.exc import InvalidRequestError
 #flask_login的初始化
 login_manager = LoginManager()
 login_manager.db_session_protection = 'strong'
-login_manager.login_view ='login'
+login_manager.login_view = 'login_auth.login'
 
 
 login_auth = Blueprint('login_auth', __name__, url_prefix='/account')

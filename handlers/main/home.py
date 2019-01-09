@@ -6,7 +6,7 @@ home_page = Blueprint('home_page', __name__, url_prefix='/home')
 
 @home_page.route('/')
 @login_required
-def hello_world():
+def Home():
     return render_template('./main/main.html')
 
 
