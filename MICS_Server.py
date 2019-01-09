@@ -11,7 +11,7 @@ account_auth.login_manager.init_app(app)
 # 将后台函数传到前端
 app.add_template_global(auth_lib.isIn, 'isIn')
 
-# app.register_blueprint(account_auth.login_auth)
+app.register_blueprint(account_auth.login_auth)
 app.register_blueprint(home.home_page)
 
 # 系统管理的组织结构蓝图
