@@ -14,14 +14,14 @@ login_manager.db_session_protection = 'strong'
 login_manager.login_view ='login'
 
 
-user_login = Blueprint("user_login", __name__)
+login_auth = Blueprint('login_auth', __name__)
 
 '''登录'''
 @login_manager.user_loader
 def load_user(user_id):
     return db_session.query(User).filter_by(id=int(user_id)).first()
 
-@user_login.route('/login', methods=['GET', 'POST'])
+@login_auth.route('/login', methods=['GET', 'POST'])
 def login():
     try:
         if request.method == 'GET':
@@ -58,7 +58,7 @@ def login():
 
 # 退出登录
 # 使用login_required装饰路由函数,未登录的请求将会跳转到上面login_manger.login_view设置的登录页面路由
-@user_login.route('/logout')
+@login_auth.route('/logout')
 @login_required
 def logout():
     logout_user()

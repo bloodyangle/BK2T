@@ -2,15 +2,15 @@ from flask import Blueprint, render_template
 from flask_login import login_required
 
 
-home = Blueprint('home', __name__)
+home_page = Blueprint('home_page', __name__)
 
-@home.route('/')
-@login_required
+@home_page.route('/')
+# @login_required
 def hello_world():
     return render_template('./main/main.html')
 
 
 # 加载工作台
-@home.route('/workbench')
+@home_page.route('/workbench')
 def workbenck():
     return render_template('workbench.html')
