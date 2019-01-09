@@ -21,7 +21,7 @@ app.register_blueprint(home.home_page)
 app.register_blueprint(organiza)
 
 @app.route('/')
-@login_required
+# @login_required
 def hello_world():
     return redirect('/home')
 
