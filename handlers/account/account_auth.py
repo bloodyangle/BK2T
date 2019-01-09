@@ -44,7 +44,7 @@ def login():
                         for li in menu:
                             menus.append(li[0])
                 session['menus'] = menus
-                return redirect('/')
+                return redirect('/home')
             # 认证失败返回登录页面
             error = '用户名或密码错误'
             return render_template('./main/login.html', error=error)
