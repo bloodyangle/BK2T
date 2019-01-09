@@ -14,7 +14,7 @@ login_manager.db_session_protection = 'strong'
 login_manager.login_view ='login'
 
 
-login_auth = Blueprint('login_auth', __name__)
+login_auth = Blueprint('login_auth', __name__, url_prefix='/account')
 
 '''登录'''
 @login_manager.user_loader
