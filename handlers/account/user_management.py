@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from libs.database.db_operate import db_session
+from models.SystemManagement.system import Organization
 
 user_manage = Blueprint('user_manage',__name__, url_prefix='/user_manage')
 
