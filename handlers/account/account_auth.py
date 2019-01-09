@@ -25,7 +25,7 @@ def load_user(user_id):
 def login():
     try:
         if request.method == 'GET':
-            return render_template('login.html')
+            return render_template('./main/login.html')
         if request.method == 'POST':
             data = request.values
             work_number = data['WorkNumber']
@@ -47,7 +47,7 @@ def login():
                 return redirect('/')
             # 认证失败返回登录页面
             error = '用户名或密码错误'
-            return render_template('login.html', error=error)
+            return render_template('./main/login.html', error=error)
     except InvalidRequestError:
         db_session.rollback()
     except Exception as e:

@@ -5,7 +5,6 @@ import time
 import os
 import threading
 from enum import Enum
-from libs.database.db_operate import db_session
 
 class LogLevel(Enum):
     info = 'info'
@@ -96,7 +95,7 @@ def insertSyslog(operationType, operationContent, userName):
                 operationContent = str(operationContent)
             if userName == None: userName = ""
             ComputerName = socket.gethostname()
-            from models.SystemManagement.system import SysLog
+            from models.SystemManagement.system import SysLog, db_session
             db_session.add(
                 SysLog(OperationType=operationType, OperationContent=operationContent,OperationDate=datetime.datetime.now(), UserName=userName,
                        ComputerName=ComputerName, IP=socket.gethostbyname(ComputerName)))

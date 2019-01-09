@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker, backref
-from sqlalchemy import create_engine,ForeignKey, Table,Column, DateTime, Float, Integer, String, Unicode, Boolean
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy import create_engine,ForeignKey, Table,Column, DateTime, Integer, String, Unicode
 from sqlalchemy.dialects.mssql.base import BIT
 from werkzeug.security import generate_password_hash, check_password_hash
 from libs.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
