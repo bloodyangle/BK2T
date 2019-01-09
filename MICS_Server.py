@@ -9,7 +9,7 @@ from handlers.SystemManagement.area_model import area
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'3
+app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
 account_auth.login_manager.init_app(app)
 
 # 将后台函数传到前端
