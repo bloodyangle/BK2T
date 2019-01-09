@@ -1,9 +1,12 @@
-from flask import Flask
+from flask import Flask, render_template, redirect
 from libs.account import auth_lib
 from handlers.account import account_auth
 from handlers.main import home
+from handlers.account.account_auth import login_required
 from handlers.SystemManagement.organization_model import organiza
 from handlers.SystemManagement.area_model import area
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'3
@@ -20,8 +23,9 @@ app.register_blueprint(organiza)
 app.register_blueprint(area)
 
 @app.route('/')
-def index():
-    return 'hello world'
+@login_required
+def hello_world():
+    return redirect('/home')
 
 if __name__ == "__main__":
     app.run(debug=True)
