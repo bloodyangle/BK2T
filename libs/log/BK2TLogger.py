@@ -1,4 +1,6 @@
+import datetime
 import logging
+import socket
 import time
 import os
 import threading
@@ -81,3 +83,24 @@ class MESLogger(logging.getLoggerClass()):
         self.change_logfile()
         if self.isEnabledFor(logging.ERROR):
             self._log(logging.ERROR, msg, args, **kwargs)
+
+logger = MESLogger('./logs', 'log')
+#插入日志OperationType OperationContent OperationDate UserName ComputerName IP
+def insertSyslog(operationType, operationContent, userName):
+        try:
+            if operationType == None: operationType = ""
+            if operationContent == None:
+                operationContent = ""
+            else:
+                operationContent = str(operationContent)
+            if userName == None: userName = ""
+            ComputerName = socket.gethostname()
+            from models.SystemManagement.system import SysLog, db_session
+            db_session.add(
+                SysLog(OperationType=operationType, OperationContent=operationContent,OperationDate=datetime.datetime.now(), UserName=userName,
+                       ComputerName=ComputerName, IP=socket.gethostbyname(ComputerName)))
+            db_session.commit()
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
