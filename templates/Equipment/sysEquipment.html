@@ -117,7 +117,7 @@
                                     success: function (data) {
                                         $.messager.progress('close');
 
-                                        if (data) {
+                                        if (data == "OK") {
                                             $(tableId).datagrid('loaded');
                                             $(tableId).datagrid('load');
                                             $(tableId).datagrid('unselectAll');
@@ -183,7 +183,7 @@
                             success: function (data,response,status) {
                                 $.messager.progress('close');
                                 var obj1 = eval(data);
-                                if(obj1[0].status == "OK"){
+                                if(data == "OK"){
                                     $.messager.show({
                                         title: '提示',
                                         msg: message + hintinfo  + '成功',
@@ -195,7 +195,7 @@
                                         }
                                     });
                                     $(dialogId).dialog('close');
-                                    $(tableId).datagrid('reload',{ url: "/allEquipments/Find?_t=" + new Date().getTime() });
+                                    $(tableId).datagrid('reload');
                                 } else {
                                     $.messager.alert(obj1[0].status + '失败！', '未知错误导致失败，请重试！', 'warning');
                                 }
