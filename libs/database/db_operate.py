@@ -13,6 +13,8 @@ Session = sessionmaker(bind=engine)
 db_session = Session()
 
 
+
+
 def insert(tablename, insert_dict):
     '''
     :param tablename: 要进行插入数据的model

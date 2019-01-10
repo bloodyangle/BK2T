@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect
 from libs.account import auth_lib
-from handlers.account import account_auth
+from handlers.account import account_auth,user_management
 from handlers.main import home
 from handlers.account.account_auth import login_required
 from handlers.SystemManagement.organization_model import organiza
@@ -16,6 +16,7 @@ account_auth.login_manager.init_app(app)
 app.add_template_global(auth_lib.isIn, 'isIn')
 
 app.register_blueprint(account_auth.login_auth)
+app.register_blueprint(user_management.user_manage)
 app.register_blueprint(home.home_page)
 #组织机构
 app.register_blueprint(organiza)
