@@ -4,6 +4,7 @@ from handlers.account import account_auth
 from handlers.SystemManagement import user_management, PermissionAssignment,Role_management
 from handlers.main import home
 from handlers.SystemManagement.organization_model import organiza
+from handlers.EquipmentModel.euipment_model import equip
 
 
 
@@ -26,6 +27,8 @@ app.register_blueprint(home.home_page)
 app.register_blueprint(PermissionAssignment.permission_distribution)
 #组织机构
 app.register_blueprint(organiza)
+#设备管理
+app.register_blueprint(equip)
 
 @app.route('/')
 # @login_required

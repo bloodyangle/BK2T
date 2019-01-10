@@ -214,6 +214,26 @@ class Organization(Base):
     # 显示图标:
     Color = Column(Unicode(40), primary_key=False, autoincrement=False, nullable=True)
 
+
+# Equipment:
+class Equipment(Base):
+    __tablename__ = "Equipment"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # 设备编码:
+    EQPCode = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备名称:
+    EQPName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 批次对应的opc变量名
+    BatchOpcTag = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 牌号对应的opc变量名
+    BrandOpcTag = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
 # 生成表单的执行语句
 Base.metadata.create_all(engine)
 

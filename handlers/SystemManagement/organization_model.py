@@ -12,8 +12,7 @@ from libs.log.BK2TLogger import insertSyslog, MESLogger
 from libs.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import Organization
 from collections import Counter
-
-logger = MESLogger('../logs', 'log')
+from libs.log.BK2TLogger import logger,insertSyslog
 
 engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
