@@ -30,8 +30,8 @@ def equipment():
     return render_template('./Equipment/sysEquipment.html')
 
 # 设备建模查询
-@equip.route('/equipmentModel/pequipmentFind', methods=['POST', 'GET'])
-def pequipmentFind():
+@equip.route('/allEquipments/Search', methods=['POST', 'GET'])
+def allEquipmentsSearch():
     if request.method == 'GET':
         data = request.values  # 返回请求中的参数和form
         try:
@@ -57,8 +57,8 @@ def pequipmentFind():
             insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
 
 # 设备建模增加
-@equip.route('/equipmentModel/pequipmentCreate', methods=['POST', 'GET'])
-def pequipmentCreate():
+@equip.route('/allEquipments/Create', methods=['POST', 'GET'])
+def equipmentCreate():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
@@ -71,8 +71,7 @@ def pequipmentCreate():
                         BatchOpcTag=data['BatchOpcTag'],
                         BrandOpcTag=data['BrandOpcTag']))
                 db_session.commit()
-                return json.dumps(['OK'], cls=AlchemyEncoder,
-                              ensure_ascii=False)
+                return 'OK'
         except Exception as e:
             db_session.rollback()
             print(e)
@@ -81,8 +80,8 @@ def pequipmentCreate():
             insertSyslog("error", "设备建模增加报错Error：" + str(e), current_user.Name)
 
 # 设备建模修改
-@equip.route('/equipmentModel/pequipmentUpdate', methods=['POST', 'GET'])
-def pequipmentUpdate():
+@equip.route('/allEquipments/Update', methods=['POST', 'GET'])
+def equipmentUpdate():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
@@ -95,8 +94,7 @@ def pequipmentUpdate():
                 oclass.BatchOpcTag=data['BatchOpcTag']
                 oclass.BrandOpcTag=data['BrandOpcTag']
                 db_session.commit()
-                return json.dumps(['OK'], cls=AlchemyEncoder,
-                                  ensure_ascii=False)
+                return 'OK'
         except Exception as e:
             db_session.rollback()
             print(e)
@@ -106,8 +104,8 @@ def pequipmentUpdate():
             insertSyslog("error", "设备建模修改报错Error：" + str(e), current_user.Name)
 
 # 设备建模删除
-@equip.route('/equipmentModel/pequipmentDelete', methods=['POST', 'GET'])
-def pequipmentDelete():
+@equip.route('/allEquipments/Delete', methods=['POST', 'GET'])
+def equipmentDelete():
     if request.method == 'GET':
         data = request.values  # 返回请求中的参数和form
         try:
@@ -127,6 +125,7 @@ def pequipmentDelete():
                         logger.error(ee)
                         return json.dumps([{"status": "error:" + str(ee)}], cls=AlchemyEncoder,
                                           ensure_ascii=False)
+                return 'OK'
         except Exception as e:
             print(e)
             logger.error(e)
