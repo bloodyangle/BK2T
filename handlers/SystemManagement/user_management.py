@@ -1,36 +1,37 @@
-import json
+import json, string, re, datetime
 from flask import Blueprint, render_template, request
 from libs.database.db_operate import db_session
-from models.SystemManagement.system import Organization
-from models.SystemManagement.system import User
+from models.SystemManagement.system import Organization,Role,User
+from sqlalchemy import and_,desc
+from libs.main.BSFramwork import AlchemyEncoder
+from libs.log.BK2TLogger import logger,insertSyslog
+from flask_login import current_user
 
 user_manage = Blueprint('user_manage',__name__, url_prefix='/user_manage')
 
 # 用户管理
 @user_manage.route('/default')
 def userManager():
-    # departments = db_session.query(Organization.ID, Organization.OrganizationName).all()
-    # # print(departments)
-    # # departments = json.dumps(departments, cls=AlchemyEncoder, ensure_ascii=False)
-    # data = []
-    # for tu in departments:
-    #     li = list(tu)
-    #     id = li[0]
-    #     name = li[1]
-    #     department = {'OrganizationID':id,'OrganizationName':name}
-    #     data.append(department)
-    #
-    # dataRoleName = []
-    # roleNames = db_session.query(Role.ID, Role.RoleName).all()
-    # for role in roleNames:
-    #     li = list(role)
-    #     id = li[0]
-    #     name = li[1]
-    #     roleName = {'RoleID': id, 'RoleName': name}
-    #     dataRoleName.append(roleName)
-    # return render_template('userManager.html',departments=data,roleNames=dataRoleName)
-    return render_template('./SystemManagement/userManager.html')
+    departments = db_session.query(Organization.ID, Organization.OrganizationName).all()
+    # print(departments)
+    # departments = json.dumps(departments, cls=AlchemyEncoder, ensure_ascii=False)
+    data = []
+    for tu in departments:
+        li = list(tu)
+        id = li[0]
+        name = li[1]
+        department = {'OrganizationID':id,'OrganizationName':name}
+        data.append(department)
 
+    dataRoleName = []
+    roleNames = db_session.query(Role.ID, Role.RoleName).all()
+    for role in roleNames:
+        li = list(role)
+        id = li[0]
+        name = li[1]
+        roleName = {'RoleID': id, 'RoleName': name}
+        dataRoleName.append(roleName)
+    return render_template('userManager.html',departments=data,roleNames=dataRoleName)
 @user_manage.route('/MyUser/Select')
 def MyUserSelect():
     if request.method == 'GET':
