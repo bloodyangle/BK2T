@@ -96,10 +96,10 @@ class Role(Base):
     RoleSeq = Column(String(10), primary_key=False, autoincrement=False, nullable=True)
 
     # 角色名称:
-    RoleName = Column(Unicode(128), primary_key=False, autoincrement=False, nullable=True)
+    RoleName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 角色说明:
-    Description = Column(Unicode(2048), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(62), primary_key=False, autoincrement=False, nullable=True)
 
     # 创建人:
     CreatePerson = Column(Unicode(20), primary_key=False, autoincrement=False, nullable=True)
