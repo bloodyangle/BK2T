@@ -1,36 +1,237 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>设备管理</title>
-    <link href="../static/css/base.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/custom/uimaker/easyui.css">
-    <link rel="stylesheet" type="text/css" href="../static/custom/uimaker/icon.css">
-    <link rel="stylesheet" href="../static/css/providers.css">
-    <link href="../static/css/process.css" rel="stylesheet">
-    <link href="../static/js/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
-    <link href="../static/css/datagridpanel_customer.css" rel="stylesheet">
-    <link href="../static/css/dialogpanel.css" type="text/css" rel="stylesheet">
-    <link href="../static/css/datagrid_customer.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="../static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="../static/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../static/js/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="../static/js/Bee.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../static/js/system/EquipmentClass.js" charset="utf-8"></script>
+    <link href="../../static/css/base.css" rel="stylesheet">
+    <link href="../../static/css/easyui.css" rel="stylesheet">
+    <link href="../../static/css/icon.css" rel="stylesheet" type="text/css">
+    <link href="../../static/css/providers.css" rel="stylesheet">
+    <link href="../../static/css/process.css" rel="stylesheet">
+    <link href="../../static/css/umeditor.css" type="text/css" rel="stylesheet">
+    <link href="../../static/css/datagridpanel_customer.css" rel="stylesheet">
+    <link href="../../static/css/dialogpanel.css" type="text/css" rel="stylesheet">
+    <link href="../../static/css/datagrid_customer.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../static/js/Bee.js" charset="utf-8"></script>
     <script type="text/javascript">
         $(function () {
-            $('#EquipmentName').attr("disabled", true);
+            var tableId = $("tab")
+            var dialogId = $("#EquipmentClassDialog")
+            function createKeyIDObj(keyID){
+                return {
+                    ID:keyID
+                }
+            }
+            EquipmentClassToolbar = {
+                message: "",
+                search: function () {
+                    var a = $.trim($('input[name="search"]').val());
+                    if  (Bee.StringUtils.isEmpty(a)){
+                        return false;
+                    }
+                    //a = JSON.stringify(a);
+                    var entity = {
+                            condition:a
+                        };
+                    $.ajax({
+                        url: '/allEquipments/Search',
+                        method: 'POST',
+                        traditional: true,
+                        // data: JSON.stringify(ids),
+                        data: entity,
+                        dataType: 'json',
+                        success: function (data) {
+                            $.messager.progress('close');
+
+                            if (data) {
+                                $(tableId).datagrid('loadData', data);
+                                $.messager.show({
+                                    title: '提示',
+                                    timeout: 1000,
+                                    msg: '查询' + titleText + '成功',
+                                    style: {
+                                        right: '',
+                                        top: document.body.scrollTop + document.documentElement.scrollTop,
+                                        bottom: ''
+                                    }
+                                });
+                            }
+                        }
+                    })
+                },
+                create: function () {
+                    $(dialogId).dialog('open').dialog('setTitle', '新增');
+                    $('input[name="ID"]').attr("disabled", "disabled");
+                    $('input[name="ID"]').val("");
+                    $('input[name="EQPCode"]').val("");
+                    $('input[name="EQPName"]').val("");
+                    $('input[name="BatchOpcTag"]').val("");
+                    $('input[name="BrandOpcTag"]').val("");
+
+                },
+                update: function () {
+                    var rows = $(tableId).datagrid('getSelections');
+                    if (rows.length > 1) {
+                        $.messager.alert('警告操作！', '编辑记录只能选定一条数据！', 'warning');
+                    } else if (rows.length == 1) {
+                        var row = $(tableId).datagrid('getSelected');
+                        if (row) {
+                            $(dialogId).dialog('open').dialog('setTitle', '编辑');
+                            $('input[name="ID"]').attr("disabled", "disabled");
+                            $('input[name="ID"]').val(row.ID);
+                            $('input[name="EQPCode"]').val(row.EQPCode);
+                            $('input[name="EQPName"]').val(row.EQPName);
+                            $('input[name="BatchOpcTag"]').val(row.BatchOpcTag);
+                            $('input[name="BrandOpcTag"]').val(row.BrandOpcTag);
+                        };
+                    } else if (rows.length == 0) {
+                        $.messager.alert('警告操作！', '请至少选定一条数据进行编辑！', 'warning');
+                    }
+                },
+                delete: function () {
+                    var rows = $(tableId).datagrid('getSelections');
+                    if (rows.length > 0) {
+                        var jsonarray=[];
+                        $.messager.confirm('确定操作', '您正在删除所选的记录吗？', function (flag) {
+                            if (flag) {
+                                var PrimaryKey = "ID";
+                                var a = "";
+                                for (var i = 0; i < rows.length; i++) {
+                                    // ids.push(parseInt((rows[i].id)));
+                                    var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                    jsonarray.push(obj);
+                                }
+                                // a = JSON.stringify([{"ID":9},{"ID":10}])
+                                a = JSON.stringify(jsonarray);
+                                $.ajax({
+                                    url: '/allEquipments/Delete',
+                                    method: 'POST',
+                                    traditional: true,
+                                    // data: JSON.stringify(ids),
+                                    data: a,
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        $.messager.progress('close');
+
+                                        if (data) {
+                                            $(tableId).datagrid('loaded');
+                                            $(tableId).datagrid('load');
+                                            $(tableId).datagrid('unselectAll');
+                                            $.messager.show({
+                                                title: '提示',
+                                                timeout:1000,
+                                                msg: '删除' + '成功',
+                                                style: {
+                                                    right: '',
+                                                    top: document.body.scrollTop + document.documentElement.scrollTop,
+                                                    bottom: ''
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        $.messager.alert('提示', '请选择要删除的记录！', 'info');
+                    }
+                },
+                save: function () {
+                    var strID = $('input[name="ID"]').val();
+                    var urlAddr = ""
+                    var stmp = $('input[name="EQPCode"]').val();
+                    if(Bee.StringUtils.isEmpty(stmp)) {
+                       alert('Warning：设备编码不能为空！');
+                       return false;
+                    }
+                    stmp = $('input[name="EQPName"]').val();
+                    if(Bee.StringUtils.isEmpty(stmp)) {
+                       alert('Warning：设备名称不能为空！');
+                       return false;
+                    }
+
+                    if (strID.length >= 1){
+                        urlAddr = '/allEquipments/Update'
+                        hintinfo = "更新数据"
+                    }
+                    else {
+                        urlAddr = '/allEquipments/Create'
+                        hintinfo = "新增数据"
+                    }
+                        var entity = {
+                            ID:$('input[name="ID"]').val(),
+                            EQPCode:$('input[name="EQPCode"]').val(),
+                            EQPName:$('input[name="EQPName"]').val(),
+                            BatchOpcTag:$('input[name="BatchOpcTag"]').val(),
+                            BrandOpcTag:$('input[name="BrandOpcTag"]').val(),
+                        };
+                        $.ajax({
+                            url: urlAddr,
+                            method: 'POST',
+                            traditional: true,
+                            data: entity,
+                            dataType: 'json',
+                            cache: false,
+                            error: function(data){
+                               console.log(data.responseText)
+                               alert(hintinfo+ "异常，请刷新后重试...");
+                             },
+                            success: function (data,response,status) {
+                                $.messager.progress('close');
+                                var obj1 = eval(data);
+                                if(obj1[0].status == "OK"){
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: message + hintinfo  + '成功',
+                                        timeout:1000,
+                                        style: {
+                                            right: '',
+                                            top: document.body.scrollTop + document.documentElement.scrollTop,
+                                            bottom: ''
+                                        }
+                                    });
+                                    $(dialogId).dialog('close');
+                                    $(tableId).datagrid('reload',{ url: "/allEquipments/Find?_t=" + new Date().getTime() });
+                                } else {
+                                    $.messager.alert(obj1[0].status + '失败！', '未知错误导致失败，请重试！', 'warning');
+                                }
+                            }
+                        });
+                    // }
+                },
+                refresh:function(){
+                    $("#tab").datagrid('load')
+                }
+            }
         });
     </script>
 </head>
-
 <body>
     <div class="container">
-        <textEquipment id="wote"></textEquipment>
-        <table id="EquipmentClassTable"></table>
-
+        <table class="easyui-datagrid" id="tab" title="" style="width:100%" data-options="
+            rownumbers:true,
+            singleSelect:true,
+            autoRowHeight:false,
+            pagination:true,
+            pageSize:10,
+            singleSelect:false,
+            url:'/allEquipments/find',
+            method:'get',
+            toolbar:'#EquipmentClassToolbar'">
+            <thead>
+                <tr>
+                    <th field="ck" checkbox="true"></th>
+                    <th data-options="field:'EQPCode',width:150,align:'center'">设备编码</th>
+                    <th data-options="field:'EQPName',width:150,align:'center'">设备名称</th>
+                    <th data-options="field:'BatchOpcTag',width:150,align:'center'">OPC/批次</th>
+                    <th data-options="field:'BrandOpcTag',width:100,align:'center'">OPC/品名</th>
+                </tr>
+            </thead>
+        </table>
         <div id="EquipmentClassToolbar" style="padding:0 10px;">
             名称:
             <input type="text" class="textbox-text validatebox-text textbox-prompt" name="search" style="height:28px;" autocomplete="off"
@@ -43,7 +244,7 @@
         </div>
     </div>
 
-    <div id="EquipmentClassDialog" class="easyui-dialog" style="width:720px;height:440px;padding:10px;"
+    <div id="EquipmentClassDialog" class="easyui-dialog" style="width:360px;height:380px;padding:10px;"
      data-options="closed:'true',buttons:'#EquipmentClassDialogButtons',modal:true">
     <!-- <div id="EquipmentClassFormTitle" class="field-title">Title</div> -->
     <form id="EquipmentClassForm" method="post" class="dialog-form">
@@ -52,93 +253,31 @@
                 <tr>
                     <td class="kv-label">ID</td>
                     <td class="kv-content">
-                        <input  name="iID" type="text" class="textbox-text validatebox-text textbox-prompt" autocomplete="off" placeholder="">
+                        <input name="ID" type="text" class="textbox-text validatebox-text textbox-prompt" autocomplete="off" placeholder="">
                     </td>
+                </tr>
+                <tr>
                     <td class="kv-label">设备编码</td>
                     <td class="kv-content">
-                        <input  name="EQPCode" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
+                        <input name="EQPCode" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
                     </td>
                 </tr>
                 <tr>
                     <td class="kv-label">设备名称</td>
                     <td class="kv-content">
-                        <input  name="EQPName" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                    <td class="kv-label">设备型号</td>
-                    <td class="kv-content">
-                        <input  name="Equipment_Model" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">企业名称</td>
-                    <td class="kv-content">
-                        <input  name="EnterpriseName" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                    <td class="kv-label">企业编码</td>
-                    <td class="kv-content">
-                        <input  name="EnterpriseCode" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
+                        <input name="EQPName" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
                     </td>
                 </tr>
                 <tr>
                     <td class="kv-label">OPC/批次</td>
                     <td class="kv-content">
-                        <input  name="BatchOpcTag" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
+                        <input name="BatchOpcTag" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
                     </td>
+                </tr>
+                <tr>
                     <td class="kv-label">OPC/品名</td>
                     <td class="kv-content">
-                        <input  name="BrandOpcTag" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-
-                    <td class="kv-label">设备状态</td>
-                    <td class="kv-content">
-                        <input  name="Equipment_State" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                    <td class="kv-label">设备功率(KW/h)</td>
-                    <td class="kv-content">
-                        <input  name="Equipment_Power" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">设备类型</td>
-                    <td class="kv-content">
-                        <input  name="Equipment_Type" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                    <td class="kv-label">金额(原值)</td>
-                    <td class="kv-content">
-                        <input  name="money" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">生产厂家</td>
-                    <td class="kv-content">
-                        <input  name="Manufactor" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                    <td class="kv-label">工艺段名称</td>
-                    <td class="kv-content">
-                        <select name="PUID" id="PUID" type="text" style="width:157px;" autocomplete="off" placeholder="">
-                            <option value="">请选择</option>
-                            {% for id in ProcessUnit_id %}
-                                <option value="{{ id['ID'] }}">{{ id['text'] }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">生产日期</td>
-                    <td class="kv-content">
-                        <input id="Manufacture_Date" name="Manufacture_Date" type="text" class="easyui-datebox" data-options="showSeconds:false,editable:false" autocomplete="off" placeholder=""  >
-                    </td>
-                    <td class="kv-label">描述</td>
-                    <td class="kv-content">
-                        <input  name="Desc" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">来源</td>
-                    <td class="kv-content">
-                        <input  name="Equipment_From" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
+                        <input name="BrandOpcTag" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
                     </td>
                 </tr>
             </tbody>
