@@ -23,7 +23,7 @@ def sysrole():
         name = li[1]
         roleName = {'RoleID': id, 'RoleName': name}
         dataRoleInfo.append(roleName)
-    return render_template('sysRole.html', RoleInfos=dataRoleInfo)
+    return render_template('./SystemManagement/sysRole.html', RoleInfos=dataRoleInfo)
 
 
 # role更新数据，通过传入的json数据，解析之后进行相应更新

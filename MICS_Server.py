@@ -1,10 +1,9 @@
-from flask import Flask, redirect
+from flask import Flask, render_template
 from libs.account import auth_lib
 from handlers.account import account_auth
 from handlers.SystemManagement import user_management, PermissionAssignment,Role_management
 from handlers.main import home
 from handlers.SystemManagement.organization_model import organiza
-from handlers.SystemManagement.area_model import area
 
 
 
@@ -27,13 +26,11 @@ app.register_blueprint(home.home_page)
 app.register_blueprint(PermissionAssignment.permission_distribution)
 #组织机构
 app.register_blueprint(organiza)
-#区域建模
-app.register_blueprint(area)
 
 @app.route('/')
 # @login_required
 def hello_world():
-    return redirect('/home')
+    return render_template('./main/main.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
