@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, redirect
 from libs.account import auth_lib
-from handlers.account import account_auth,user_management
+from handlers.account import account_auth
+from handlers.SystemManagement import user_management, PermissionAssignment,Role_management
 from handlers.main import home
-from handlers.account.account_auth import login_required
 from handlers.SystemManagement.organization_model import organiza
 from handlers.SystemManagement.area_model import area
 
@@ -15,9 +15,16 @@ account_auth.login_manager.init_app(app)
 # 将后台函数传到前端
 app.add_template_global(auth_lib.isIn, 'isIn')
 
+# 登录
 app.register_blueprint(account_auth.login_auth)
+# 用户管理
 app.register_blueprint(user_management.user_manage)
+# 角色管理
+app.register_blueprint(Role_management.role_management)
+# 主页
 app.register_blueprint(home.home_page)
+# 权限分配
+app.register_blueprint(PermissionAssignment.permission_distribution)
 #组织机构
 app.register_blueprint(organiza)
 #区域建模
