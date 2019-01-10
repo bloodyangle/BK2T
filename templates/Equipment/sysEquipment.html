@@ -185,13 +185,16 @@
 <body>
     <div class="container">
         <table class="easyui-datagrid" id="tab" title="" style="width:100%" data-options="
+            queryParams: {
+                EQPName:''
+            }
             rownumbers:true,
             singleSelect:true,
             autoRowHeight:false,
             pagination:true,
             pageSize:10,
             singleSelect:false,
-            url:'/allEquipments/find',
+            url:'/allEquipments/Search',
             method:'get',
             toolbar:'#EquipmentClassToolbar'">
             <thead>
