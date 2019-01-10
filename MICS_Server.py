@@ -4,7 +4,6 @@ from handlers.account import account_auth,user_management
 from handlers.main import home
 from handlers.account.account_auth import login_required
 from handlers.SystemManagement.organization_model import organiza
-from handlers.SystemManagement.area_model import area
 
 
 
@@ -18,10 +17,8 @@ app.add_template_global(auth_lib.isIn, 'isIn')
 app.register_blueprint(account_auth.login_auth)
 app.register_blueprint(user_management.user_manage)
 app.register_blueprint(home.home_page)
-#组织机构
+#组织结构
 app.register_blueprint(organiza)
-#区域建模
-app.register_blueprint(area)
 
 @app.route('/')
 # @login_required

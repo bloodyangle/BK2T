@@ -203,3 +203,86 @@ def getMyOrganizationChildrenMap(id):
     except Exception as e:
         print(e)
         return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+@organiza.route('/Myorganization')
+def myorganization():
+    return render_template('Myorganization.html')
+
+
+def getMyOrganizationChildren(id=0):
+    sz = []
+    try:
+        orgs = db_session.query(Organization).filter().all()
+        for obj in orgs:
+            if obj.ParentNode == id:
+                sz.append({"id": obj.ID, "text": obj.OrganizationName, "children": getMyOrganizationChildren(obj.ID)})
+        srep = ',' + 'items' + ':' + '[]'
+        # data = string(sz)
+        # data.replace(srep, '')
+        return sz
+    except Exception as e:
+        print(e)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+def getMyEnterprise(id=0):
+    sz = []
+    try:
+        orgs = db_session.query(Organization).filter().all()
+        for obj in orgs:
+            sz.append({"id": obj.ID, "text": obj.OrganizationName, "group": obj.ParentNode})
+        # data = string(sz)"'"
+        # data.replace(srep, '')
+        return sz
+    except Exception as e:
+        print(e)
+        logger.error(e)
+        insertSyslog("error", "获取树形结构报错Error：" + str(e), current_user.Name)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+@organiza.route('/MyOp')
+def MyOpFind():
+    if request.method == 'GET':
+        try:
+            # data = load()
+            data = getMyOrganizationChildren(id=0)
+            # organizations = db_session.query(Organization).filter().all()
+            jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
+            return jsondata
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+@organiza.route('/Myenterprise')
+def myenterprise():
+    if request.method == 'GET':
+        try:
+            # data = load()
+            data = getMyEnterprise(id=0)
+            # organizations = db_session.query(Organization).filter().all()
+            jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
+            return jsondata
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+@organiza.route('/Myenterprise/Select')
+def MyenterpriseSelect():
+    if request.method == 'GET':
+        odata = request.values
+        try:
+            json_str = json.dumps(odata.to_dict())
+            if len(json_str) > 5:
+                objid = int(odata['ID'])
+                oclass = db_session.query(Organization).filter_by(ID=objid).first()
+                jsondata = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
+            return jsondata
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
