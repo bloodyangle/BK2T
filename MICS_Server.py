@@ -22,13 +22,9 @@ app.register_blueprint(user_management.user_manage)
 app.register_blueprint(Role_management.role_management)
 # 主页
 app.register_blueprint(home.home_page)
-<<<<<<< HEAD
-#组织结构
-=======
 # 权限分配
 app.register_blueprint(PermissionAssignment.permission_distribution)
 #组织机构
->>>>>>> aad8a2a09ddad79db37a9695d7181020c30f9e81
 app.register_blueprint(organiza)
 
 @app.route('/')

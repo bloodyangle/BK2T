@@ -24,7 +24,7 @@ organiza = Blueprint('organiza', __name__)
 # 组织机构建模
 @organiza.route('/organization')
 def organization():
-    return render_template('sysOrganization.html')
+    return render_template('./SystemManagement/sysOrganization.html')
 
 @organiza.route('/allOrganizations/Find')
 def OrganizationsFind():
@@ -177,7 +177,7 @@ def allOrganizationsSearch():
 
 @organiza.route('/organizationMap')
 def organizationMap():
-    return render_template('index_organization.html')
+    return render_template('./SystemManagement/index_organization.html')
 
 @organiza.route('/organizationMap/selectAll')#组织结构
 def selectAll():
@@ -206,7 +206,7 @@ def getMyOrganizationChildrenMap(id):
 
 @organiza.route('/Myorganization')
 def myorganization():
-    return render_template('Myorganization.html')
+    return render_template('./SystemManagement/Myorganization.html')
 
 
 def getMyOrganizationChildren(id=0):
