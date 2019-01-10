@@ -29,37 +29,10 @@
             EquipmentClassToolbar = {
                 message: "",
                 search: function () {
-                    var a = $.trim($('input[name="search"]').val());
-                    if  (Bee.StringUtils.isEmpty(a)){
-                        return false;
-                    }
-                    //a = JSON.stringify(a);
-                    var entity = {
-                            condition:a
-                        };
-                    $.ajax({
-                        url: '/allEquipments/Search',
-                        method: 'POST',
-                        traditional: true,
-                        // data: JSON.stringify(ids),
-                        data: entity,
-                        dataType: 'json',
-                        success: function (data) {
-                            $.messager.progress('close');
-
-                            if (data) {
-                                $(tableId).datagrid('loadData', data);
-                                $.messager.show({
-                                    title: '提示',
-                                    timeout: 1000,
-                                    msg: '查询' + titleText + '成功',
-                                    style: {
-                                        right: '',
-                                        top: document.body.scrollTop + document.documentElement.scrollTop,
-                                        bottom: ''
-                                    }
-                                });
-                            }
+                    var a = $('input[name="search"]').val()
+                    $("#tab").datagrid({
+                        queryParams: {
+                            EQPName: a
                         }
                     })
                 },
@@ -71,7 +44,6 @@
                     $('input[name="EQPName"]').val("");
                     $('input[name="BatchOpcTag"]').val("");
                     $('input[name="BrandOpcTag"]').val("");
-
                 },
                 update: function () {
                     var rows = $(tableId).datagrid('getSelections');
