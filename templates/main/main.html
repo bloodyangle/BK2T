@@ -67,15 +67,10 @@
                                 <li>
                                     <a href="#" onclick="addTab('组织结构','organizationMap')">组织结构</a>
                                 </li>
-                            
-{#                            {% if '9' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('区域建模','Area')">区域建模</a>
-                                </li>
-                            
+
 {#                            {% if '10' in session.get('menus') %}#}
                                 <li>
-                                    <a href="#" onclick="addTab('用户管理','userManager')">用户管理</a>
+                                    <a href="#" onclick="addTab('用户管理','/user_manage/default')">用户管理</a>
                                 </li>
                             
 {#                            {% if '11' in session.get('menus') %}#}
@@ -93,44 +88,11 @@
                                     <a href="#" onclick="addTab('组织机构','Myorganization')">组织机构</a>
                                 </li>
                             
-{#                            {% if '14' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('系统日志','syslogs')">系统日志</a>
-                                </li>
-                            
                         </ul>
                     </li>
 {#                #}
 {#                {% if isIn(['25', '26', '27', '28', '29', '30'], session.get('menus')) %}#}
-                    <li>
-                        <a href="javascript:;">
-                            <span class="iconfont sider-nav-icon">&#xe6c3;</span>
-                            <span class="sider-nav-title">生产计划调度管理</span>
-                            <i class="iconfont">&#xe642;</i>
-                        </a>
-                        <ul class="sider-nav-s">
-{#                            {% if '25' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('制药计划管理','/ZYPlanManage')">制药计划管理</a>
-                                </li>
-                            
-{#                            {% if '26' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('计划明细','/ZYPlan')">计划明细</a>
-                                </li>
-                            
-{#                            {% if '27' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('制药任务','ZYTask')">制药任务</a>
-                                </li>
-                            
-{#                            {% if '28' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('调度日计划','SchedulePlan')">调度日计划</a>
-                                </li>
-                            
-                        </ul>
-                    </li>
+
                     <li>
                         <a href="javascript:;">
                             <span class="iconfont sider-nav-icon">&#xe611;</span>
