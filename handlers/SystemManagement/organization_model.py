@@ -36,8 +36,8 @@ def OrganizationsFind():
                 pages = int(data['page']) # 页数
                 rowsnumber = int(data['rows'])  # 行数
                 inipage = (pages - 1) * rowsnumber + 0  # 起始页
-                endpage = (pages-1) * rowsnumber + rowsnumber #截止页
-                db_operate.FuzzyQuery(Organization, "")
+                endpage = (pages - 1) * rowsnumber + rowsnumber #截止页
+                db_operate.FuzzyQuery(Organization, Organization.OrganizationName)
                 total = db_session.query(func.count(Organization.ID)).scalar()
                 organiztions = db_session.query(Organization).all()[inipage:endpage]
                 #ORM模型转换json格式
