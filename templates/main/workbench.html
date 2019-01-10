@@ -51,21 +51,17 @@
     <div class="content clearfix">
         <div class="col-md-12">
             <div class="row AgencyArea">
-                <div class="col-md-2 AgencyArea-item" skip-src="/ZYPlanGuid/checkplanmanager" title="审核计划">
+                <div class="col-md-2 AgencyArea-item" skip-src="/ZYPlanGuid/checkplanmanager" title="生产前待确认">
                     <h3 id="daiban1">0</h3>
-                    <span><i class="glyphicon glyphicon-check"></i> 计划待审核</span>
+                    <span><i class="glyphicon glyphicon-check"></i> 生产前待确认</span>
                 </div>
-                <div class="col-md-2 AgencyArea-item" skip-src="/ZYPlanGuid/planmanager" title="下发计划">
+                <div class="col-md-2 AgencyArea-item" skip-src="/ZYPlanGuid/planmanager" title="提取记录待确认">
                     <h3 id="daiban2">0</h3>
-                    <span><i class="glyphicon glyphicon-send"></i> 计划待下发</span>
+                    <span><i class="glyphicon glyphicon-send"></i> 提取记录待确认</span>
                 </div>
-                <div class="col-md-2 AgencyArea-item" skip-src="/QAauthPass" title="QA放行">
+                <div class="col-md-2 AgencyArea-item" skip-src="/QAauthPass" title="清场待确认">
                     <h3 id="daiban3">0</h3>
-                    <span><i class="glyphicon glyphicon-log-out"></i> 计划待入库</span>
-                </div>
-                <div class="col-md-2 AgencyArea-item" skip-src="/BatchMaterielBalanceStatistic" title="批物料平衡统计">
-                    <h3 id="daiban4">0</h3>
-                    <span><i class="glyphicon glyphicon-pencil"></i> 物料平衡待确认</span>
+                    <span><i class="glyphicon glyphicon-log-out"></i> 清场待确认</span>
                 </div>
             </div>
             <div class="modal" id="loadingModal" data-backdrop="static" data-keyboard="false">
@@ -94,7 +90,11 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="row" style="height: 400px;margin-top: 11px;background: #fff;">
 
+            </div>
+        </div>
     </div>
     <script type="text/javascript" src="../../static/js/echarts.common.min.js"></script>
     <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
@@ -104,20 +104,20 @@
         //chart0
         $(document).ready(function () {
             //待办事项数量 a b c d
-            $.ajax({
-                url: '/souyesearch',
-                method: 'get',
-                success: function (data) {
-                    data = JSON.parse(data)
-                    $("#daiban1").html(data.A)
-                    $("#daiban2").html(data.B)
-                    $("#daiban3").html(data.C)
-                    $("#daiban4").html(data.D)
-                },
-                error: function () {
-                    alert("获取待办数据失败，请稍后重试！")
-                }
-            });
+            {#$.ajax({#}
+            {#    url: '/souyesearch',#}
+            {#    method: 'get',#}
+            {#    success: function (data) {#}
+            {#        data = JSON.parse(data)#}
+            {#        $("#daiban1").html(data.A)#}
+            {#        $("#daiban2").html(data.B)#}
+            {#        $("#daiban3").html(data.C)#}
+            {#        $("#daiban4").html(data.D)#}
+            {#    },#}
+            {#    error: function () {#}
+            {#        alert("获取待办数据失败，请稍后重试！")#}
+            {#    }#}
+            {# });#}
             //有此权限时增加tabs跳转到操作页面 审核-下发-放行-物料平衡
             $(".AgencyArea-item").on('click',function(){
                 var text = $(this).attr("title")
