@@ -31,7 +31,7 @@ def userManager():
         name = li[1]
         roleName = {'RoleID': id, 'RoleName': name}
         dataRoleName.append(roleName)
-    return render_template('userManager.html',departments=data,roleNames=dataRoleName)
+    return render_template('./SystemManagement/userManager.html',departments=data,roleNames=dataRoleName)
 @user_manage.route('/MyUser/Select')
 def MyUserSelect():
     if request.method == 'GET':

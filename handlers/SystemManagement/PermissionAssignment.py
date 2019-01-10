@@ -16,7 +16,7 @@ permission_distribution = Blueprint('permission_distribution',__name__)
 # 权限分配
 @permission_distribution.route('/roleright')
 def roleright():
-    return render_template('roleRight.html')
+    return render_template('./SystemManagement/roleRight.html')
 
 # 角色列表树形图
 def getRoleList(id=0):
