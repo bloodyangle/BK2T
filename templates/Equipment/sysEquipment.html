@@ -19,7 +19,7 @@
     <script type="text/javascript" src="../../static/js/Bee.js" charset="utf-8"></script>
     <script type="text/javascript">
         $(function () {
-            var tableId = $("tab")
+            var tableId = $("#tab")
             var dialogId = $("#EquipmentClassDialog")
             function createKeyIDObj(keyID){
                 return {
@@ -85,10 +85,9 @@
                                     traditional: true,
                                     // data: JSON.stringify(ids),
                                     data: a,
-                                    dataType: 'json',
+                                    dataType: 'text',
                                     success: function (data) {
                                         $.messager.progress('close');
-
                                         if (data == "OK") {
                                             $(tableId).datagrid('loaded');
                                             $(tableId).datagrid('load');
@@ -134,45 +133,44 @@
                         urlAddr = '/allEquipments/Create'
                         hintinfo = "新增数据"
                     }
-                        var entity = {
-                            ID:$('input[name="ID"]').val(),
-                            EQPCode:$('input[name="EQPCode"]').val(),
-                            EQPName:$('input[name="EQPName"]').val(),
-                            BatchOpcTag:$('input[name="BatchOpcTag"]').val(),
-                            BrandOpcTag:$('input[name="BrandOpcTag"]').val(),
-                        };
-                        $.ajax({
-                            url: urlAddr,
-                            method: 'POST',
-                            traditional: true,
-                            data: entity,
-                            dataType: 'text',
-                            cache: false,
-                            error: function(data){
-                               console.log(data.responseText)
-                               alert(hintinfo+ "异常，请刷新后重试...");
-                             },
-                            success: function (data,response,status) {
-                                $.messager.progress('close');
-                                if(data == "OK"){
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: hintinfo  + '成功',
-                                        timeout:1000,
-                                        style: {
-                                            right: '',
-                                            top: document.body.scrollTop + document.documentElement.scrollTop,
-                                            bottom: ''
-                                        }
-                                    });
-                                    $(dialogId).dialog('close');
-                                    $(tableId).datagrid('reload');
-                                } else {
-                                    $.messager.alert('失败！', '未知错误导致失败，请重试！', 'warning');
-                                }
+                    var entity = {
+                        ID:$('input[name="ID"]').val(),
+                        EQPCode:$('input[name="EQPCode"]').val(),
+                        EQPName:$('input[name="EQPName"]').val(),
+                        BatchOpcTag:$('input[name="BatchOpcTag"]').val(),
+                        BrandOpcTag:$('input[name="BrandOpcTag"]').val()
+                    };
+                    $.ajax({
+                        url: urlAddr,
+                        method: 'POST',
+                        traditional: true,
+                        data: entity,
+                        dataType: 'text',
+                        cache: false,
+                        error: function(data){
+                           console.log(data.responseText)
+                           alert(hintinfo+ "异常，请刷新后重试...");
+                         },
+                        success: function (data,response,status) {
+                            $.messager.progress('close');
+                            if(data == "OK"){
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: hintinfo  + '成功',
+                                    timeout:1000,
+                                    style: {
+                                        right: '',
+                                        top: document.body.scrollTop + document.documentElement.scrollTop,
+                                        bottom: ''
+                                    }
+                                });
+                                $(dialogId).dialog('close');
+                                $(tableId).datagrid('reload');
+                            } else {
+                                $.messager.alert('失败！', '未知错误导致失败，请重试！', 'warning');
                             }
-                        });
-                    // }
+                        }
+                    });
                 },
                 refresh:function(){
                     $("#tab").datagrid('load')
