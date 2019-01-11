@@ -146,7 +146,7 @@
                             method: 'POST',
                             traditional: true,
                             data: entity,
-                            dataType: 'json',
+                            dataType: 'text',
                             cache: false,
                             error: function(data){
                                console.log(data.responseText)
@@ -154,11 +154,10 @@
                              },
                             success: function (data,response,status) {
                                 $.messager.progress('close');
-                                var obj1 = eval(data);
                                 if(data == "OK"){
                                     $.messager.show({
                                         title: '提示',
-                                        msg: message + hintinfo  + '成功',
+                                        msg: hintinfo  + '成功',
                                         timeout:1000,
                                         style: {
                                             right: '',
@@ -169,7 +168,7 @@
                                     $(dialogId).dialog('close');
                                     $(tableId).datagrid('reload');
                                 } else {
-                                    $.messager.alert(obj1[0].status + '失败！', '未知错误导致失败，请重试！', 'warning');
+                                    $.messager.alert('失败！', '未知错误导致失败，请重试！', 'warning');
                                 }
                             }
                         });
