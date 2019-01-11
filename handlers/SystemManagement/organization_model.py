@@ -53,7 +53,6 @@ def OrganizationsFind():
 @organiza.route('/allOrganizations/Update', methods=['POST', 'GET'])
 def allOrganizationsUpdate():
     if request.method == 'POST':
-
         data = request.values
         str = request.get_json()
         try:
@@ -71,7 +70,6 @@ def allOrganizationsUpdate():
                 organization.Img = data['Img']
                 organization.Color = data['Color']
                 db_session.commit()
-                insertSyslog("success", "更新组织" + data['OrganizationName'] + "的组织更新成功", current_user.Name)
                 return json.dumps(['OK'], cls=AlchemyEncoder,
                                   ensure_ascii=False)
         except Exception as e:
@@ -100,7 +98,6 @@ def allOrganizationsDelete():
                         oclass = db_session.query(Organization).filter_by(ID=Organizationid).first()
                         db_session.delete(oclass)
                         db_session.commit()
-                        insertSyslog("success", "删除组织ID为" + str(Organizationid) + "的组织删除成功", current_user.Name)
                     except Exception as ee:
                         db_session.rollback()
                         print(ee)
@@ -145,7 +142,6 @@ def allOrganizationsCreate():
                                  CreatePerson=data['CreatePerson'],
                                  CreateDate=datetime.datetime.now(),Img = DspImg,Color = DspColor))
                 db_session.commit()
-                insertSyslog("success", "新增组织" + data['OrganizationName'] + "的组织新增成功", current_user.Name)
                 return json.dumps([{"status": "OK"}], cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             db_session.rollback()
@@ -183,7 +179,7 @@ def selectAll():
     if request.method == 'GET':
         try:
             data = getMyOrganizationChildrenMap(id=0)
-            jsondata = [{"name":"江中集团","value":"0","children":data}]
+            jsondata = [{"name":"北京康仁堂","value":"0","children":data}]
             jsondatas = json.dumps(jsondata, cls=AlchemyEncoder, ensure_ascii=False)
             return jsondatas
         except Exception as e:

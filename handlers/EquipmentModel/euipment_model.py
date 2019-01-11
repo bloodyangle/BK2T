@@ -106,7 +106,7 @@ def equipmentUpdate():
 # 设备建模删除
 @equip.route('/allEquipments/Delete', methods=['POST', 'GET'])
 def equipmentDelete():
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
             jsonstr = json.dumps(data.to_dict())
