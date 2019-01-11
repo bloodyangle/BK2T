@@ -23,4 +23,4 @@ produce = Blueprint('produce', __name__)
 # 组织机构建模
 @produce.route('/ElectronicBatchRecord')
 def electronicBatchRecord():
-    return render_template('./ProductionManagement/electronicBatchRecord.html')
+    return render_template('./ProductionManagement/electronicBatchRecordNav.html')
