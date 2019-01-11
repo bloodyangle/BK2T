@@ -103,7 +103,7 @@
 				pagination:true,
 				pageSize:10,
 				singleSelect:false,
-                url:'/MyUser/Select',
+                url:'/user_manage/MyUser/Select',
                 method:'get',
                 toolbar:'#toolbar'">
 				<thead>
@@ -214,14 +214,26 @@
                         }
                         a = JSON.stringify(jsonarray);
                         $.ajax({
-                            url: '/user/deleteUser',
+                            url: '/user_manage/user/deleteUser',
                             method: 'POST',
                             traditional: true,
                             data: a,
-                            dataType: 'json',
+                            dataType: 'text',
                             success: function (data) {
                                 $.messager.progress('close');
-                                $("#tab").datagrid('reload');
+                                if(data == "OK"){
+                                    $.messager.show({
+                                        title: '提示',
+                                        timeout: 1000,
+                                        msg: '删除成功',
+                                        style: {
+                                            right: '',
+                                            top: document.body.scrollTop + document.documentElement.scrollTop,
+                                            bottom: ''
+                                        }
+                                    });
+                                    $("#tab").datagrid('reload');
+                                }
                             }
                         });
                     }
@@ -252,7 +264,7 @@
                      return false;
                  }
                  $.ajax({
-                    url: "/user/addUser",
+                    url: "/user_manage/user/addUser",
                     method: 'POST',
                     traditional: true,
                     data: {
@@ -267,6 +279,16 @@
                     cache: false,
                     success: function (data,response,status) {
                         if(data == "OK"){
+                            $.messager.show({
+                                title: '提示',
+                                timeout: 1000,
+                                msg: '添加成功',
+                                style: {
+                                    right: '',
+                                    top: document.body.scrollTop + document.documentElement.scrollTop,
+                                    bottom: ''
+                                }
+                            });
                             $('#userClassDialog').dialog('close');
                             $("#tab").datagrid('reload');
                         }else{
@@ -296,7 +318,7 @@
                      return false;
                  }
                  $.ajax({
-                    url: "/user/updateUser",
+                    url: "/user_manage/user/updateUser",
                     method: 'POST',
                     traditional: true,
                     data: {
@@ -311,6 +333,16 @@
                     cache: false,
                     success: function (data,response,status) {
                         if(data == "OK") {
+                            $.messager.show({
+                                title: '提示',
+                                timeout: 1000,
+                                msg: '修改成功',
+                                style: {
+                                    right: '',
+                                    top: document.body.scrollTop + document.documentElement.scrollTop,
+                                    bottom: ''
+                                }
+                            });
                             $('#userClassDialog').dialog('close');
                             $("#tab").datagrid('reload');
                         }else{
