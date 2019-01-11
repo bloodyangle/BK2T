@@ -5,6 +5,7 @@ from handlers.SystemManagement import user_management, PermissionAssignment,Role
 from handlers.main import home
 from handlers.SystemManagement.organization_model import organiza
 from handlers.EquipmentModel.euipment_model import equip
+from handlers.ProductionManagement.producebatch_model import produce
 
 
 
@@ -29,6 +30,8 @@ app.register_blueprint(PermissionAssignment.permission_distribution)
 app.register_blueprint(organiza)
 #设备管理
 app.register_blueprint(equip)
+#生产数据管理
+app.register_blueprint(produce)
 
 @app.route('/')
 # @login_required
