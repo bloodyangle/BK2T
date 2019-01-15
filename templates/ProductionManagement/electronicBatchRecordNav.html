@@ -72,7 +72,11 @@
     <!--流程图-->
     <div class="progress-head">
         <div class="host-progress bigPlan2">
-            <div class="host-ball batchRecord">提取</div>
+            <div class="host-ball batchRecord">篮式提取</div>
+            <div class="host-line"></div>
+        </div>
+        <div class="host-progress bigPlan2">
+            <div class="host-ball batchRecord">搅拌提取</div>
             <div class="host-line"></div>
             <div class="host-arrow"></div>
         </div>
@@ -90,8 +94,7 @@
     </div>
     <table class="easyui-datagrid" id="tab" style="width:100%;" data-options="
         queryParams: {
-            BatchID: '',
-            name:'健胃消食片浸膏粉'
+            BatchID: ''
         },
         rownumbers:true,
         singleSelect:true,
@@ -140,15 +143,15 @@
                     $(this).datagrid("selectRow", 0);
                 }
             })
-            //有此权限时增加tabs跳转到批记录 备料-煎煮。。。收粉
+            //有此权限时增加tabs跳转到批记录
             $(".batchRecord").on('click',function(){
                 var text = $(this).html()
                 var rows = $("#tab").datagrid('getSelections');
-                if(rows.length == 1){
-                    addTab("健胃消食片批记录（" + text +"）","/electronicBatchRecord?title=" + text + "&ID=" + rows[0].ID)
-                }else{
-                    $.messager.alert('提示', "请选择计划", 'info');
-                }
+                //if(rows.length == 1){
+                    addTab("电子批记录（" + text +"）","/ElectronicBatchRecord?title=" + text)
+                //}else{
+                    //$.messager.alert('提示', "请选择计划", 'info');
+                //}
             })
         })
         //按钮点击后添加选项卡
