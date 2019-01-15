@@ -21,6 +21,9 @@ db_session = Session()
 produce = Blueprint('produce', __name__)
 
 # 组织机构建模
-@produce.route('/ElectronicBatchRecord')
+@produce.route('/ElectronicBatchRecordNav')
 def electronicBatchRecord():
     return render_template('./ProductionManagement/electronicBatchRecordNav.html')
+@produce.route('/ElectronicBatchRecord')
+def ElectronicBatchRecord():
+    return render_template('./ProductionManagement/electronicBatchRecord.html')
