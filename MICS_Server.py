@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from libs.account import auth_lib
 from handlers.account import account_auth
 from handlers.SystemManagement import user_management, PermissionAssignment,Role_management
+from handlers.QualityManagement import ProcessContinuousData
 from handlers.main import home
 from handlers.SystemManagement.organization_model import organiza
 from handlers.EquipmentModel.euipment_model import equip
@@ -32,6 +33,8 @@ app.register_blueprint(organiza)
 app.register_blueprint(equip)
 #生产数据管理
 app.register_blueprint(produce)
+# 过程连续数据
+app.register_blueprint(ProcessContinuousData.continuous_data)
 
 @app.route('/')
 # @login_required
