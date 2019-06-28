@@ -13,6 +13,7 @@ from libs.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import Organization
 from collections import Counter
 from libs.log.BK2TLogger import logger,insertSyslog
+from tools.common import insert,delete,update
 
 engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
@@ -49,106 +50,26 @@ def OrganizationsFind():
             insertSyslog("error", "查询组织报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:"+ str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
-# role更新数据，通过传入的json数据，解析之后进行相应更新
-@organiza.route('/allOrganizations/Update', methods=['POST', 'GET'])
-def allOrganizationsUpdate():
+#成本中心增加
+@organiza.route('/OrganizationCreate', methods=['GET', 'POST'])
+def OrganizationCreate():
     if request.method == 'POST':
         data = request.values
-        str = request.get_json()
-        try:
-            json_str = json.dumps(data.to_dict())
-            if len(json_str) > 10:
-                organizationid = int(data['ID'])
-                organization = db_session.query(Organization).filter_by(ID=organizationid).first()
-                organization.OrganizationCode = data['OrganizationCode']
-                organization.OrganizationName = data['OrganizationName']
-                organization.ParentCode = data['ParentNode']
-                organization.OrganizationSeq = data['OrganizationSeq']
-                organization.Description = data['Description']
-                organization.CreatePerson = data['CreatePerson']
-                organization.CreateDate = data['CreateDate']
-                organization.Img = data['Img']
-                organization.Color = data['Color']
-                db_session.commit()
-                return json.dumps(['OK'], cls=AlchemyEncoder,
-                                  ensure_ascii=False)
-        except Exception as e:
-            db_session.rollback()
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "更新组织报错Error：" + str(e), current_user.Name)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+        return insert(Organization, data)
 
-
-# role删除数据，通过传入的json数据，json数据只包含主键，解析之后进行相应更新
-# 解析方法：主键为数字，通过正则表达式把数字筛选出来，进行相应操作
-@organiza.route('/allOrganizations/Delete', methods=['POST', 'GET'])
-def allOrganizationsDelete():
+#成本中心修改
+@organiza.route('/OrganizationUpdate', methods=['GET', 'POST'])
+def OrganizationUpdate():
     if request.method == 'POST':
         data = request.values
-        try:
-            #   jsonDict = data.to_dict(
-            jsonstr = json.dumps(data.to_dict())
-            if len(jsonstr) > 10:
-                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
-                for key in jsonnumber:
-                    # for subkey in list(key):
-                    Organizationid = int(key)
-                    try:
-                        oclass = db_session.query(Organization).filter_by(ID=Organizationid).first()
-                        db_session.delete(oclass)
-                        db_session.commit()
-                    except Exception as ee:
-                        db_session.rollback()
-                        print(ee)
-                        logger.error(ee)
-                        insertSyslog("error", "删除组织报错Error：" + str(ee), current_user.Name)
-                        return json.dumps([{"status": "error:" + string(ee)}], cls=AlchemyEncoder,
-                                          ensure_ascii=False)
-                return json.dumps(['OK'], cls=AlchemyEncoder,
-                                  ensure_ascii=False)
-        except Exception as e:
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "删除组织报错Error：" + str(e), current_user.Name)
-            # return json.dumps([{"status": "Error"+ string(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+        return update(Organization, data)
 
-
-# role创建数据，通过传入的json数据，解析之后进行相应更新
-@organiza.route('/allOrganizations/Create', methods=['POST', 'GET'])
-def allOrganizationsCreate():
+#成本中心删除
+@organiza.route('/OrganizationDelete', methods=['GET', 'POST'])
+def OrganizationDelete():
     if request.method == 'POST':
         data = request.values
-        str = request.get_json()
-        try:
-            json_str = json.dumps(data.to_dict())
-            if len(json_str) > 10:
-                if data['Img'] == "":
-                    DspImg = "antonio.jpg"
-                else:
-                    DspImg = data['Img']
-
-                if data['Color'] == "":
-                    DspColor = "#1696d3"
-                else:
-                    DspColor = data['Color']
-                db_session.add(
-                    Organization(OrganizationCode=data['OrganizationCode'],
-                                 OrganizationName=data['OrganizationName'],
-                                 ParentNode=data['ParentNode'],
-                                 OrganizationSeq=data['OrganizationSeq'],
-                                 Description=data['Description'],
-                                 CreatePerson=data['CreatePerson'],
-                                 CreateDate=datetime.datetime.now(),Img = DspImg,Color = DspColor))
-                db_session.commit()
-                return json.dumps([{"status": "OK"}], cls=AlchemyEncoder, ensure_ascii=False)
-        except Exception as e:
-            db_session.rollback()
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "新增组织报错Error：" + str(e), current_user.Name)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+        return delete(Organization, data)
 
 
 @organiza.route('/allOrganizations/Search', methods=['POST', 'GET'])

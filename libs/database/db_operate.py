@@ -7,7 +7,8 @@ from libs.main.BSFramwork import AlchemyEncoder
 from flask_login import current_user
 
 
-GLOBAL_DATABASE_CONNECT_STRING= "mssql+pymssql://sa:Qcsw@758@192.168.2.109:1433/BK2T?charset=utf8"
+#GLOBAL_DATABASE_CONNECT_STRING= "mysql+pymysql://sa:root@127.0.0.1:1433/DESKTOP-2CP0C7F\SQLEXPRESS/BK?charset=utf8"#r"mssql+pymssql://DESKTOP-2CP0C7F\asd:root@127.0.0.1:1433/DESKTOP-2CP0C7F/BK?charset=utf8"
+GLOBAL_DATABASE_CONNECT_STRING= "mssql+pymssql://sa:root@192.168.0.70:1433/BK?charset=utf8"
 engine = create_engine(GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()

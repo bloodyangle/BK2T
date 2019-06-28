@@ -34,7 +34,6 @@ app.register_blueprint(equip)
 #生产数据管理
 app.register_blueprint(produce)
 # 过程连续数据
-app.register_blueprint(ProcessContinuousData.continuous_data)
 
 @app.route('/')
 # @login_required

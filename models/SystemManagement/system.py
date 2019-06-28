@@ -181,6 +181,7 @@ class User(Base):
     def get_id(self):
         return str(self.id)  # python 3
 
+# Organization:
 class Organization(Base):
     __tablename__ = "Organization"
 
@@ -209,11 +210,10 @@ class Organization(Base):
     CreateDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=False)
 
     # 显示图标:
-    Img = Column(Unicode(40), primary_key=False, autoincrement=False, nullable=True)
+    Img = Column(Unicode(40), default="antonio.jpg", primary_key=False, autoincrement=False, nullable=True)
 
     # 显示图标:
-    Color = Column(Unicode(40), primary_key=False, autoincrement=False, nullable=True)
-
+    Color = Column(Unicode(40),  default="#1696d3", primary_key=False, autoincrement=False, nullable=True)
 
 # Equipment:
 class Equipment(Base):
@@ -228,11 +228,33 @@ class Equipment(Base):
     # 设备名称:
     EQPName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
-    # 批次对应的opc变量名
-    BatchOpcTag = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # OpcTag:
+    BatchOpcTag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 牌号对应的opc变量名
-    BrandOpcTag = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # OpcTag:
+    BrandOpcTag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 供应商:
+    SupplierName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备状态:
+    Equipment_State = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 基本参数:
+    Equipment_Model = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 成本归属:
+    CostAttach = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 采购日期:
+    Procurement_Date = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段ID:
+    PUID = Column(Integer, primary_key=False, nullable=True)
+
+    # 备注说明:
+    Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 电子批记录
 class ElectronicBatch(Base):
@@ -278,6 +300,96 @@ class ElectronicBatch(Base):
 
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# 电子批记录
+class ElectronicBatchTwo(Base):
+    __tablename__ = 'ElectronicBatchTwo'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # id:
+    TaskID = Column(Integer, primary_key=False, autoincrement=True, nullable=False)
+
+    # 批次号:
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PDUnitRouteID = Column(Integer, nullable=False, primary_key=False)
+
+    # 设备编码
+    EQPID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型:
+    OpcTagID = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型:
+    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型:
+    BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 采样值:
+    SampleValue = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 采样时间:
+    SampleDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 重复次数：
+    RepeatCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True, default=0)
+
+    # 描述:
+    Description = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Type = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+    # 单位:
+    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# 审计追踪
+class AuditTrace(Base):
+    __tablename__ = 'AuditTrace'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 操作:
+    Operation = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 详细信息:
+    DeitalMSG = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 修改日期
+    ReviseDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 用户:
+    User = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 其他:
+    Other = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+class QualityControlTree(Base):
+	__tablename__ = "QualityControlTree"
+
+	# ID:
+	ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+	# 生产线
+	Name = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+	# 工序
+	Note = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True	)
+
+	# 设备号
+	EquipmentCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+	# 批次
+	BatchTag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+	# 品名W
+	Brand = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+	# 父节点
+	ParentNode = Column(Integer, primary_key = False, autoincrement = False, nullable = True)
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)
