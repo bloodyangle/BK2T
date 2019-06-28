@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="../../static/css/base.css" rel="stylesheet">
-	<link href="../../static/css/easyui.css" rel="stylesheet">
-	<link href="../../static/css/icon.css" rel="stylesheet" type="text/css">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/css/bootstrap-table.min.css" rel="stylesheet">
     <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootbox.min.js"></script>
     <script type="text/javascript" src="../../static/js/Bee.js" charset="utf-8"></script>
     <style>
         /*横向时间轴*/
@@ -60,98 +63,64 @@
             border-left-color: white;
             z-index: 2;
         }
-        .host-progress-active .host-arrow:after{
-            border-left-color: #5cb85c;
-        }
-        .host-progress-way-active .host-arrow:after{
-            border-left-color: #ffac38;
-        }
     </style>
 </head>
 <body>
-    <!--流程图-->
-    <div class="progress-head">
-        <div class="host-progress bigPlan2">
-            <div class="host-ball batchRecord">篮式提取</div>
-            <div class="host-line"></div>
+    <div class="col-md-12" style="padding-top: 15px;">
+        <!--流程图-->
+        <div class="progress-head">
+            <div class="host-progress bigPlan1">
+                <div class="host-ball batchRecord">提取</div>
+                <div class="host-line"></div>
+                <div class="host-arrow"></div>
+            </div>
+            <div class="host-progress bigPlan2">
+                <div class="host-ball batchRecord">浓缩</div>
+            </div>
         </div>
-        <div class="host-progress bigPlan2">
-            <div class="host-ball batchRecord">搅拌提取</div>
-            <div class="host-line"></div>
-            <div class="host-arrow"></div>
+        <!--表格-->
+        <div id="Toolbar">
+
         </div>
-        <div class="host-progress bigPlan3">
-            <div class="host-ball batchRecord">浓缩</div>
-        </div>
+        <table class="table table-bordered" id="tab"></table>
+
     </div>
-    <!--表格-->
-    <div id="Toolbar" style="padding:0 10px;">
-        批次号:
-        <input type="text" class="textbox-text validatebox-text textbox-prompt" name="search" style="height:28px;" autocomplete="off"
-            placeholder="">
-        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="CollectToolbar.search();">查询</a>
-        <a href="#" class="easyui-linkbutton" id="reload" data-options="iconCls:'icon-reload'" onclick="CollectToolbar.refresh();">刷新</a>
-    </div>
-    <table class="easyui-datagrid" id="tab" style="width:100%;" data-options="
-        queryParams: {
-            BatchID: ''
-        },
-        rownumbers:true,
-        singleSelect:true,
-        autoRowHeight:false,
-        pagination:true,
-        pageSize:10,
-        toolbar:'#Toolbar',
-        url:'/allPlanManagers/Search',
-        method:'post'">
-        <thead>
-            <tr>
-                <th field="ck" checkbox="true"></th>
-                <th data-options="field:'PlanStatus',width:150,align:'center'" formatter="formatterStatus">计划状态</th>
-                <th data-options="field:'SchedulePlanCode',width:200,align:'center'">调度编号</th>
-                <th data-options="field:'BatchID',width:200,align:'center'">批次号</th>
-                <th data-options="field:'PlanQuantity',width:100,align:'center'">计划重量</th>
-                <th data-options="field:'BrandName',width:150,align:'center'">品名</th>
-                <th data-options="field:'Unit',width:100,align:'center'">单位</th>
-                <th data-options="field:'PlanBeginTime',width:200,align:'center'">计划开始时间</th>
-                <th data-options="field:'PlanEndTime',width:200,align:'center'">计划完成时间</th>
-                <th data-options="field:'Type',width:100,align:'center'">调度类型</th>
-            </tr>
-        </thead>
-    </table>
-    <script type="text/javascript" src="../static/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../static/js/easyui-lang-zh_CN.js"></script>
     <script>
         $(function(){
-            CollectToolbar = {
-                search:function(){
-                    var searchBatchID = $('input[name="search"]').val()
-                    $("#tab").datagrid({
-                        queryParams: {
-                            BatchID: searchBatchID,
-                            name:'健胃消食片浸膏粉'
-                        }
-                    })
+            $('#tab').bootstrapTable({
+                url: '',
+                method: 'get',
+                queryParams:function(params){
+                    return {
+                        limit : params.limit,
+                        offset : parseInt(params.offset/params.limit)
+                    };
                 },
-                refresh:function(){
-                    $("#tab").datagrid('load')
-                }
-            }
-            //表格默认选中第一行
-            $("#tab").datagrid({
-                onLoadSuccess:function(d){
-                    $(this).datagrid("selectRow", 0);
-                }
-            })
+	            pagination: true,
+                pageNumber:1,
+	            pageSize: 10,
+	            pageList: [10, 20, 30, 50],
+                sidePagination: "server",
+                paginationLoop:false,
+                paginationPreText:'上一页',
+                paginationNextText:'下一页',
+                singleSelect:false,
+                clickToSelect:true,
+	            locale: "zh-CN",
+	            striped: true,
+                columns: [{
+                    field: 'BatchNo',
+                    title: '批次号'
+                }, {
+                    field: 'BillNo',
+                    title: '计划单号'
+                }]
+            });
             //有此权限时增加tabs跳转到批记录
             $(".batchRecord").on('click',function(){
                 var text = $(this).html()
-                var rows = $("#tab").datagrid('getSelections');
-                //if(rows.length == 1){
-                    addTab("电子批记录（" + text +"）","/ElectronicBatchRecord?title=" + text)
-                //}else{
-                    //$.messager.alert('提示', "请选择计划", 'info');
-                //}
+                var rows = $("#tab").bootstrapTable('getSelections');
+                addTab("电子批记录（" + text +"）","/ElectronicBatchRecord?title=" + text)
             })
         })
         //按钮点击后添加选项卡
@@ -166,23 +135,6 @@
                     content: content,
                     closable: true
                 });
-            }
-        }
-        function formatterStatus(value, row, index){
-            if (value == 10){
-                return '新增计划'
-            }else if(value == 11){
-                return '审核计划'
-            }else if(value == 20){
-                return '下发计划'
-            }else if(value == 40){
-                return '撤回计划'
-            }else if(value == 50){
-                return '执行计划'
-            }else if(value == 60){
-                return '完成计划'
-            }else if(value == 70){
-                return 'QA入库'
             }
         }
     </script>

@@ -3,96 +3,51 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>北康生产管理系统</title>
+    <title>北康数据采集系统</title>
     <link href="../../static/css/base.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/easyui.css" rel="stylesheet" type="text/css">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/platform.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <div class="container">
+    <div class="">
         <div id="pf-hd">
             <div class="pf-logo">
                 <img src="../../static/images/logo_white.png" alt="logo">
                 <span class="split"></span>
-                <span class="system-name">生产管理系统</span>
+                <span class="system-name">数据采集系统</span>
             </div>
-                <div class="pf-user">
-                    <div class="pf-user-photo">
-                        <img src="../../static/images/Customer_Male_Light.png" alt="">
-                    </div>
-                    <h4 class="pf-user-name ellipsis">{{ current_user['Name']}}</h4>
-                    <i class="iconfont xiala">&#xe607;</i>
-                    <div class="pf-user-panel">
-                        <ul class="pf-user-opt">
-                            <li>
-                                <a href="javascript:;">
-                                    <i class="iconfont">&#xe60d;</i>
-                                    <span class="pf-opt-name">用户信息</span>
-                                </a>
-                            </li>
-                            <li class="pf-logout">
-                                <a href="/logout">
-                                    <i class="iconfont">&#xe60e;</i>
-                                    <span class="pf-opt-name">退出</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="pf-user">
+                <div class="pf-user-photo">
+                    <img src="../../static/images/Customer_Male_Light.png" alt="">
                 </div>
+                <h4 class="pf-user-name ellipsis">{{ current_user['Name']}}</h4>
+                <i class="iconfont xiala">&#xe607;</i>
+                <div class="pf-user-panel">
+                    <ul class="pf-user-opt">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="iconfont">&#xe60d;</i>
+                                <span class="pf-opt-name">用户信息</span>
+                            </a>
+                        </li>
+                        <li class="pf-logout">
+                            <a href="/logout">
+                                <i class="iconfont">&#xe60e;</i>
+                                <span class="pf-opt-name">退出</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-
         <div id="pf-bd">
             <div id="pf-sider">
                 <h2 class="pf-model-name">
-                    <!-- <span class="iconfont">&#xe64a;</span>-->
                     <span class="pf-name">导航菜单</span>
                     <span class="toggle-icon"></span>
                 </h2>
-
                 <ul class="sider-nav">
-{#                {% if isIn(['7', '8', '9', '10', '11', '12', '13', '14', '15'], session.get('menus')) %}#}
-                    <li>
-                        <a href="javascript:;">
-                            <span class="iconfont sider-nav-icon">&#xe6ed;</span>
-                            <span class="sider-nav-title">系统管理</span>
-                            <i class="iconfont">&#xe642;</i>
-                        </a>
-                        <ul class="sider-nav-s">
-{#                            {% if '7' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('组织结构建模','organization')">组织结构建模</a>
-                                </li>
-                            
-{#                            {% if '8' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('组织结构','organizationMap')">组织结构</a>
-                                </li>
-
-{#                            {% if '10' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('用户管理','/user_manage/default')">用户管理</a>
-                                </li>
-                            
-{#                            {% if '11' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('角色管理','sysrole')">角色管理</a>
-                                </li>
-                            
-{#                            {% if '12' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('权限分配','roleright')">权限分配</a>
-                                </li>
-                            
-{#                            {% if '13' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onclick="addTab('组织机构','Myorganization')">组织机构</a>
-                                </li>
-                            
-                        </ul>
-                    </li>
-{#                #}
-{#                {% if isIn(['25', '26', '27', '28', '29', '30'], session.get('menus')) %}#}
-
                     <li>
                         <a href="javascript:;">
                             <span class="iconfont sider-nav-icon">&#xe611;</span>
@@ -100,15 +55,11 @@
                             <i class="iconfont">&#xe642;</i>
                         </a>
                         <ul class="sider-nav-s">
-{#                            {% if '39' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onClick="addTab('电子批记录','/ElectronicBatchRecordNav')">电子批记录</a>
-                                </li>
-                            
+                            <li>
+                                <a href="#" onClick="addTab('电子批记录','/ElectronicBatchRecordNav')">电子批记录</a>
+                            </li>
                         </ul>
                     </li>
-{#                #}
-{#                {% if isIn(['44', '45', '46', '47', '48', '49', '50', '96'], session.get('menus')) %}#}
                     <li>
                         <a href="javascript:;">
                             <span class="iconfont sider-nav-icon">&#xe64c;</span>
@@ -116,24 +67,31 @@
                             <i class="iconfont">&#xe642;</i>
                         </a>
                         <ul class="sider-nav-s">
-{#                            {% if '44' in session.get('menus') %}#}
-                                <li>
-                                    <a href="#" onClick="addTab('过程连续数据','/ProcessContinuousData')">过程连续数据</a>
-                                </li>
-                            
+                            <li>
+                                <a href="#" onClick="addTab('过程连续数据','/ProcessContinuousData')">过程连续数据</a>
+                            </li>
                         </ul>
                     </li>
-{#                #}
                     <li>
                         <a href="javascript:;">
-                            <span class="iconfont sider-nav-icon">&#xe69e;</span>
-                            <span class="sider-nav-title">设备管理</span>
+                            <span class="iconfont sider-nav-icon">&#xe6ed;</span>
+                            <span class="sider-nav-title">系统管理</span>
                             <i class="iconfont">&#xe642;</i>
                         </a>
                         <ul class="sider-nav-s">
                             <li>
-                                <a href="#" onclick="addTab('设备信息','Equipment')">设备信息</a>
+                                <a href="#" onclick="addTab('组织结构','organization')">组织结构</a>
                             </li>
+                            <li>
+                                <a href="#" onclick="addTab('用户管理','/user_manage/default')">用户管理</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="addTab('角色管理','sysrole')">角色管理</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="addTab('权限分配','roleright')">权限分配</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -170,16 +128,6 @@
     <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="../../static/js/main.js"></script>
-    <!--[if IE 7]>
-      <script type="text/javascript">
-        $(window).resize(function(){
-          $('#pf-bd').height($(window).height()-76);
-        }).resize();
-
-      </script>
-    <![endif]-->
-
-
     <script type="text/javascript">
         $('.easyui-tabs1').tabs({
             tabHeight: 34,
@@ -235,8 +183,6 @@
             $('.pf-nav-prev,.pf-nav-next').hide();
         }
         $(document).on('click', '.pf-nav-prev,.pf-nav-next', function () {
-
-
             if ($(this).hasClass('disabled')) return;
             if ($(this).hasClass('pf-nav-next')) {
                 page++;
