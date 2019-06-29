@@ -1,3 +1,4 @@
+
 var mainPlatform = {
 
 	init: function(){
@@ -41,7 +42,7 @@ var mainPlatform = {
 			// });
         // });
         //左侧菜单收起
-        $(document).on('click', '.toggle-icon', function() {
+        $(document).on('click', '.navuUser', function() {
             $(this).closest("#pf-bd").toggleClass("toggle");
             setTimeout(function(){
             	$(window).resize();
