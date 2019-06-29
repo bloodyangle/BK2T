@@ -35,16 +35,16 @@ def userManager():
 @user_manage.route('/MyUser/Select')
 def MyUserSelect():
     if request.method == 'GET':
-        odata = request.values
+        data = request.values
         try:
-            json_str = json.dumps(odata.to_dict())
+            json_str = json.dumps(data.to_dict())
             if len(json_str) > 10:
-                pages = int(odata['page'])  # 页数
-                rowsnumber = int(odata['rows'])  # 行数
-                inipage = (pages - 1) * rowsnumber + 0  # 起始页
-                endpage = (pages - 1) * rowsnumber + rowsnumber  # 截止页
-                id = odata['id']
-                Name = odata['Name']
+                pages = int(data.get("offset"))  # 页数
+                rowsnumber = int(data.get("limit"))  # 行数
+                inipage = pages * rowsnumber + 0  # 起始页
+                endpage = pages * rowsnumber + rowsnumber  # 截止页
+                id = data.get('id')
+                Name = data.get('Name')
                 if id != '':
                     OrganizationCodeData = db_session.query(Organization).filter_by(id=id).first()
                     if OrganizationCodeData != None:

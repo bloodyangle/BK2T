@@ -106,7 +106,7 @@ def FuzzyQuery(tablename, params):
             for key in params.keys():
                 if hasattr(tablename, key):
                     try:
-                        data = db_session.query(tablename).filter(tablename.key.like(params[key])).all()
+                        data = db_session.query(tablename).filter_by(key = params[key]).all()
                         if data:
                             return json.dumps({'status': 'OK', 'message': '数据更新成功！', 'data':data}, cls=AlchemyEncoder, ensure_ascii=False)
                         else:

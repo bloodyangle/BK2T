@@ -63,10 +63,10 @@ def userList():
             try:
                 json_str = json.dumps(data.to_dict())
                 if len(json_str) > 10:
-                    pages = int(data['page'])  # 页数
-                    rowsnumber = int(data['rows'])  # 行数
-                    inipage = (pages - 1) * rowsnumber + 0  # 起始页
-                    endpage = (pages - 1) * rowsnumber + rowsnumber  # 截止页
+                    pages = int(data.get("offset"))  # 页数
+                    rowsnumber = int(data.get("limit"))  # 行数
+                    inipage = pages * rowsnumber + 0  # 起始页
+                    endpage = pages * rowsnumber + rowsnumber  # 截止页
                     total = db_session.query(User).count()
                     users_data = db_session.query(User)[inipage:endpage]
                     # ORM模型转换json格式
