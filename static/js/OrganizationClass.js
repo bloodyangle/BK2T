@@ -17,7 +17,7 @@ $(function () {
     return {
         ID:keyID
     }}
-    
+
 
      $('input[name="iOrganizationName"]').change(function () {
          var sOrganizationName = $('input[name="iOrganizationName"]').val();
@@ -119,18 +119,6 @@ $(function () {
                 title: '创建时间',
                 width: 300,
                 align: 'center'
-            },
-            {
-                field: 'Img',
-                title: '显示图',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'Color',
-                title: '显示颜色',
-                width: 100,
-                align: 'center'
             }
         ]]
     });
@@ -175,6 +163,7 @@ $(function () {
                                 bottom: ''
                             }
                         });
+                        show()
                     }
                 }
             })
@@ -226,7 +215,7 @@ $(function () {
                     $('input[name="iCreateDate"]').attr("disabled", "disabled");
                     $('input[name="iImg"]').val(row.Img);
                     $('input[name="iColor"]').val(row.Color);
-                    //var thisSwitchbuttonObj = $(".switchstatus").find("[switchbuttonName='IsEnable']");//获取switchbutton对象  
+                    //var thisSwitchbuttonObj = $(".switchstatus").find("[switchbuttonName='IsEnable']");//获取switchbutton对象
                     if (row.IsEnable == '禁用') {
 
                         $("[switchbuttonName='IsEnable']").switchbutton("uncheck");
@@ -270,6 +259,7 @@ $(function () {
                                 if (data) {
                                     $(tableId).datagrid('loadData', data);
                                     $(tableId).datagrid('load');
+                                    show()
                                 }
                             }
                         });
@@ -371,6 +361,7 @@ $(function () {
                             $(dialogId).dialog('close');
                             $(tableId).datagrid('reload',{ url: "/allOrganizations/Find?_t=" + new Date().getTime() });
                             //$(tableid).datagrid('clearSelections');
+                            show()
                         } else {
                             $.messager.alert(obj1[0].status + '失败！', '未知错误导致失败，请重试！', 'warning');
                         }
@@ -447,24 +438,12 @@ $(function () {
                 title: '创建时间',
                 width: 300,
                 align: 'center'
-            },
-            {
-                field: 'Img',
-                title: '显示图',
-                width: 100,
-                align: 'center'
-            },
-            {
-                field: 'Color',
-                title: '显示颜色',
-                width: 100,
-                align: 'center'
             }
         ]]
     });
             $(tableId).datagrid('reload');
-            $(tableid).datagrid('clearSelections');
-           
+            $(tableId).datagrid('clearSelections');
+            show()
         }
 
     }
@@ -484,5 +463,85 @@ $(function () {
             e.preventDefault();  //阻止浏览器自带的右键菜单弹出
         }
     });
-
+    //图形展示
+    function show(){
+        var domMain = document.getElementById('example')
+        var myChart = echarts.init(domMain, 'macarons');
+        myChart.showLoading()
+        $.ajax({
+             type : "get",
+             async : true, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+             url : "/organizationMap/selectAll",
+             data : {},
+             dataType : "json",
+             success : function(result) {
+                 if (result) {
+                     myChart.hideLoading(); //隐藏加载动画
+                     myChart.setOption({  //加载数据图表
+                         title : {
+                            text: '江中集团',
+                            subtext: '组织结构树形图'
+                        },
+                        tooltip : {
+                            trigger: 'item',
+                            formatter: "{b}: {c}"
+                        },
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        calculable : false,
+                        series : [
+                            {
+                                name:'树图',
+                                type:'tree',
+                                orient: 'vertical',  //树的方向 vertical，horizontal
+                                rootLocation: {x: '50%', y: '10%'}, // 根节点位置  {x: 'center',y: 10}
+                                nodePadding: 10, //节点间距
+                                layerPadding:50,
+                                symbol: 'rectangle', //rectangle方形,circle圆形
+                                symbolSize: [70,25],
+                                borderColor:'black',
+                                roam:true,
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            position: 'inside',
+                                            textStyle: {
+                                                color: '#ffffff',
+                                                fontSize: 12
+                                            }
+                                        },
+                                        lineStyle: {
+                                            color: '#17a572',
+                                            width: 1,
+                                            type: 'broken' // 'curve'曲线|'broken'直线|'solid'|'dotted'|'dashed'
+                                        }
+                                    },
+                                    emphasis: {
+                                        color: '#0e546d',
+                                        label: {
+                                            show: true
+                                        }
+                                    }
+                                },
+                                data: result
+                            }
+                        ]
+                     });
+                 }
+            },
+             error : function(errorMsg) {
+                 //请求失败时执行该函数
+                alert("图表请求数据失败!");
+                myChart.hideLoading();
+             }
+        })
+    }
 });
