@@ -5,108 +5,265 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>角色管理</title>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../static/css/base.css" rel="stylesheet">
-    <link href="../../static/css/easyui.css" rel="stylesheet">
-    <link href="../../static/css/icon.css" rel="stylesheet">
-    <link href="../../static/css/providers.css" rel="stylesheet">
-    <link href="../../static/css/process.css" rel="stylesheet">
-    <link href="../../static/css/umeditor.css" type="text/css" rel="stylesheet">
-    <link href="../../static/css/datagridpanel_customer.css" rel="stylesheet">
-    <link href="../../static/css/dialogpanel.css" type="text/css" rel="stylesheet">
-    <link href="../../static/css/datagrid_customer.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="../../static/js/Bee.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../static/js/roleClass.js" charset="utf-8"></script>
+    <script src="../../static/js/echarts.common.min.js"></script>
+    <script src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+    <script src="../../static/js/bootstrap-table.min.js"></script>
+    <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../static/js/bootbox.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <table id="RoleClassTable"></table>
-
-        <div id="RoleClassToolbar" style="padding:0 10px;">
-            名称:
-            <input type="text" class="textbox-text validatebox-text textbox-prompt" name="search" style="height:28px;" autocomplete="off"
-                placeholder="">
-            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="RoleClassToolbar.search();">查询</a>
-            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="RoleClassToolbar.create();">添加</a>
-            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'" onclick="RoleClassToolbar.update();">修改</a>
-            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" onclick="RoleClassToolbar.delete();">删除</a>
-            <a href="#" class="easyui-linkbutton" id="reload" data-options="iconCls:'icon-reload'" onclick="RoleClassToolbar.refresh();">刷新</a>
+     <div class="row" style="padding: 15px 0;">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">角色列表</div>
+                <div class="panel-body">
+                    <div id="myModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                        ×
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        角色表单信息
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" action="">
+                                        <div class="form-group">
+                                            <label for="ID" class="col-sm-2 control-label">id</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="ID" placeholder="" disabled="disabled">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="RoleName" class="col-sm-2 control-label">角色名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="RoleName" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ParentNode" class="col-sm-2 control-label">父节点</label>
+                                            <div class="col-sm-10">
+                                                <select id="ParentNode" type="text" style="width:157px;" autocomplete="off" placeholder="">
+                                                    <option value="">请选择</option>
+                                                    {% for RoleInfo in RoleInfos %}
+                                                        <option value="{{ RoleInfo['RoleID'] }}">{{ RoleInfo['RoleName'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Description" class="col-sm-2 control-label">说明</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="Description" placeholder="">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- dialog buttons -->
+                                <div class="modal-footer"><button type="button" class="btn btn-primary" onclick="toolbar.Save()">保存</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Toolbar">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <p>
+                                    <div class="input-group">
+                                        <label class="input-group-addon">名称</label>
+                                        <input type="text" class="form-control" id="SearchVal">
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="toolbar.Search()">查询</button>
+                                    <button type="button" class="btn btn-info" onclick="toolbar.Add()">添加</button>
+                                    <button type="button" class="btn btn-warning" onclick="toolbar.Updata()">编辑</button>
+                                    <button type="button" class="btn btn-danger" onclick="toolbar.Delete()">删除</button>
+                                    <button type="button" class="btn btn-default" onclick="toolbar.reload()">刷新</button>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table-bordered" id="tab"></table>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div id="RoleClassDialog" class="easyui-dialog" style="width:520px;height:400px;padding:10px;"
-     data-options="closed:'true',buttons:'#RoleClassDialogButtons',modal:true">
-    <!-- <div id="RoleClassFormTitle" class="field-title">Title</div> -->
-    <form id="RoleClassForm" method="post" class="dialog-form">
-        <table class="kv-table">
-            <tbody>
-                <tr>
-                    <td class="kv-label">Id</td>
-                    <td class="kv-content">
-                        <input name="iID" type="text" class="textbox-text validatebox-text textbox-prompt" autocomplete="off" placeholder="">
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">角色名称</td>
-                    <td class="kv-content">
-                        <input name="iRoleName" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">父节点</td>
-                    <td class="kv-content">
-                        <select name="iParentNode" id="iParentNode" type="text" style="width:157px;" autocomplete="off" placeholder="">
-                            <option value="">请选择</option>
-                            {% for RoleInfo in RoleInfos %}
-                                <option value="{{ RoleInfo['RoleID'] }}">{{ RoleInfo['RoleName'] }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">角色顺序</td>
-                    <td class="kv-content">
-                        <input name="iRoleSeq" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">说明</td>
-                    <td class="kv-content">
-                        <input name="iDescription" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">创建人</td>
-                    <td class="kv-content">
-                        <input name="iCreatePerson" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-                <tr>
-                    <td class="kv-label">创建时间</td>
-                    <td class="kv-content">
-                        <input name="iCreateDate" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
-        <div id="RoleClassDialogButtons" >
-            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="saveRoleAdd" onclick="RoleClassToolbar.saveRoleAdd()" value="submit" >保存</a>
-            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="saveRoleUpdata" onclick="RoleClassToolbar.saveRoleUpdata()" value="submit" >保存</a>
-            <a href="#" class="easyui-linkbutton" onclick="$('#RoleClassDialog').dialog('close')">关闭</a>
-        </div>
-    </form>
-</div>
-<!-- 右键菜单 -->
-    <div id="contextmenu" class="easyui-menu" style="width:120px;">
-        <div data-options="iconCls:'icon-reload'" onclick="RoleClassToolbar.refresh();">刷新</div>
-        <div data-options="iconCls:'icon-add'" onclick="RoleClassToolbar.create();">新建</div>
-        <div class="menu-sep"></div>
-
-        <div data-options="iconCls:'icon-edit'" onclick="RoleClassToolbar.update();">编辑</div>
-        <div data-options="iconCls:'icon-remove'" onclick="RoleClassToolbar.delete();">删除</div>
-    </div>
+    <script type="text/javascript">
+        $(function(){
+            $("#tab").bootstrapTable({
+                url: '/allroles/Find',
+                method: 'get',
+                queryParams:function(params){
+                    return {
+                        RoleName: '',
+                        limit : params.limit,
+                        offset : parseInt(params.offset/params.limit)
+                    };
+                },
+	            pagination: true,
+                toolbar:"#Toolbar",
+                pageNumber:1,
+	            pageSize: 10,
+	            pageList: [10, 20, 30, 40, 50],
+                sidePagination: "server",
+                paginationLoop:false,
+                paginationPreText:'上一页',
+                paginationNextText:'下一页',
+                singleSelect:true,
+                clickToSelect:true,
+	            locale: "zh-CN",
+	            striped: true,
+                columns: [{
+                    checkbox: true
+                },{
+                    field: 'RoleName',
+                    title: '角色名称'
+                },{
+                    field: 'ParentNode',
+                    title: '父节点'
+                },{
+                    field: 'Description',
+                    title: '说明'
+                }]
+            })
+            toolbar = {
+                Search:function(){
+                    $('#tab').bootstrapTable('load',{
+                        RoleName: $("#SearchVal").val()
+                    });
+                },
+                Add:function(){
+                    $("#myModal").modal('show')
+                    $('#ID').val();
+                    $('#RoleName').val();
+                    $('#ParentNode option[value=""]').prop("selected", 'selected');
+                    $('#Description').val();
+                },
+                Updata:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if(rows.length == 1){
+                        if(rows){
+                            $("#myModal").modal('show')
+                            $('#ID').val(rows[0].ID);
+                            $('#RoleName').val(rows[0].RoleName);
+                            $('#ParentNode option:contains('+rows[0].ParentNode+')').prop("selected", 'selected');
+                            $('#Description').val(rows[0].Description);
+                        }
+                    } else {
+                        bootbox.alert('请单选一条数据进行编辑！');
+                    }
+                },
+                Save:function(){
+                    var idVal = $('#ID').val();
+                    var urlStr = ''
+                    if($('#RoleName').val() == "") {
+                        bootbox.alert('角色名称不能为空！');
+                        return false;
+                    }else if($('#ParentNode').find("option:selected").val() == "") {
+                        bootbox.alert('父节点不能为空！');
+                        return false;
+                    }
+                    if (idVal.length >= 1){
+                        urlStr = '/allroles/Update'
+                    }
+                    else {
+                        urlStr = '/allroles/Create'
+                    }
+                    $.ajax({
+                        url:urlStr,
+                        type:"post",
+                        data:{
+                            ID:$('#ID').val(),
+                            RoleName:$('#RoleName').val(),
+                            ParentNode:$('#ParentNode').find("option:selected").val(),
+                            Description:$('#Description').val()
+                        },
+                        success:function(data){
+                            if(data == "OK"){
+                                $("#myModal").modal('hide')
+                                var dialog = bootbox.dialog({
+                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                    closeButton: false
+                                });
+                                dialog.init(function(){
+                                    setTimeout(function(){
+                                        dialog.modal('hide');
+                                    }, 2000);
+                                });
+                                $('#tab').bootstrapTable('refresh');
+                            } else {
+                                bootbox.alert(data)
+                            }
+                        },
+                        error: function(data){
+                           console.log(data.responseText)
+                           bootbox.alert('请求失败')
+                        },
+                    })
+                },
+                Delete:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if (rows.length > 0) {
+                        var jsonarray=[];
+                        bootbox.confirm({
+                            message: "您确认要删除所选的记录吗？",
+                            buttons: {
+                                confirm: {
+                                    label: '删除',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '返回',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if(result){
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                        jsonarray.push(obj);
+                                    }
+                                    var a = JSON.stringify(jsonarray);
+                                    $.ajax({
+                                        url: '/allroles/Delete',
+                                        method: 'POST',
+                                        traditional: true,
+                                        data: a,
+                                        success: function (data) {
+                                            if(data == "OK"){
+                                                var dialog = bootbox.dialog({
+                                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                                    closeButton: false
+                                                });
+                                                dialog.init(function(){
+                                                    setTimeout(function(){
+                                                        dialog.modal('hide');
+                                                    }, 2000);
+                                                });
+                                                $("#tab").bootstrapTable('refresh');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        bootbox.alert('请选择要删除的记录')
+                    }
+                },
+                reload:function(){
+                    $("#tab").bootstrapTable('refresh');
+                }
+            }
+        })
+        function createKeyIDObj(keyID){
+            return {
+                id:keyID
+            }
+        }
+    </script>
 </body>
 </html>

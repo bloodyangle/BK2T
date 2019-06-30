@@ -4,355 +4,334 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>用户管理</title>
-	<link href="../../static/css/base.css" rel="stylesheet">
-	<link href="../../static/css/easyui.css" rel="stylesheet">
-	<link href="../../static/css/basic_info.css" rel="stylesheet">
-	<link href="../../static/css/icon.css" rel="stylesheet" type="text/css">
-	<link href="../../static/css/umeditor.css" type="text/css" rel="stylesheet">
-    <link href="../../static/css/datagridpanel_customer.css" rel="stylesheet">
-    <link href="../../static/css/dialogpanel.css" type="text/css" rel="stylesheet">
-    <link href="../../static/css/datagrid_customer.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="../../static/js/Bee.js" charset="utf-8"></script>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/css/base.css" rel="stylesheet">
+    <script src="../../static/js/echarts.common.min.js"></script>
+    <script src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+    <script src="../../static/js/bootstrap-table.min.js"></script>
+    <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../static/js/bootbox.min.js"></script>
+    <script src="../../static/js/bootstrap-treeview.min.js"></script>
 </head>
 <body>
-	<div class="">
-		<div class="left-tree" style="width:15%;float:left;vertical-align: top;border: 1px solid #ccc;margin: 1%;padding: 1%;">
-            <ul class="easyui-tree" id="tree"></ul>
-		</div>
-		<div class="content" style="width:80%;float:left;vertical-align: top;">
-			<div style="margin-top: 20px;margin-bottom: 10px;border-bottom: 1px solid #ccc;padding-bottom: 10px;">
-                <span style="color:#1da02b;">用户列表</span>
+    <div class="row" style="padding: 15px 0;">
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <div id="treeview" class=""></div>
             </div>
-			<div id="userClassDialog" class="easyui-dialog" style="width:400px;height:400px;padding:10px;"
-                 data-options="closed:'true',buttons:'#userClassDialogButtons',modal:true">
-                <form id="userClassForm" method="post" class="dialog-form">
-                    <table class="kv-table">
-                        <tbody>
-                            <tr>
-                                <td class="kv-label">id</td>
-                                <td class="kv-content">
-                                    <input name="id" type="text" class="textbox-text validatebox-text textbox-prompt" autocomplete="off" placeholder="" disabled="disabled">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="kv-label">用户名</td>
-                                <td class="kv-content">
-                                    <input name="Name" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="kv-label">密码</td>
-                                <td class="kv-content">
-                                    <input name="Password" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="kv-label">工号</td>
-                                <td class="kv-content">
-                                    <input name="LoginName" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="kv-label">创建用户</td>
-                                <td class="kv-content">
-                                    <input name="Creater" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder="" disabled="disabled"  >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="kv-label">所属部门</td>
-                                <td class="kv-content">
-                                    <select name="OrganizationName" id="OrganizationName" type="text" style="width:157px;" autocomplete="off" placeholder="">
-                                        <option value="">请选择</option>
-                                        {% for department in departments %}
-                                            <option value="{{ department['OrganizationID'] }}">{{ department['OrganizationName'] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="kv-label">所属角色</td>
-                                <td class="kv-content">
-                                    <select name="RoleName" id="RoleName" type="text" style="width:157px;" autocomplete="off" placeholder="">
-                                        <option value="">请选择</option>
-                                        {% for roleName in roleNames %}
-                                            <option value="{{ roleName['RoleID'] }}">{{ roleName['RoleName'] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div id="userClassDialogButtons" >
-                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="saveAdd" onclick="UserClassToolbar.saveAdd()" >保存</a>
-                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="saveUpdata" onclick="UserClassToolbar.saveUpdata()" >保存</a>
-                        <a href="#" class="easyui-linkbutton" onclick="$('#userClassDialog').dialog('close')">关闭</a>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">用户列表</div>
+                    <div class="panel-body">
+                        <div id="myModal" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            ×
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel">
+                                            用户表单信息
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form-horizontal" action="">
+                                            <div class="form-group">
+                                                <label for="ID" class="col-sm-2 control-label">id</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="ID" placeholder="" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Name" class="col-sm-2 control-label">用户名</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="Name" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Password" class="col-sm-2 control-label">密码</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="Password" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="WorkNumber" class="col-sm-2 control-label">工号</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="WorkNumber" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="OrganizationName" class="col-sm-2 control-label">所属部门</label>
+                                                <div class="col-sm-10">
+                                                    <select id="OrganizationName" class="form-control" type="text" placeholder="">
+                                                        <option value="">请选择</option>
+                                                        {% for department in departments %}
+                                                            <option value="{{ department['OrganizationID'] }}">{{ department['OrganizationName'] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="RoleName" class="col-sm-2 control-label">所属角色</label>
+                                                <div class="col-sm-10">
+                                                    <select id="RoleName" class="form-control" type="text" placeholder="">
+                                                        <option value="">请选择</option>
+                                                        {% for roleName in roleNames %}
+                                                            <option value="{{ roleName['RoleID'] }}">{{ roleName['RoleName'] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- dialog buttons -->
+                                    <div class="modal-footer"><button type="button" class="btn btn-primary" onclick="toolbar.Save()">保存</button></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="Toolbar">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <p>
+                                        <div class="input-group">
+                                            <label class="input-group-addon">名称</label>
+                                            <input type="text" class="form-control" id="SearchVal">
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="toolbar.Search()">查询</button>
+                                        <button type="button" class="btn btn-info" onclick="toolbar.Add()">添加</button>
+                                        <button type="button" class="btn btn-warning" onclick="toolbar.Updata()">编辑</button>
+                                        <button type="button" class="btn btn-danger" onclick="toolbar.Delete()">删除</button>
+                                        <button type="button" class="btn btn-default" onclick="toolbar.reload()">刷新</button>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table-bordered" id="tab"></table>
                     </div>
-                </form>
+                </div>
             </div>
-			<table class="easyui-datagrid" id="tab" title="" style="width:100%" data-options="
-                queryParams: {
-                    id: '',
-                    Name:''
-                },
-			    rownumbers:true,
-                singleSelect:true,
-                autoRowHeight:false,
-				pagination:true,
-				pageSize:10,
-				singleSelect:false,
-                url:'/user_manage/MyUser/Select',
-                method:'get',
-                toolbar:'#toolbar'">
-				<thead>
-					<tr>
-                        <th field="ck" checkbox="true"></th>
-						<th data-options="field:'Name',width:150,align:'center'">用户名</th>
-						<th data-options="field:'Password',width:150,align:'center'">密码</th>
-						<th data-options="field:'WorkNumber',width:150,align:'center'">工号</th>
-						<th data-options="field:'Status',width:100,align:'center'">登录状态</th>
-						<th data-options="field:'Creater',width:120,align:'center'">创建用户</th>
-						<th data-options="field:'CreateTime',width:150,align:'center'">创建时间</th>
-						<th data-options="field:'LastLoginTime',width:150,align:'center'">上次登录时间</th>
-						<th data-options="field:'OrganizationName',width:150,align:'center'">所属部门</th>
-					</tr>
-				</thead>
-			</table>
-            <div id="toolbar" style="padding:0 10px;">
-                用户名:
-                <input type="text" id="NameSearchVal" class="textbox-text validatebox-text textbox-prompt" name="search" style="height:28px;" autocomplete="off"
-                placeholder="">
-                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="doSearch();">查询</a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="doAdd()">添加</a>
-	            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="doUpdata()">编辑</a>
-	            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="doDelete()">删除</a>
-	            <a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="doReload()">刷新</a>
-            </div>
-		</div>
-	</div>
- <script type="text/javascript">
-    {#    树形菜单点击事件#}
-        var code = ""
-        $("#tree").tree({
-            url:'/MyOp',
-            method: 'get',
-            animate:true,
-            loadFilter:function(data){
-                return data
-            },
-            onClick :function(node){
-                code = node.id
-                $('#tab').datagrid('load',{
-                    id: code,
-                    Name:''
-                });
-            }
-        })
-        function doSearch(){
-            $('#tab').datagrid('load',{
-                id:code,
-                Name: $('#NameSearchVal').val()
-            });
-        }
-        function doAdd() {
-            $("#saveAdd").show()
-            $("#saveUpdata").hide()
-            $("#userClassDialog").dialog('open').dialog('setTitle','添加用户');
-            $('input[name="id"]').val(); //ID
-            $('input[name="Name"]').val("");//用户名
-            $('input[name="Password"]').val("");//密码
-            $('input[name="LoginName"]').val("");//登录名
-            $('input[name="Creater"]').val($(window.parent.document).find(".pf-user-name").html());//创建用户
-            $('input[name="CreateTime"]').val(Bee.DateUtils.getCurrentTime());//创建时间
-            $('input[name="LastLoginTime"]').val("");//上次登录时间
-            $('#OrganizationName option[value=""]').prop("selected", 'selected');//所属部门
-            $('#RoleName option[value=""]').prop("selected", 'selected');//所属角色
-        }
-        function doUpdata(){
-            $("#saveAdd").hide()
-            $("#saveUpdata").show()
-            var rows = $("#tab").datagrid('getSelections');
-            if (rows.length > 1) {
-                $.messager.alert('警告操作！', '编辑记录只能选定一条数据！', 'warning');
-            }else if(rows.length == 1){
-                var row = $("#tab").datagrid('getSelected');
-                if(row){
-                    $("#userClassDialog").dialog('open').dialog('setTitle','修改信息');
-                    $('input[name="id"]').val(row.id); //id
-                    $('input[name="Name"]').val(row.Name);//用户名
-                    $('input[name="Password"]').val(row.Password);//密码
-                    $('input[name="LoginName"]').val(row.WorkNumber);//登录名
-                    $('input[name="Creater"]').val(row.Creater);//创建用户
-                    $('input[name="CreateTime"]').val(row.CreateTime);//创建时间
-                    $('input[name="LastLoginTime"]').val(row.LastLoginTime);//上次登录时间
-                    $('#OrganizationName option:contains('+row.OrganizationName+')').prop("selected", 'selected');//所属部门
-                    $('#RoleName option:contains('+row.RoleName+')').prop("selected", 'selected');//所属角色
-                }
-            } else if (rows.length == 0) {
-                $.messager.alert('警告操作！', '请至少选定一条数据进行编辑！', 'warning');
-            }
-        }
-        function createKeyIDObj(keyID){
-            return {
-                id:keyID
-            }
-        }
-        function doDelete(){
-            var rows = $("#tab").datagrid('getSelections');
-            if (rows.length > 0) {
-                var jsonarray=[];
-                $.messager.confirm('确定操作', '您正在删除所选的记录吗？', function (flag) {
-                    if (flag) {
-                        var PrimaryKey = "id";
-                        var a = "";
-                        for (var i = 0; i < rows.length; i++) {
-                            // ids.push(parseInt((rows[i].id)));
-                            var obj=createKeyIDObj(parseInt(rows[i].id));
-                            jsonarray.push(obj);
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            $.ajax({
+                url:'/MyOp',
+                type:"post",
+                success:function(data){
+                    console.log(data)
+                    $('#treeview').treeview({
+                        data:data,
+                        selectable: true,
+                        selectedBackColor: "#5485F7",// 选中时的背景色
+                        selectedColor: '#ffffff',//选中时的文本颜色
+                        onhoverColor: "#5485F7",// hover时的颜色
+                        onNodeSelected: function(event, data) {// 选中事件
+                            console.log(data)
                         }
-                        a = JSON.stringify(jsonarray);
-                        $.ajax({
-                            url: '/user_manage/user/deleteUser',
-                            method: 'POST',
-                            traditional: true,
-                            data: a,
-                            dataType: 'text',
-                            success: function (data) {
-                                $.messager.progress('close');
-                                if(data == "OK"){
-                                    $.messager.show({
-                                        title: '提示',
-                                        timeout: 1000,
-                                        msg: '删除成功',
-                                        style: {
-                                            right: '',
-                                            top: document.body.scrollTop + document.documentElement.scrollTop,
-                                            bottom: ''
+                    });
+                },
+                error: function(data){
+                   console.log(data.responseText)
+                   bootbox.alert('请求失败')
+                },
+            })
+
+            $("#tab").bootstrapTable({
+                url: '/user_manage/MyUser/Select',
+                method: 'get',
+                queryParams:function(params){
+                    return {
+                        id: '',
+                        Name:'',
+                        limit : params.limit,
+                        offset : parseInt(params.offset/params.limit)
+                    };
+                },
+	            pagination: true,
+                toolbar:"#Toolbar",
+                pageNumber:1,
+	            pageSize: 10,
+	            pageList: [10, 20, 30, 40, 50],
+                sidePagination: "server",
+                paginationLoop:false,
+                paginationPreText:'上一页',
+                paginationNextText:'下一页',
+                singleSelect:true,
+                clickToSelect:true,
+	            locale: "zh-CN",
+	            striped: true,
+                columns: [{
+                    checkbox: true
+                },{
+                    field: 'Name',
+                    title: '用户名'
+                },{
+                    field: 'Password',
+                    title: '密码'
+                },{
+                    field: 'WorkNumber',
+                    title: '工号'
+                },{
+                    field: 'OrganizationName',
+                    title: '所属部门'
+                },{
+                    field: 'RoleName',
+                    title: '所属角色'
+                }],
+                onCheck:function (row,$element) {
+
+                }
+            })
+            toolbar = {
+                Search:function(){
+                    $('#tab').bootstrapTable('load',{
+                        id: code,
+                        Name: $("#SearchVal").val()
+                    });
+                },
+                Add:function(){
+                    $("#myModal").modal('show')
+                    $('#ID').val();
+                    $('#Name').val();
+                    $('#Password').val();
+                    $('#WorkNumber').val();
+                    $('#OrganizationName option[value=""]').prop("selected", 'selected');
+                    $('#RoleName option[value=""]').prop("selected", 'selected');
+                },
+                Updata:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if(rows.length == 1){
+                        if(rows){
+                            $("#myModal").modal('show')
+                            $('#ID').val(rows[0].ID);
+                            $('#Name').val(rows[0].OrganizationCode);
+                            $('#Password').val(rows[0].OrganizationName);
+                            $('#WorkNumber').val(rows[0].Description);
+                            $('#OrganizationName option:contains('+rows[0].OrganizationName+')').prop("selected", 'selected');
+                            $('#RoleName option:contains('+rows[0].RoleName+')').prop("selected", 'selected');
+                        }
+                    } else {
+                        bootbox.alert('请单选一条数据进行编辑！');
+                    }
+                },
+                Save:function(){
+                    var idVal = $('#ID').val();
+                    var urlStr = ''
+                    if($('#Name').val() == "") {
+                        bootbox.alert('用户名不能为空！');
+                        return false;
+                    }else if($('#Password').val() == "") {
+                        bootbox.alert('密码不能为空！');
+                        return false;
+                    }else if($('#WorkNumber').val() == "") {
+                        bootbox.alert('工号不能为空！');
+                        return false;
+                    }else if($('#OrganizationName').find("option:selected").val() == "") {
+                        bootbox.alert('所属部门不能为空！');
+                        return false;
+                    }else if($('#RoleName').find("option:selected").val() == "") {
+                        bootbox.alert('所属角色不能为空！');
+                        return false;
+                    }
+                    if (idVal.length >= 1){
+                        urlStr = 'user_manage/user/updateUser'
+                    }
+                    else {
+                        urlStr = '/user_manage/user/addUser'
+                    }
+                    $.ajax({
+                        url:urlStr,
+                        type:"post",
+                        data:{
+                            ID:$('#ID').val(),
+                            Name:$('#Name').val(),
+                            Password:$('#Password').val(),
+                            WorkNumber:$('#WorkNumber').val(),
+                            OrganizationName:$('#OrganizationName').find("option:selected").val(),
+                            RoleName:$('#RoleName').find("option:selected").val()
+                        },
+                        success:function(data){
+                            if(data == "OK"){
+                                $("#myModal").modal('hide')
+                                var dialog = bootbox.dialog({
+                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                    closeButton: false
+                                });
+                                dialog.init(function(){
+                                    setTimeout(function(){
+                                        dialog.modal('hide');
+                                    }, 2000);
+                                });
+                                $('#tab').bootstrapTable('refresh');
+                            } else {
+                                bootbox.alert(data)
+                            }
+                        },
+                        error: function(data){
+                           console.log(data.responseText)
+                           bootbox.alert('请求失败')
+                        },
+                    })
+                },
+                Delete:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if (rows.length > 0) {
+                        var jsonarray=[];
+                        bootbox.confirm({
+                            message: "您确认要删除所选的记录吗？",
+                            buttons: {
+                                confirm: {
+                                    label: '删除',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '返回',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if(result){
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                        jsonarray.push(obj);
+                                    }
+                                    var a = JSON.stringify(jsonarray);
+                                    $.ajax({
+                                        url: '/user_manage/user/deleteUser',
+                                        method: 'POST',
+                                        traditional: true,
+                                        data: a,
+                                        success: function (data) {
+                                            if(data == "OK"){
+                                                var dialog = bootbox.dialog({
+                                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                                    closeButton: false
+                                                });
+                                                dialog.init(function(){
+                                                    setTimeout(function(){
+                                                        dialog.modal('hide');
+                                                    }, 2000);
+                                                });
+                                                $("#tab").bootstrapTable('refresh');
+                                            }
                                         }
                                     });
-                                    $("#tab").datagrid('reload');
                                 }
                             }
                         });
+                    } else {
+                        bootbox.alert('请选择要删除的记录')
                     }
-                });
-            } else {
-                $.messager.alert('提示', '请选择要删除的记录！', 'info');
+                },
+                reload:function(){
+                    $("#tab").bootstrapTable('refresh');
+                }
             }
-        }
-        function doReload(){
-            $('#tab').datagrid('reload');
-        }
-        UserClassToolbar = {
-            saveAdd : function () {
-                 if(Bee.StringUtils.isEmpty($('input[name="Name"]').val())) {
-                     $.messager.alert('提示', '用户名不能为空！', 'info');
-                     return false;
-                 }else if(Bee.StringUtils.isEmpty($('input[name="Password"]').val())){
-                     $.messager.alert('提示', '密码不能为空！', 'info');
-                     return false;
-                 }else if(Bee.StringUtils.isEmpty($('input[name="LoginName"]').val())){
-                     $.messager.alert('提示', '工号不能为空！', 'info');
-                     return false;
-                 }else if($('#OrganizationName').find("option:selected").val() == ""){
-                     $.messager.alert('提示', '所属部门不能为空！', 'info');
-                     return false;
-                 }else if($('#RoleName').find("option:selected").val() == ""){
-                     $.messager.alert('提示', '所属角色不能为空！', 'info');
-                     return false;
-                 }
-                 $.ajax({
-                    url: "/user_manage/user/addUser",
-                    method: 'POST',
-                    traditional: true,
-                    data: {
-                        Name :$('input[name="Name"]').val(),
-                        Password :$('input[name="Password"]').val(),
-                        WorkNumber :$('input[name="LoginName"]').val(),
-                        Creater : $('input[name="Creater"]').val(),
-                        CreateTime : $('input[name="CreateTime"]').val(),
-                        OrganizationName :$('#OrganizationName').find("option:selected").html(),
-                        RoleName :$('#RoleName').find("option:selected").html()
-                    },
-                    cache: false,
-                    success: function (data,response,status) {
-                        if(data == "OK"){
-                            $.messager.show({
-                                title: '提示',
-                                timeout: 1000,
-                                msg: '添加成功',
-                                style: {
-                                    right: '',
-                                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                                    bottom: ''
-                                }
-                            });
-                            $('#userClassDialog').dialog('close');
-                            $("#tab").datagrid('reload');
-                        }else{
-                            $.messager.alert('提示', data, 'info');
-                        }
-                    },
-                     error: function(data){
-                           alert("异常，请刷新后重试...");
-                     },
-                 })
-            },
-            saveUpdata :function () {
-                if(Bee.StringUtils.isEmpty($('input[name="Name"]').val())) {
-                     $.messager.alert('提示', '用户名不能为空！', 'info');
-                     return false;
-                 }else if(Bee.StringUtils.isEmpty($('input[name="Password"]').val())){
-                     $.messager.alert('提示', '密码不能为空！', 'info');
-                     return false;
-                 }else if(Bee.StringUtils.isEmpty($('input[name="LoginName"]').val())){
-                     $.messager.alert('提示', '工号不能为空！', 'info');
-                     return false;
-                 }else if($('#OrganizationName').find("option:selected").val() == ""){
-                     $.messager.alert('提示', '所属部门不能为空！', 'info');
-                     return false;
-                 }else if($('#RoleName').find("option:selected").val() == ""){
-                     $.messager.alert('提示', '所属角色不能为空！', 'info');
-                     return false;
-                 }
-                 $.ajax({
-                    url: "/user_manage/user/updateUser",
-                    method: 'POST',
-                    traditional: true,
-                    data: {
-                        id: $('input[name="id"]').val(),
-                        Name :$('input[name="Name"]').val(),
-                        Password :$('input[name="Password"]').val(),
-                        WorkNumber :$('input[name="LoginName"]').val(),
-                        Creater : $('input[name="Creater"]').val(),
-                        OrganizationName :$('#OrganizationName').find("option:selected").html(),
-                        RoleName :$('#RoleName').find("option:selected").html()
-                    },
-                    cache: false,
-                    success: function (data,response,status) {
-                        if(data == "OK") {
-                            $.messager.show({
-                                title: '提示',
-                                timeout: 1000,
-                                msg: '修改成功',
-                                style: {
-                                    right: '',
-                                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                                    bottom: ''
-                                }
-                            });
-                            $('#userClassDialog').dialog('close');
-                            $("#tab").datagrid('reload');
-                        }else{
-                            $.messager.alert('提示', data, 'info');
-                        }
-                    },
-                     error: function(data){
-                           alert("异常，请刷新后重试...");
-                     },
-                 })
+        })
+        function createKeyIDObj(keyID){
+            return {
+                id:keyID
             }
         }
     </script>
