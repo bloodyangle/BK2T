@@ -1,78 +1,79 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
-    <meta charset="utf-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>过程连续数据</title>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../static/css/base.css" rel="stylesheet">
-    <link href="../../static/css/easyui.css" rel="stylesheet">
-	<link href="../../static/css/icon.css" rel="stylesheet" type="text/css">
-    <link href="../../static/css/basic_info.css" rel="stylesheet">
-	<script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
+    <script src="../../static/js/echarts.common.min.js"></script>
+    <script src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+    <script src="../../static/js/bootstrap-table.min.js"></script>
+    <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../static/js/bootbox.min.js"></script>
     <script type="text/javascript">
         $(function(){
-            $("#beginTime").datebox("setValue", myformatter(new Date()))
-            $("#endTime").datebox("setValue", myformatter(new Date()))
-            $('#searchBatchBtn').on('click', function(){
-                $.ajax({
-                    url: '/QualityControl/getBatch',
-                    type: 'post',
-                    data: {
-                        beginTime:$('#beginTime').datebox('getValue'),
-                        endTime:$('#endTime').datebox('getValue')
-                    },
-                    success: function (data) {
-                        if (data != "NO") {
-                            $.messager.show({
-                                title: '提示',
-                                timeout: 500,
-                                msg: '查询成功',
-                                style: {
-                                    right: '',
-                                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                                    bottom: ''
-                                }
-                            });
-                            data = JSON.parse(data)
-                            $('#rwlb').combobox({
-                                data:data,
-                                valueField:'id',
-                                textField:'text'
-                            });
-                        }
-                    }
-                })
-            });
-            $('#LeftTree').tree({
-                url:'/ProcessContinuousData/DataTree',
-                method: 'get',
-                animate:true,
-                loadFilter:function(data){
-                    return data
-                },
-                onBeforeExpand:function(row){
-                    var url = '/ProcessContinuousData/DataTree/LoadMore?parentNode=' + row.id
-                    $("#LeftTree").tree("options").url = url;
-                    return true;
-                },
-                onClick: function (node) {
-                    var comboxtext = $('#rwlb').combobox('getText');
-                    closeAll()
-                    var Note = node.text.replace("#","*")
-                    if($('#LeftTree').tree('isLeaf',node.target)){
-                        if(comboxtext != ""){
-                            addTab(comboxtext + "  " + node.text + "  数据", "/ProcessContinuousData/DataPart?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);
-                            addTab(comboxtext + "  " + node.text + "  折线图", "/ProcessContinuousData/Rainbow?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);
-                            addTab(comboxtext + "  " + node.text + "  CPK", "/ProcessContinuousData/CPK?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);
-                            addTab(comboxtext + "  " + node.text + "  正态分布图", "/ProcessContinuousData/Histogram?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);
-                        }else{
-                            $.messager.alert('提示', '请选择批次号！', 'info');
-                        }
-                    }
-                }
-            })
+            {#$("#beginTime").datebox("setValue", myformatter(new Date()))#}
+            {#$("#endTime").datebox("setValue", myformatter(new Date()))#}
+            {#$('#searchBatchBtn').on('click', function(){#}
+            {#    $.ajax({#}
+            {#        url: '/QualityControl/getBatch',#}
+            {#        type: 'post',#}
+            {#        data: {#}
+            {#            beginTime:$('#beginTime').datebox('getValue'),#}
+            {#            endTime:$('#endTime').datebox('getValue')#}
+            {#        },#}
+            {#        success: function (data) {#}
+            {#            if (data != "NO") {#}
+            {#                $.messager.show({#}
+            {#                    title: '提示',#}
+            {#                    timeout: 500,#}
+            {#                    msg: '查询成功',#}
+            {#                    style: {#}
+            {#                        right: '',#}
+            {#                        top: document.body.scrollTop + document.documentElement.scrollTop,#}
+            {#                        bottom: ''#}
+            {#                    }#}
+            {#                });#}
+            {#                data = JSON.parse(data)#}
+            {#                $('#rwlb').combobox({#}
+            {#                    data:data,#}
+            {#                    valueField:'id',#}
+            {#                    textField:'text'#}
+            {#                });#}
+            {#            }#}
+            {#        }#}
+            {#    })#}
+            {# });#}
+            {#$('#LeftTree').tree({#}
+            {#    url:'/ProcessContinuousData/DataTree',#}
+            {#    method: 'get',#}
+            {#    animate:true,#}
+            {#    loadFilter:function(data){#}
+            {#        return data#}
+            {#    },#}
+            {#    onBeforeExpand:function(row){#}
+            {#        var url = '/ProcessContinuousData/DataTree/LoadMore?parentNode=' + row.id#}
+            {#        $("#LeftTree").tree("options").url = url;#}
+            {#        return true;#}
+            {#    },#}
+            {#    onClick: function (node) {#}
+            {#        var comboxtext = $('#rwlb').combobox('getText');#}
+            {#        closeAll()#}
+            {#        var Note = node.text.replace("#","*")#}
+            {#        if($('#LeftTree').tree('isLeaf',node.target)){#}
+            {#            if(comboxtext != ""){#}
+            {#                addTab(comboxtext + "  " + node.text + "  数据", "/ProcessContinuousData/DataPart?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);#}
+            {#                addTab(comboxtext + "  " + node.text + "  折线图", "/ProcessContinuousData/Rainbow?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);#}
+            {#                addTab(comboxtext + "  " + node.text + "  CPK", "/ProcessContinuousData/CPK?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);#}
+            {#                addTab(comboxtext + "  " + node.text + "  正态分布图", "/ProcessContinuousData/Histogram?batch=" + comboxtext + "&tag=" + node.Tag + "&Note=" + Note + "&EQCode=" + node.EQCode);#}
+            {#            }else{#}
+            {#                $.messager.alert('提示', '请选择批次号！', 'info');#}
+            {#            }#}
+            {#        }#}
+            {#    }#}
+            {# })#}
         });
         //按钮点击后添加选项卡
         function addTab(title,url){
@@ -103,7 +104,7 @@
             return y+'-'+(m<10?('0'+m):m)+'-'+( d<10?('0'+d):d);
         }
     </script>
-</head> 
+</head>
 <body>
 	<div class="">
         <div id="tb" style="margin: 20px 20px 0;">
@@ -122,6 +123,6 @@
             <div id="tt" class="easyui-tabs" style="width:100%;height:580px;margin-top:10px; scrolling:'false'"></div>
         </div>
 	</div>
-</body> 
+</body>
 </html>
 
