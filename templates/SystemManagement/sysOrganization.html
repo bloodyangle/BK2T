@@ -13,86 +13,84 @@
     <script src="../../static/js/bootbox.min.js"></script>
 </head>
 <body>
-    <div class="row" style="padding: 15px 0;">
-        <div class="col-md-12">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">组织结构列表</div>
-                    <div class="panel-body">
-                        <div id="myModal" class="modal fade">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                            ×
-                                        </button>
-                                        <h4 class="modal-title" id="myModalLabel">
-                                            组织机构表单信息
-                                        </h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form class="form-horizontal" action="">
-                                            <div class="form-group">
-                                                <label for="ID" class="col-sm-2 control-label">id</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="ID" placeholder="" disabled="disabled">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="OrganizationCode" class="col-sm-2 control-label">组织机构编码</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="OrganizationCode" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="OrganizationName" class="col-sm-2 control-label">组织机构名称</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="OrganizationName" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="ParentNode" class="col-sm-2 control-label">父节点</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="ParentNode" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="Description" class="col-sm-2 control-label">说明</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="Description" placeholder="">
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <!-- dialog buttons -->
-                                    <div class="modal-footer"><button type="button" class="btn btn-primary" onclick="toolbar.Save()">保存</button></div>
+    <div class="col-md-12" style="padding: 15px 0;">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">组织结构列表</div>
+                <div class="panel-body">
+                    <div id="myModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                        ×
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        组织机构表单信息
+                                    </h4>
                                 </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" action="">
+                                        <div class="form-group">
+                                            <label for="ID" class="col-sm-2 control-label">id</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="ID" placeholder="" disabled="disabled">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="OrganizationCode" class="col-sm-2 control-label">组织机构编码</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="OrganizationCode" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="OrganizationName" class="col-sm-2 control-label">组织机构名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="OrganizationName" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ParentNode" class="col-sm-2 control-label">父节点</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="ParentNode" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Description" class="col-sm-2 control-label">说明</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="Description" placeholder="">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- dialog buttons -->
+                                <div class="modal-footer"><button type="button" class="btn btn-primary" onclick="toolbar.Save()">保存</button></div>
                             </div>
                         </div>
-                        <div id="Toolbar">
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <p>
-                                        <div class="input-group">
-                                            <label class="input-group-addon">名称</label>
-                                            <input type="text" class="form-control" id="SearchVal">
-                                        </div>
-                                        <button type="button" class="btn btn-primary" onclick="toolbar.Search()">查询</button>
-                                        <button type="button" class="btn btn-info" onclick="toolbar.Add()">添加</button>
-                                        <button type="button" class="btn btn-warning" onclick="toolbar.Updata()">编辑</button>
-                                        <button type="button" class="btn btn-danger" onclick="toolbar.Delete()">删除</button>
-                                        <button type="button" class="btn btn-default" onclick="toolbar.reload()">刷新</button>
-                                    </p>
-                                </div>
-                            </form>
-                        </div>
-                        <table class="table-bordered" id="tab"></table>
                     </div>
+                    <div id="Toolbar">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <p>
+                                    <div class="input-group">
+                                        <label class="input-group-addon">名称</label>
+                                        <input type="text" class="form-control" id="SearchVal">
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="toolbar.Search()">查询</button>
+                                    <button type="button" class="btn btn-info" onclick="toolbar.Add()">添加</button>
+                                    <button type="button" class="btn btn-warning" onclick="toolbar.Updata()">编辑</button>
+                                    <button type="button" class="btn btn-danger" onclick="toolbar.Delete()">删除</button>
+                                    <button type="button" class="btn btn-default" onclick="toolbar.reload()">刷新</button>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="table-bordered" id="tab"></table>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div id="example" style="width: 100%;height: 800px;"></div>
-            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="example" style="width: 100%;height: 800px;"></div>
         </div>
     </div>
     <script type="text/javascript">

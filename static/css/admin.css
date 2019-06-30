@@ -112,6 +112,7 @@ header{
     padding: 15px;
 }
 .indentMenu{
+    font-size: 16px;
     cursor: pointer;
 }
 .sidebarNav{
