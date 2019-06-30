@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from flask_login import login_required
-
 from dbset.account import auth_lib
 from handlers.account import account_auth
 from handlers.SystemManagement import user_management, PermissionAssignment,Role_management
@@ -10,9 +9,11 @@ from handlers.SystemManagement.organization_model import organiza
 from handlers.EquipmentModel.euipment_model import equip
 from handlers.ProductionManagement.producebatch_model import produce
 from handlers.SystemManagement.systemlog import systemlog
-
+from flask_bootstrap import Bootstrap
+from handlers.batchmanager.batch_manager import batch_manager
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
 account_auth.login_manager.init_app(app)
 
@@ -37,12 +38,15 @@ app.register_blueprint(equip)
 app.register_blueprint(produce)
 # 过程连续数据
 # app.register_blueprint(ProcessContinuousData.continuous_data)
-# 过程连续数据
+# 日志模块
 app.register_blueprint(systemlog)
+# 批次管理
+app.register_blueprint(batch_manager)
+
 @app.route('/')
 @login_required
 def hello_world():
-    return render_template('./main/main.html')
+    return render_template("./main/main.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
