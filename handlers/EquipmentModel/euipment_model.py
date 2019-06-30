@@ -74,12 +74,3 @@ def equipmentDelete():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         return delete(Equipment, data)
-
-# 设备建模删除
-@equip.route('/aa', methods=['POST', 'GET'])
-def aa():
-    if request.method == 'GET':
-        data = request.values  # 返回请求中的参数和form
-        re = FuzzyQuery(Equipment, data)
-        print(re)
-        return re

@@ -113,8 +113,6 @@ class Role(Base):
     # 查询权限
     menus = relationship("Menu", secondary=Role_Menu)
 
-
-
 # 用户表
 class User(Base):
     __tablename__ = 'user'
@@ -255,7 +253,6 @@ class Equipment(Base):
     # 备注说明:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
-
 # 电子批记录
 class ElectronicBatch(Base):
     __tablename__ = 'ElectronicBatch'
@@ -366,6 +363,7 @@ class AuditTrace(Base):
 
     # 其他:
     Other = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 class QualityControlTree(Base):
 	__tablename__ = "QualityControlTree"
 
@@ -389,6 +387,38 @@ class QualityControlTree(Base):
 
 	# 父节点
 	ParentNode = Column(Integer, primary_key = False, autoincrement = False, nullable = True)
+
+# 批次维护表
+class BatchIDPUID(Base):
+    __tablename__ = "BatchIDPUID"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批次号
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名
+    BrandName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名ID
+    BrandID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段
+    PUIDName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段ID
+    PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 开始时间
+    StartDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 结束时间
+    EndDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 修改时间
+    UpdateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)

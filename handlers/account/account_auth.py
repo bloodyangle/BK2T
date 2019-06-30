@@ -10,24 +10,19 @@ from flask_login import login_required, logout_user, login_user,current_user,Log
 from sqlalchemy.exc import InvalidRequestError
 from dbset.database.db_operate import db_session
 
-import sys
-import os
-if __name__ == '__main__':
-    sys.path.append(os.path.dirname(sys.path[0]))
-
 #flask_login的初始化
 login_manager = LoginManager()
 login_manager.db_session_protection = 'strong'
 login_manager.login_view = 'login_auth.login'
 
-login_auth = Blueprint('login_auth', __name__, template_folder='templates', url_prefix='/account')
+login_auth = Blueprint('login_auth', __name__, template_folder='templates')
 
 '''登录'''
 @login_manager.user_loader
 def load_user(user_id):
     return db_session.query(User).filter_by(id=int(user_id)).first()
 
-@login_auth.route('/login', methods=['GET', 'POST'])
+@login_auth.route('/account/login', methods=['GET', 'POST'])
 def login():
     try:
         if request.method == 'GET':
@@ -64,7 +59,7 @@ def login():
 
 # 退出登录
 # 使用login_required装饰路由函数,未登录的请求将会跳转到上面login_manger.login_view设置的登录页面路由
-@login_auth.route('/logout')
+@login_auth.route('/account/logout')
 @login_required
 def logout():
     logout_user()
