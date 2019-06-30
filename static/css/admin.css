@@ -1,0 +1,311 @@
+*{padding:0;margin:0;}
+div,dl,dt,dd,form,h1,h2,h3,h4,h5,h6,img,ol,ul,li,table,th,td,p,span,a{border:0;}
+img,input{border:none;vertical-align:middle;}
+body{
+    width: 100%;
+	height: 100%;
+    background-color: #ecf0f5;
+    font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    line-height: 1.42857143;
+    font-weight: normal;
+    font-variant: normal;
+    color: #8f9ea6;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased !important;
+}
+html{
+    width: 100%;
+	height: 100%;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+ul,ol{list-style-type:none;}
+button{border:none;cursor:pointer;font-size:12px;background-color:transparent;}
+a{text-decoration:none;color:#333;}
+
+.wrapper{
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+header{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background: #1c87b3;
+    box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.5);
+    z-index: 101;
+}
+.navLogo{
+    float: left;
+    margin: 0 15px;
+}
+.navLogo img{
+    height: 100%;
+}
+.navUser{
+    position: relative;
+    height: 50px;
+    line-height: 50px;
+    float: right;
+    margin: 0 15px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+.navUser:hover{
+    background: #176f93;
+}
+.navUser i{
+    color: #ffffff;
+}
+.navUserName{
+    display: inline-block;
+    color: #ffffff;
+    font-size: 16px;
+}
+.navUserPanel{
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50px;
+    background: #fff;
+    z-index: 101;
+    border: 1px solid #e1e1e1;
+    box-shadow: 1px 1px 2px #ddd;
+}
+.navUserPanel ul li {
+    line-height: 20px;
+}
+
+.contentSider{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    padding-top: 50px;
+    background-color: #ffffff;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    border-right: 1px solid #e7ebf1;
+    overflow: hidden;
+    z-index: 100;
+}
+.sidebar{
+    height: 100%;
+    padding-bottom: 10px;
+    overflow: auto;
+    color: #000;
+}
+.menuTitle{
+    background: #ddd;
+    padding: 15px;
+}
+.sidebarNav li{
+    position: relative;
+}
+.sidebarNav li a{
+    padding: 15px;
+    display: block;
+    line-height: 16px;
+    font-size: 15px;
+    border-left: 3px solid transparent;
+    color: #333;
+    text-decoration: none;
+    background: #eee;
+}
+.sidebarNav li a .pull-left{
+    margin-right: 10px;
+    transform:rotate(0);
+    transtion:all 3s linear;
+}
+.treeMenu{
+    display: none;
+}
+.sidebarNav .treeMenu li a{
+    background: #ffffff;
+    font-size: 13px;
+    border: none;
+}
+.content{
+    position: absolute;
+    top: 0;
+    right:0;
+    left: 220px;
+    padding-top: 50px;
+    height: 100%;
+    overflow: hidden;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+/* 选项卡样式 */
+.nth-tabs {
+	border: 1px solid #E7E7E7!important;
+}
+
+.nth-tabs .page-tabs {
+	width: 100%;
+	height: 42px;
+	background: #fafafa;
+	line-height: 40px;
+	position: relative;
+}
+
+.nth-tabs .content-tabs {
+	width: 100%;
+	position: relative;
+	height: 42px;
+	background: #fafafa;
+	line-height: 40px;
+	overflow: hidden;
+}
+
+.nth-tabs .content-tabs-container {
+	width: 100000px;
+	margin-left: 40px;
+	overflow: hidden;
+	height: 42px;
+	transition: margin-left 1s;
+	-moz-transition: margin-left 1s;
+ /* Firefox 4 */
+	-webkit-transition: margin-left 1s;
+ /* Safari and Chrome */
+	-o-transition: margin-left 1s;
+ /* Opera */
+}
+/*选项卡操作相关*/
+.nth-tabs .roll-nav {
+	position: absolute;
+	width: 40px;
+	height: 42px;
+	text-align: center;
+	color: #999;
+	background-color: #F8F8F8;
+	z-index: 2;
+	top: 0;
+}
+
+.nth-tabs a.roll-nav:hover {
+	color: #797979 !important;
+}
+
+.nth-tabs a.roll-nav:active,.nth-tabs a.roll-nav:visited {
+	color: #95A0AA;
+}
+
+.nth-tabs .roll-nav-left {
+	left: 0;
+	border-right: 1px solid #E7E7E7;
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.nth-tabs .roll-nav-right {
+	right: 40px;
+	border-left: 1px solid #E7E7E7;
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.nth-tabs .tab-close {
+	margin-right: -5px;
+	margin-left: 3px;
+	width: 18px;
+	height: 18px;
+	text-align: center;
+	line-height: 18px;
+	color: #95A0AA;
+}
+
+.nth-tabs .tab-close:hover {
+	background-color: #838E98;
+	border-radius: 18px;
+	color: #fff;
+	cursor: pointer;
+}
+/*tab list*/
+.nth-tabs .right-nav-list {
+	right: 0;
+	border-left: 1px solid #E7E7E7;
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.nth-tabs .right-nav-list a {
+	color: #999;
+}
+
+.nth-tabs .right-nav-list a:hover {
+	color: #797979;
+	text-decoration: none;
+	;
+}
+
+.tab-list-scrollbar {
+	max-height: 250px;
+	max-width: 180px;
+}
+
+.dropdown-menu ul {
+	list-style: none;
+	margin: 0px;
+	text-align: left;
+	padding: 0px;
+}
+
+.dropdown-menu ul li {
+	line-height: 30px;
+	padding: 0px 20px;
+	white-space: nowrap;
+}
+
+.dropdown-menu ul li:hover {
+	background-color: #ececec;
+	cursor: pointer;
+}
+
+.scrollbar-outer {
+	overflow: hidden;
+}
+/*重写tab*/
+.nav-tabs {
+	background-color: #F8F8F8;
+	border-bottom: 1px solid #E7E7E7!important;
+}
+
+.nav-tabs a {
+	color: #76838f;
+	border-radius: 0;
+}
+
+.nav-tabs>li>a {
+	border-radius: 0;
+	margin-right: 0px;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	-webkit-transition-property: background-color,border-bottom;
+	-webkit-transition-duration: 0.2s;
+	-webkit-transition-timing-function: ease;
+	-moz-transition-property: background-color,border-bottom;
+	-moz-transition-duration: 0.2s;
+	-moz-transition-timing-function: ease;
+	-o-transition-property: background-color,border-bottom;
+	-o-transition-duration: 0.2s;
+	-o-transition-timing-function: ease;
+}
+
+.nav-tabs>li:first-child.active>a {
+	border-left: 1px solid #fff;
+}
+
+.nav>li>a:focus, .nav>li>a:hover {
+	background-color: #EDEDED;
+	border-top: 1px solid #EDEDED;
+}
