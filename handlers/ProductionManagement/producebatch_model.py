@@ -13,10 +13,7 @@ from dbset.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import ElectronicBatch
 from collections import Counter
 from dbset.log.BK2TLogger import logger,insertSyslog
-
-engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
-Session = sessionmaker(bind=engine)
-db_session = Session()
+from dbset.database.db_operate import db_session
 
 produce = Blueprint('produce', __name__, template_folder='templates')
 

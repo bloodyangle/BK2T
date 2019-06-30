@@ -14,10 +14,7 @@ from models.SystemManagement.system import Organization
 from collections import Counter
 from dbset.log.BK2TLogger import logger,insertSyslog
 from tools.common import insert,delete,update
-
-engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
-Session = sessionmaker(bind=engine)
-db_session = Session()
+from dbset.database.db_operate import db_session
 
 organiza = Blueprint('organiza', __name__, template_folder='templates')
 

@@ -3,7 +3,6 @@ from flask import Blueprint, render_template
 from sqlalchemy.orm import Session, relationship, sessionmaker
 from sqlalchemy import create_engine
 from flask import render_template, request, make_response
-
 from dbset.database.db_operate import ExactQuery, FuzzyQuery
 from dbset.main.BSFramwork import AlchemyEncoder
 import json
@@ -19,10 +18,7 @@ from dbset.database import db_operate
 from models.SystemManagement.system import Equipment
 from dbset.log.BK2TLogger import logger,insertSyslog
 from tools.common import insert,delete,update
-
-engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
-Session = sessionmaker(bind=engine)
-db_session = Session()
+from dbset.database.db_operate import db_session
 
  # 创建蓝图 第一个参数为蓝图的名字
 equip = Blueprint('equip', __name__, template_folder='templates')
