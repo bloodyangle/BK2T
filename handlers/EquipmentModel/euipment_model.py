@@ -3,7 +3,6 @@ from flask import Blueprint, render_template
 from sqlalchemy.orm import Session, relationship, sessionmaker
 from sqlalchemy import create_engine
 from flask import render_template, request, make_response
-from dbset.database.db_operate import ExactQuery, FuzzyQuery
 from dbset.main.BSFramwork import AlchemyEncoder
 import json
 import socket
