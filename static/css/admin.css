@@ -61,7 +61,7 @@ header{
 .navUser:hover{
     background: #176f93;
 }
-.navUser i{
+.navUser .glyphicon-menu-down{
     color: #ffffff;
 }
 .navUserName{

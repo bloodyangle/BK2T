@@ -14,19 +14,9 @@
     <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
     <script src="../../static/js/bootbox.min.js"></script>
     <script src="../../static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../../static/js/base.js"></script>
     <script type="text/javascript">
         $(function(){
-            //时间选择控件
-            $.fn.datetimepicker.dates['zh'] = {
-                days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],
-                daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],
-                daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],
-                months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],
-                monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
-                meridiem:    ["上午", "下午"],
-                //suffix:      ["st", "nd", "rd", "th"],
-                today:       "今天"
-            };
             $('#startTime,#endTime').datetimepicker({
                 format: 'yyyy-mm-dd', // 标签上可用data-date-format="hh:ii" data-link-format="hh:ii"
                 autoclose: true, //选择完成自动关闭下拉框
@@ -96,7 +86,7 @@
                     <div class="form-group">
                         <p>
                             <div class="input-group">
-                                <label>起止日期</label>
+                                <label class="input-group-addon">起止日期</label>
                                 <input type="text" class="datetimepicker" id="startTime" readonly>
                                 <input type="text" class="datetimepicker" id="endTime" readonly>
                             </div>
