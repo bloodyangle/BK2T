@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session, relationship, sessionmaker
 from sqlalchemy import create_engine
 from flask import render_template, request, make_response
 
-from libs.database.db_operate import ExactQuery, FuzzyQuery
-from libs.main.BSFramwork import AlchemyEncoder
+from dbset.database.db_operate import ExactQuery, FuzzyQuery
+from dbset.main.BSFramwork import AlchemyEncoder
 import json
 import socket
 import datetime
@@ -14,10 +14,10 @@ import re
 from sqlalchemy import create_engine, Column, ForeignKey, Table, Integer, String, and_, or_, desc,extract
 from io import StringIO
 import calendar
-from libs.main.BSFramwork import AlchemyEncoder
-from libs.database import db_operate
+from dbset.main.BSFramwork import AlchemyEncoder
+from dbset.database import db_operate
 from models.SystemManagement.system import Equipment
-from libs.log.BK2TLogger import logger,insertSyslog
+from dbset.log.BK2TLogger import logger,insertSyslog
 from tools.common import insert,delete,update
 
 engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
@@ -25,7 +25,7 @@ Session = sessionmaker(bind=engine)
 db_session = Session()
 
  # 创建蓝图 第一个参数为蓝图的名字
-equip = Blueprint('equip', __name__)
+equip = Blueprint('equip', __name__, template_folder='templates')
 
 # 设备建模
 @equip.route('/Equipment')

@@ -7,19 +7,19 @@ import socket
 import datetime
 from flask_login import login_required, logout_user, login_user,current_user,LoginManager
 import re
-from libs.database import db_operate
-from libs.log.BK2TLogger import insertSyslog, MESLogger
-from libs.main.BSFramwork import AlchemyEncoder
+from dbset.database import db_operate
+from dbset.log.BK2TLogger import insertSyslog, MESLogger
+from dbset.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import Organization
 from collections import Counter
-from libs.log.BK2TLogger import logger,insertSyslog
+from dbset.log.BK2TLogger import logger,insertSyslog
 from tools.common import insert,delete,update
 
 engine = create_engine(db_operate.GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 
-organiza = Blueprint('organiza', __name__)
+organiza = Blueprint('organiza', __name__, template_folder='templates')
 
 # 组织机构建模
 @organiza.route('/organization')
