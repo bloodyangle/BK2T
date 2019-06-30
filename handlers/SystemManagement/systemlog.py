@@ -21,7 +21,7 @@ systemlog = Blueprint('systemlog', __name__, template_folder='templates')
 # 系统日志
 @systemlog.route('/syslogs')
 def syslogs():
-    return render_template('syslogs.html')
+    return render_template('./SystemManagement/syslogs.html')
 
 
 # 日志查询
