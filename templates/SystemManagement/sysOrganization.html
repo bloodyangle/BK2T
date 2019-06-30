@@ -1,133 +1,372 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>组织机构管理</title>
+    <title>组织结构</title>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../static/css/base.css" rel="stylesheet">
-    <link href="../../static/css/easyui.css" rel="stylesheet">
-    <link href="../../static/css/icon.css" rel="stylesheet">
-    <link href="../../static/css/providers.css" rel="stylesheet">
-    <link href="../../static/css/process.css" rel="stylesheet">
-    <link href="../../static/css/umeditor.css" type="text/css" rel="stylesheet">
-    <link href="../../static/css/datagridpanel_customer.css" rel="stylesheet">
-    <link href="../../static/css/dialogpanel.css" type="text/css" rel="stylesheet">
-    <link href="../../static/css/datagrid_customer.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="../../static/js/echarts.common.min.js"></script>
-    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="../../static/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../../static/js/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="../../static/js/Bee.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../static/js/OrganizationClass.js" charset="utf-8"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('#OrganizationName').attr("disabled", true);
-        });
-    </script>
+    <script src="../../static/js/echarts.common.min.js"></script>
+    <script src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+    <script src="../../static/js/bootstrap-table.min.js"></script>
+    <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../static/js/bootbox.min.js"></script>
 </head>
-<body style="padding: 15px;">
-    <div class="easyui-layout" style="width:100%;height:600px;">
-        <div data-options="region:'center'" title="组织结构图">
-            <div id="example" style="width: 100%;height: 800px;"></div>
-        </div>
-        <div data-options="region:'west'" title="组织结构表" style="width:50%;padding:10px">
-            <table id="OrganizationClassTable"></table>
-            <div id="OrganizationClassToolbar" style="padding:0 10px;">
-                名称:
-                <input type="text" class="textbox-text validatebox-text textbox-prompt" name="search" style="height:28px;" autocomplete="off"
-                    placeholder="">
-                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="OrganizationClassToolbar.search();">查询</a>
-                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="OrganizationClassToolbar.create();">添加</a>
-                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'" onclick="OrganizationClassToolbar.update();">修改</a>
-                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" onclick="OrganizationClassToolbar.delete();">删除</a>
-                <a href="#" class="easyui-linkbutton" id="reload" data-options="iconCls:'icon-reload'" onclick="OrganizationClassToolbar.refresh();">刷新</a>
-            </div>
-            <div id="OrganizationClassDialog" class="easyui-dialog" style="width:520px;height:510px;padding:10px;"
-                data-options="closed:'true',buttons:'#OrganizationClassDialogButtons',modal:true">
-                <!-- <div id="OrganizationClassFormTitle" class="field-title">Title</div> -->
-                <form id="OrganizationClassForm" method="post" class="dialog-form">
-                <table class="kv-table">
-                    <tbody>
-                        <tr>
-                            <td class="kv-label">Id</td>
-                            <td class="kv-content">
-                                <input  name="iID" type="text" class="textbox-text validatebox-text textbox-prompt" autocomplete="off" placeholder="">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">组织编码</td>
-                            <td class="kv-content">
-                                <input  name="iOrganizationCode" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">组织名称</td>
-                            <td class="kv-content">
-                                <input  name="iOrganizationName" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">顺序</td>
-                            <td class="kv-content">
-                                <input  name="iOrganizationSeq" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">父节点</td>
-                            <td class="kv-content">
-                                <input name="iParentNode" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">说明</td>
-                            <td class="kv-content">
-                                <input  name="iDescription" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">创建人</td>
-                            <td class="kv-content">
-                                <input  name="iCreatePerson" required="true" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">创建时间</td>
-                            <td class="kv-content">
-                                <input  name="iCreateDate" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">显示图</td>
-                            <td class="kv-content">
-                                <input  name="iImg" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="kv-label">显示颜色</td>
-                            <td class="kv-content">
-                                <input  name="iColor" type="text" class="textbox-text validatebox-text textbox-prompt easyui-validatebox" autocomplete="off" placeholder=""  >
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <div id="OrganizationClassDialogButtons" >
-                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'"  onclick="OrganizationClassToolbar.save()" value="submit" >保存</a>
-                    <a href="#" class="easyui-linkbutton" onclick="$('#OrganizationClassDialog').dialog('close')">关闭</a>
+<body>
+    <div class="row" style="padding: 15px 0;">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">组织结构列表</div>
+                    <div class="panel-body">
+                        <div id="myModal" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            ×
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel">
+                                            组织机构表单信息
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form-horizontal" action="">
+                                            <div class="form-group">
+                                                <label for="ID" class="col-sm-2 control-label">id</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="ID" placeholder="" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="OrganizationCode" class="col-sm-2 control-label">组织机构编码</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="OrganizationCode" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="OrganizationName" class="col-sm-2 control-label">组织机构名称</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="OrganizationName" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ParentNode" class="col-sm-2 control-label">父节点</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="ParentNode" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Description" class="col-sm-2 control-label">说明</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="Description" placeholder="">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- dialog buttons -->
+                                    <div class="modal-footer"><button type="button" class="btn btn-primary" onclick="toolbar.Save()">保存</button></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="Toolbar">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <p>
+                                        <div class="input-group">
+                                            <label class="input-group-addon">名称</label>
+                                            <input type="text" class="form-control" id="SearchVal">
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="toolbar.Search()">查询</button>
+                                        <button type="button" class="btn btn-info" onclick="toolbar.Add()">添加</button>
+                                        <button type="button" class="btn btn-warning" onclick="toolbar.Updata()">编辑</button>
+                                        <button type="button" class="btn btn-danger" onclick="toolbar.Delete()">删除</button>
+                                        <button type="button" class="btn btn-default" onclick="toolbar.reload()">刷新</button>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table-bordered" id="tab"></table>
+                    </div>
                 </div>
-            </form>
             </div>
-            <!-- 右键菜单 -->
-            <div id="contextmenu" class="easyui-menu" style="width:120px;">
-                <div data-options="iconCls:'icon-reload'" onclick="OrganizationClassToolbar.refresh();">刷新</div>
-                <div data-options="iconCls:'icon-add'" onclick="OrganizationClassToolbar.create();">新建</div>
-                <div class="menu-sep"></div>
-
-                <div data-options="iconCls:'icon-edit'" onclick="OrganizationClassToolbar.update();">编辑</div>
-                <div data-options="iconCls:'icon-remove'" onclick="OrganizationClassToolbar.delete();">删除</div>
+            <div class="col-md-6">
+                <div id="example" style="width: 100%;height: 800px;"></div>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(function(){
+            $("#tab").bootstrapTable({
+                url: '/allOrganizations/Find',
+                method: 'get',
+                queryParams:function(params){
+                    return {
+                        OrganizationName: '',
+                        limit : params.limit,
+                        offset : parseInt(params.offset/params.limit)
+                    };
+                },
+	            pagination: true,
+                toolbar:"#Toolbar",
+                pageNumber:1,
+	            pageSize: 10,
+	            pageList: [10, 20, 30, 40, 50],
+                sidePagination: "server",
+                paginationLoop:false,
+                paginationPreText:'上一页',
+                paginationNextText:'下一页',
+                singleSelect:true,
+                clickToSelect:true,
+	            locale: "zh-CN",
+	            striped: true,
+                columns: [{
+                    checkbox: true
+                },{
+                    field: 'OrganizationCode',
+                    title: '组织机构编码'
+                },{
+                    field: 'OrganizationName',
+                    title: '组织机构名称'
+                },{
+                    field: 'ParentNode',
+                    title: '父节点'
+                },{
+                    field: 'Description',
+                    title: '说明'
+                },{
+                    field: 'CreatePerson',
+                    title: '创建人'
+                },{
+                    field: 'CreateDate',
+                    title: '创建时间'
+                }],
+                onCheck:function (row,$element) {
+
+                }
+            })
+            toolbar = {
+                Search:function(){
+                    $('#tab').bootstrapTable('load',{
+                        BillNo: $("#SearchVal").val()
+                    });
+                },
+                Add:function(){
+                    $("#myModal").modal('show')
+                    $('#ID').val();
+                    $('#OrganizationCode').val();
+                    $('#OrganizationName').val();
+                    $('#Description').val();
+                    $('#ParentNode').val();
+                },
+                Updata:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if(rows.length == 1){
+                        if(rows){
+                            $("#myModal").modal('show')
+                            $('#ID').val(rows[0].ID);
+                            $('#OrganizationCode').val(rows[0].OrganizationCode);
+                            $('#OrganizationName').val(rows[0].OrganizationName);
+                            $('#Description').val(rows[0].Description);
+                            $('#ParentNode').val(rows[0].ParentNode);
+                        }
+                    } else {
+                        bootbox.alert('请单选一条数据进行编辑！');
+                    }
+                },
+                Save:function(){
+                    var idVal = $('#ID').val();
+                    var urlStr = ''
+                    if($('#OrganizationCode').val() == "") {
+                        bootbox.alert('组织机构编码不能为空！');
+                        return false;
+                    }else if($('#OrganizationName').val() == "") {
+                        bootbox.alert('组织机构名称不能为空！');
+                        return false;
+                    }else if($('#ParentNode').val() == "") {
+                        bootbox.alert('父节点不能为空！');
+                        return false;
+                    }
+                    if (idVal.length >= 1){
+                        urlStr = '/allOrganizations/Update'
+                    }
+                    else {
+                        urlStr = '/allOrganizations/Create'
+                    }
+                    $.ajax({
+                        url:urlStr,
+                        type:"post",
+                        data:{
+                            ID:$('#ID').val(),
+                            OrganizationCode:$('#OrganizationCode').val(),
+                            OrganizationName:$('#OrganizationName').val(),
+                            ParentNode:$('#ParentNode').val(),
+                            Description:$('#Description').val()
+                        },
+                        success:function(data){
+                            if(data == "OK"){
+                                $("#myModal").modal('hide')
+                                var dialog = bootbox.dialog({
+                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                    closeButton: false
+                                });
+                                dialog.init(function(){
+                                    setTimeout(function(){
+                                        dialog.modal('hide');
+                                    }, 2000);
+                                });
+                                $('#tab').bootstrapTable('refresh');
+                            } else {
+                                bootbox.alert(data)
+                            }
+                        },
+                        error: function(data){
+                           console.log(data.responseText)
+                           bootbox.alert('请求失败')
+                        },
+                    })
+                },
+                Delete:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if (rows.length > 0) {
+                        var jsonarray=[];
+                        bootbox.confirm({
+                            message: "您确认要删除所选的记录吗？",
+                            buttons: {
+                                confirm: {
+                                    label: '删除',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '返回',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if(result){
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                        jsonarray.push(obj);
+                                    }
+                                    var a = JSON.stringify(jsonarray);
+                                    $.ajax({
+                                        url: '/allOrganizations/Delete',
+                                        method: 'POST',
+                                        traditional: true,
+                                        data: a,
+                                        success: function (data) {
+                                            if(data == "OK"){
+                                                var dialog = bootbox.dialog({
+                                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                                    closeButton: false
+                                                });
+                                                dialog.init(function(){
+                                                    setTimeout(function(){
+                                                        dialog.modal('hide');
+                                                    }, 2000);
+                                                });
+                                                $("#tab").bootstrapTable('refresh');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        bootbox.alert('请选择要删除的记录')
+                    }
+                },
+                reload:function(){
+                    $("#tab").bootstrapTable('refresh');
+                }
+            }
+            //图形展示
+            function show(){
+                var domMain = document.getElementById('example')
+                var myChart = echarts.init(domMain, 'macarons');
+                myChart.showLoading()
+                $.ajax({
+                     type : "get",
+                     async : true, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+                     url : "/organizationMap/selectAll",
+                     data : {},
+                     dataType : "json",
+                     success : function(result) {
+                         if (result) {
+                             myChart.hideLoading(); //隐藏加载动画
+                             myChart.setOption({  //加载数据图表
+                                 title : {
+                                    text: '江中集团',
+                                    subtext: '组织结构树形图'
+                                },
+                                tooltip : {
+                                    trigger: 'item',
+                                    formatter: "{b}: {c}"
+                                },
+                                toolbox: {
+                                    show : true,
+                                    feature : {
+                                        mark : {show: true},
+                                        dataView : {show: true, readOnly: false},
+                                        restore : {show: true},
+                                        saveAsImage : {show: true}
+                                    }
+                                },
+                                calculable : false,
+                                series : [
+                                    {
+                                        name:'树图',
+                                        type:'tree',
+                                        orient: 'vertical',  //树的方向 vertical，horizontal
+                                        rootLocation: {x: '50%', y: '10%'}, // 根节点位置  {x: 'center',y: 10}
+                                        nodePadding: 10, //节点间距
+                                        layerPadding:50,
+                                        symbol: 'rectangle', //rectangle方形,circle圆形
+                                        symbolSize: [70,25],
+                                        borderColor:'black',
+                                        roam:true,
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    show: true,
+                                                    position: 'inside',
+                                                    textStyle: {
+                                                        color: '#ffffff',
+                                                        fontSize: 12
+                                                    }
+                                                },
+                                                lineStyle: {
+                                                    color: '#17a572',
+                                                    width: 1,
+                                                    type: 'broken' // 'curve'曲线|'broken'直线|'solid'|'dotted'|'dashed'
+                                                }
+                                            },
+                                            emphasis: {
+                                                color: '#0e546d',
+                                                label: {
+                                                    show: true
+                                                }
+                                            }
+                                        },
+                                        data: result
+                                    }
+                                ]
+                             });
+                         }
+                    },
+                     error : function(errorMsg) {
+                         //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
+                     }
+                })
+            }
+        })
+        function createKeyIDObj(keyID){
+            return {
+                id:keyID
+            }
+        }
+    </script>
 </body>
 </html>
