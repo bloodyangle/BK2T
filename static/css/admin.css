@@ -129,12 +129,18 @@ header{
     border-left: 3px solid transparent;
     color: #333;
     text-decoration: none;
-    background: #eee;
+    background: #ededed;
+}
+.sidebarNav li:hover a.rootMenu{
+    border-left: 3px solid #1c87b3;
 }
 .sidebarNav li a .pull-left{
     margin-right: 10px;
     transform:rotate(0);
     transtion:all 3s linear;
+}
+.sidebarNav li a.addTabLink:hover{
+    background: #f7f7f7;
 }
 .treeMenu{
     display: none;
@@ -322,5 +328,4 @@ header{
 
 .nav>li>a:focus, .nav>li>a:hover {
 	background-color: #EDEDED;
-	border-top: 1px solid #EDEDED;
 }
