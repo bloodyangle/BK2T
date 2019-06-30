@@ -5,6 +5,7 @@ import time
 import os
 import threading
 from enum import Enum
+from dbset.database.db_operate import db_session
 
 class LogLevel(Enum):
     info = 'info'

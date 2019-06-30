@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine,ForeignKey, Table,Column, DateTime, Integer, String, Unicode
 from sqlalchemy.dialects.mssql.base import BIT
 from werkzeug.security import generate_password_hash, check_password_hash
-from libs.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
+from dbset.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
 from datetime import datetime
 from flask_login import LoginManager
 
@@ -366,7 +366,6 @@ class AuditTrace(Base):
 
     # 其他:
     Other = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
 class QualityControlTree(Base):
 	__tablename__ = "QualityControlTree"
 

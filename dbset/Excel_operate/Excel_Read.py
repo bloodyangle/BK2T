@@ -1,7 +1,7 @@
-from MES import db_session
 import xlrd
-from constant import constant
-from Model.core import QualityControlTree
+from dbset.database.db_operate import db_session
+from models.SystemManagement.system import QualityControlTree
+
 
 def read_Excel(file_dir):
     # 打开文件

@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-from libs.account import auth_lib
+
+from dbset.account import auth_lib
 from handlers.account import account_auth
 from handlers.SystemManagement import user_management, PermissionAssignment,Role_management
 from handlers.QualityManagement import ProcessContinuousData
@@ -7,6 +8,7 @@ from handlers.main import home
 from handlers.SystemManagement.organization_model import organiza
 from handlers.EquipmentModel.euipment_model import equip
 from handlers.ProductionManagement.producebatch_model import produce
+from handlers.SystemManagement.systemlog import systemlog
 
 
 
@@ -35,7 +37,8 @@ app.register_blueprint(equip)
 app.register_blueprint(produce)
 # 过程连续数据
 # app.register_blueprint(ProcessContinuousData.continuous_data)
-
+# 过程连续数据
+app.register_blueprint(systemlog)
 @app.route('/')
 # @login_required
 def hello_world():

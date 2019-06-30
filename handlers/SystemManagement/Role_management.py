@@ -4,13 +4,13 @@ from collections import Counter
 from flask import render_template,request,Blueprint
 from sqlalchemy import func
 from tools.common import insert,delete,update
-from libs.database.db_operate import db_session
+from dbset.database.db_operate import db_session
 from models.SystemManagement.system import Role
 from flask_login import current_user
-from libs.log.BK2TLogger import logger,insertSyslog
-from libs.main.BSFramwork import AlchemyEncoder
+from dbset.log.BK2TLogger import logger,insertSyslog
+from dbset.main.BSFramwork import AlchemyEncoder
 
-role_management = Blueprint('role_management', __name__)
+role_management = Blueprint('role_management', __name__, template_folder='templates')
 
 # 工作台菜单role
 @role_management.route('/sysrole')
