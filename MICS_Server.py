@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from flask_login import login_required
 
 from dbset.account import auth_lib
 from handlers.account import account_auth
@@ -9,7 +10,6 @@ from handlers.SystemManagement.organization_model import organiza
 from handlers.EquipmentModel.euipment_model import equip
 from handlers.ProductionManagement.producebatch_model import produce
 from handlers.SystemManagement.systemlog import systemlog
-
 
 
 app = Flask(__name__)
@@ -40,7 +40,7 @@ app.register_blueprint(produce)
 # 过程连续数据
 app.register_blueprint(systemlog)
 @app.route('/')
-# @login_required
+@login_required
 def hello_world():
     return render_template('./main/main.html')
 
