@@ -234,4 +234,66 @@
 		return methods;
 	}
 })(jQuery);
+var nthTabs;
+$(function () {
+	nthTabs = $("#editor-tabs").nthTabs();
+	nthTabs.addTab({
+		id:'a',
+		title:'首页',
+		active:true,
+		allowClose:false,
+		content:'<iframe class="page-iframe" src="/home/workbench" frameborder="no" border="no" height="100%" width="100%"></iframe>',
+	}).setActTab("#a");
 
+	//右上角用户信息
+	$(".navUser").mouseover(function() {
+		$(this).find(".navUserPanel").css("display", "block")
+	}).mouseout(function (){
+		$(this).find(".navUserPanel").css("display","none")
+	})
+
+	//装选项卡内容的高度设置
+	$(window).resize(function () {
+		$(".tab-content").css("height",$(document).innerHeight() - 95)
+	}).resize();
+
+	//左侧菜单
+	//下拉折叠
+	$(".sidebarNav li .rootMenu").on('click',function(){
+		if($(this).siblings(".treeMenu").addClass("transtion").css("display") == "none"){
+			$(this).siblings(".treeMenu").slideDown()
+			$(this).parent().siblings().find(".treeMenu").slideUp()
+			$(this).find(".pull-right").css("transform","rotate(-90deg)")
+			$(this).parent().siblings().find(".pull-right").css("transform","rotate(0)")
+		}else{
+			$(this).siblings(".treeMenu").slideUp()
+			$(this).find(".pull-right").css("transform","rotate(0)")
+		}
+	})
+	//增加到选项卡
+	$(".addTabLink").on('click',function(e){
+		e.stopPropagation()
+		var url = $(this).attr("data-href")
+		var title = $(this).find(".linkName").html()
+		var index = $(".addTabLink").index(this)
+		nthTabs.addTab({
+			id:"a"+index,
+			title:title,
+			content:'<iframe class="page-iframe" src="'+ url +'" frameborder="no" border="no" height="100%" width="100%"></iframe>',
+		}).setActTab("a"+index).locationTab()
+	})
+	//左右折叠导航
+	$(".indentMenu").on('click',function(){
+		if($(".contentSider").css("left") == "0px"){
+			$(this).removeClass("glyphicon-indent-right").addClass("glyphicon-indent-left")
+			$(".contentSider").animate({left:"-180px"})
+			$(".content").animate({left:"40px"})
+			$(".sidebarNav").fadeOut()
+		}else{
+			$(this).removeClass("glyphicon-indent-left").addClass("glyphicon-indent-right")
+			$(".contentSider").animate({left:"0"})
+			$(".content").animate({left:"220px"})
+			$(".sidebarNav").fadeIn()
+		}
+	})
+});

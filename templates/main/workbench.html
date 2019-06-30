@@ -9,30 +9,14 @@
     <link href="../../static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/jquery.scrollbar.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/admin.css" rel="stylesheet" type="text/css">
+    <link href="../../static/css/base.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="../../static/js/echarts.common.min.js"></script>
     <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../static/js/popper.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/js/jquery.scrollbar.min.js"></script>
     <script type="text/javascript" src="../../static/js/admin.js"></script>
-    <style>
-        .navCard{
-            margin-top: 20px;
-            margin-bottom: 15px;
-        }
-        .card{
-            position: relative;
-            min-height: 100px;
-            overflow: hidden!important;
-            background-color: #fff;
-            color: #888;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-        .cardblock{
-            padding: 20px;
-        }
-    </style>
+    <script type="text/javascript" src="../../static/js/base.js"></script>
 </head>
 <body style="background-color: #f1f1f1">
     <div class="col-md-12 navCard">
@@ -70,11 +54,122 @@
         </div>
     </div>
     <div class="col-md-12">
-
+        <div class="col-sm-8">
+            <div class="card" id="chartBox">
+                <div id="chartMain" style="width: 1000px; height: 400px; margin: 10px auto;"></div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div></div>
+            </div>
+        </div>
     </div>
     <script type="text/javascript">
         $(function () {
+            {#setInterval(function(){#}
+            {#    getNewChart();#}
+            {# }, 2000)#}
 
+            var myDiv = document.getElementById("chartMain")
+            var myChartContainer = function () {
+                var width = $("#chartBox").width()
+                myDiv.style.width = width +'px';
+            };
+            myChartContainer();
+            var myChart = echarts.init(myDiv)
+            myChart.showLoading();
+            $.ajax({
+                url: '',
+                type: 'get',
+                data: {
+                    begin:$('#beginTime').val(),
+                    end:$('#endTime').val()
+                },
+                success: function (data) {
+                    data = JSON.parse(data)
+                    myChart.hideLoading();
+                    myChart.setOption(option = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: ["折光率","温度"]
+                        },
+                        toolbox: {
+                            feature: {
+                                mark : {show: true},
+                                dataView: {show: true, readOnly: false},
+                                restore: {show: true},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        dataZoom: {
+                            show: true,
+                            start : 0
+                        },
+                        grid: {
+                            y2: 80
+                        },
+                        xAxis: {
+                            type : 'time',
+                            splitNumber:10
+                        },
+                        yAxis: [
+                            {
+                                type : 'value',
+                                name: '折光率',
+                                axisLabel: {
+                                    formatter: '{value} Brix'
+                                }
+                            }, {
+                                type: 'value',
+                                name: '温度',
+                                axisLabel: {
+                                    formatter: '{value} °C'
+                                }
+                            }
+                        ],
+                        series: [{
+                            name: "折光率",
+                            type: 'line',
+                            yAxisIndex:0,
+                            symbol: 'none', //拐点
+                            showAllSymbol: true,
+                            smooth:true, //曲线
+                            data: data.ZGL,
+                        },{
+                            name: "温度",
+                            type: 'line',
+                            yAxisIndex:1,
+                            symbol: 'none', //拐点
+                            showAllSymbol: true,
+                            smooth:true,
+                            data: data.Temp,
+                        }]
+                    });
+                    myChart.setOption(option);
+                }
+            })
+            $("#chartBox").resize(function(){
+                myChartContainer();
+                myChart.resize();
+            })
+            function getNewChart(){
+                $.ajax({
+                    url: '',
+                    type: 'get',
+                    data: {
+
+                    },
+                    success: function (data) {
+                        data = JSON.parse(data)
+                        option.series[0].data = data.ZGL
+                        option.series[1].data = data.Temp
+                        myChart.setOption(option);
+                    }
+                })
+            }
         });
     </script>
 </body>

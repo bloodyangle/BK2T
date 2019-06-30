@@ -13,6 +13,7 @@
     <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
     <script src="../../static/js/bootbox.min.js"></script>
     <script src="../../static/js/bootstrap-treeview.min.js"></script>
+    <script src="../../static/js/base.js"></script>
 </head>
 <body>
     <div class="col-md-12" style="padding: 15px 0;">
@@ -233,7 +234,7 @@
                         return false;
                     }
                     if (idVal.length >= 1){
-                        urlStr = 'user_manage/user/updateUser'
+                        urlStr = '/user_manage/user/updateUser'
                     }
                     else {
                         urlStr = '/user_manage/user/addUser'
@@ -327,11 +328,6 @@
                 }
             }
         })
-        function createKeyIDObj(keyID){
-            return {
-                id:keyID
-            }
-        }
     </script>
 </body>
 </html>
