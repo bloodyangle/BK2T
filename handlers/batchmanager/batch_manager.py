@@ -7,12 +7,13 @@ from dbset.log.BK2TLogger import logger,insertSyslog
 from flask_login import login_required, logout_user, login_user,current_user,LoginManager
 from tools.common import insert,delete,update
 
-batch_manager = Blueprint('batch_manager', __name__, template_folder='templates')
+batch = Blueprint('batch', __name__, template_folder='templates')
 
-@batch_manager.route('/batch_manager')
+@batch.route('/batchmanager')
 def batch_manager():
-    return render_template('./batch_manager/batch_manager.html')
-@batch_manager.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
+    return render_template('./batchmanager/batch_manager.html')
+
+@batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
 def BatchIDPUIDSearch():
     if request.method == 'GET':
         data = request.values
@@ -37,19 +38,19 @@ def BatchIDPUIDSearch():
             logger.error(e)
             insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
 
-@batch_manager.route('/BatchIDPUIDCreate', methods=['POST', 'GET'])
+@batch.route('/BatchIDPUIDCreate', methods=['POST', 'GET'])
 def BatchIDPUIDCreate():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         return insert(BatchIDPUID, data)
 
-@batch_manager.route('/BatchIDPUIDUpdate', methods=['POST', 'GET'])
+@batch.route('/BatchIDPUIDUpdate', methods=['POST', 'GET'])
 def BatchIDPUIDUpdate():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         return update(BatchIDPUID, data)
 
-@batch_manager.route('/BatchIDPUIDDelete', methods=['POST', 'GET'])
+@batch.route('/BatchIDPUIDDelete', methods=['POST', 'GET'])
 def BatchIDPUIDDelete():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form

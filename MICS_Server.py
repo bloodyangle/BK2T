@@ -10,7 +10,7 @@ from handlers.EquipmentModel.euipment_model import equip
 from handlers.ProductionManagement.producebatch_model import produce
 from handlers.SystemManagement.systemlog import systemlog
 from flask_bootstrap import Bootstrap
-from handlers.batchmanager.batch_manager import batch_manager
+from handlers.batchmanager.batch_manager import batch
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -41,7 +41,7 @@ app.register_blueprint(produce)
 # 日志模块
 app.register_blueprint(systemlog)
 # 批次管理
-app.register_blueprint(batch_manager)
+app.register_blueprint(batch)
 
 @app.route('/')
 @login_required
