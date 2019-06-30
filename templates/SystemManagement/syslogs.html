@@ -71,8 +71,13 @@
             })
             $("#SearchLog").on('click',function(){
                 $('#tab').bootstrapTable('load',{
-                    startTime: $('#startTime').val(),
-                    endTime: $('#endTime').val()
+
+                });
+                $('#tab').bootstrapTable('refresh',{
+                    query:{
+                        startTime: $('#startTime').val(),
+                        endTime: $('#endTime').val()
+                    }
                 });
             })
         })

@@ -127,8 +127,10 @@
             })
             toolbar = {
                 Search:function(){
-                    $('#tab').bootstrapTable('load',{
-                        RoleName: $("#SearchVal").val()
+                    $('#tab').bootstrapTable('refresh',{
+                        query:{
+                            RoleName: $("#SearchVal").val()
+                        }
                     });
                 },
                 Add:function(){

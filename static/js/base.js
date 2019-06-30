@@ -85,11 +85,10 @@ $(function(){
 		//suffix:      ["st", "nd", "rd", "th"],
 		today:       "今天"
 	};
-
-	//封装id
-	function createKeyIDObj(keyID){
-		return {
-			id:keyID
-		}
-	}
 })
+//封装id
+function createKeyIDObj(keyID){
+	return {
+		id:keyID
+	}
+}

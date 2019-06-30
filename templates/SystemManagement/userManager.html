@@ -184,9 +184,11 @@
             })
             toolbar = {
                 Search:function(){
-                    $('#tab').bootstrapTable('load',{
-                        id: code,
-                        Name: $("#SearchVal").val()
+                    $('#tab').bootstrapTable('refresh',{
+                        query:{
+                            id: code,
+                            Name: $("#SearchVal").val()
+                        }
                     });
                 },
                 Add:function(){
