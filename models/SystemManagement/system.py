@@ -7,17 +7,12 @@ from dbset.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
 from datetime import datetime
 from flask_login import LoginManager
 
-
 login_manager = LoginManager()
-
-
 # 创建对象的基类
 engine = create_engine(GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session= Session()
 Base = declarative_base(engine)
-
-
 
 # 菜单与角色关联表
 Role_Menu = Table(
@@ -26,7 +21,6 @@ Role_Menu = Table(
     Column("Role_ID", Integer, ForeignKey("role.ID"), nullable=False, primary_key=True),
     Column("Menu_ID", Integer, ForeignKey("menu.ID"), nullable=False, primary_key=True)
 )
-
 
 class SysLog(Base):
 	__tablename__ = "SysLog"
@@ -51,7 +45,6 @@ class SysLog(Base):
 
 	# 类型:
 	OperationType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
 
 # 模块菜单表
 class Menu(Base):
@@ -418,7 +411,6 @@ class BatchIDPUID(Base):
 
     # 修改时间
     UpdateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)

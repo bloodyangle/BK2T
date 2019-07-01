@@ -58,9 +58,8 @@ def login():
 
 
 # 退出登录
-# 使用login_required装饰路由函数,未登录的请求将会跳转到上面login_manger.login_view设置的登录页面路由
-@login_auth.route('/account/logout')
+@login_auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('login_auth.login'))
