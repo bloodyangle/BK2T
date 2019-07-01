@@ -271,8 +271,7 @@ $(function () {
 		}
 	})
 	//增加到选项卡
-	$(".addTabLink").on('click',function(e){
-		e.stopPropagation()
+	$(".addTabLink").on('click',function(){
 		var url = $(this).attr("data-href")
 		var title = $(this).find(".linkName").html()
 		var index = $(".addTabLink").index(this)

@@ -73,12 +73,19 @@
       e[b]);
    }
 })(jQuery, this);
-$(function(){
-
-})
 //封装id
 function createKeyIDObj(keyID){
     return {
         id:keyID
     }
+}
+//给主页的tabs增加选项页
+function addParentTab(title,url,index){
+    parent.nthTabs.addTab({
+        id:index,
+        title:title,
+        content:'<iframe class="page-iframe" src="'+ url +'" frameborder="no" border="no" height="100%" width="100%"></iframe>',
+    })
+    parent.nthTabs.setActTab(index)
+    parent.nthTabs.locationTab()
 }

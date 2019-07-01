@@ -1,39 +1,13 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
-    <meta charset="utf-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <title>北康生产管理系统</title>
-    <link href="../../static/css/base.css" rel="stylesheet" type="text/css" charset="utf-8">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>北京康仁堂数据采集系统</title>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" charset="utf-8">
     <link href="../../static/css/login.css" rel="stylesheet" type="text/css" charset="utf-8">
-    <style>
-        #canvas{
-            display: inline-block;
-            cursor: pointer;
-            border-top: 1px solid #adadad;
-            border-left: 1px solid #adadad;
-            border-right: 1px solid #cfcfcf;
-            border-bottom: 1px solid #cfcfcf;
-        }
-        #submit-btn{
-            display: inline-block;
-            text-decoration: none;
-            height: 48px;
-            line-height: 48px;
-            text-align: center;
-            color: #fff;
-            font-size: 16px;
-            font-weight: normal;
-            margin-left: 34px;
-            background-color: #1da02b;
-            margin-right: 9px;
-            width: 300px;
-            outline: none;
-            border:0;
-            cursor: pointer;
-        }
-    </style>
-    <script type="text/javascript" src="../static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function(){
             function loginSubmit(flag) {
@@ -45,20 +19,6 @@
             $("#canvas").on('click',function(){
                 draw(show_num);
             })
-{#            $("#loginForm").submit(function(){#}
-{#                var val = $("#Txtcode").val().toLowerCase();#}
-{#                var num = show_num.join("");#}
-{#                if(val == num){#}
-{#                    $("#Txtidcode").val('');#}
-{#                    draw(show_num);#}
-{#                    return loginSubmit(true);#}
-{#                }else{#}
-{#                    alert('验证码错误！请重新输入！');#}
-{#                    $("#Txtidcode").val('');#}
-{#                    draw(show_num);#}
-{#                    return loginSubmit(false);#}
-{#                }#}
-{#            })#}
         })
 
         function draw(show_num) {
@@ -115,7 +75,7 @@
             return "rgb(" + r + "," + g + "," + b + ")";
         }
     </script>
-</head> 
+</head>
 <body class="white">
 	<div class="login-hd">
 		<div class="left-bg"></div>
@@ -132,13 +92,7 @@
 				<div class="lg-zone">
 					<div class="lg-box">
 						<div class="lg-label"><h4>用户登录</h4></div>
-						<!--
-						<div class="alert alert-error" >
-			              <i class="iconfont">&#xe62e;</i>
-			              <span>请输入用户名</span>
-			            </div>
-						//-->
-						
+
 						<form action="/account/login" id="loginForm" method="post">
 							<div class="lg-username input-item clearfix">
 								<i class="iconfont">&#xe60d;</i>
@@ -153,7 +107,7 @@
 									<i class="iconfont">&#xe633;</i>
 									<input type="text" placeholder="验证码" id="Txtcode" name="txtCode">
 								</div>
-                                <canvas id="canvas" width="114" height="40"></canvas>
+                                <canvas id="canvas" width="114" height="40"></canvas>=
 							</div>
 							<div style="height: 20px;">
 								<span class="" style="margin-left: 34px;color: red;">{{ error }}</span>
@@ -171,17 +125,5 @@
 			</div>
 		</div>
 	</div>
-	<div class="login-ft">
-		<div class="ft-inner">
-			<div class="about-us">
-				<a href="javascript:;">关于我们</a>
-				<a href="javascript:;">法律声明</a>
-				<a href="javascript:;">服务条款</a>
-				<a href="javascript:;">联系方式</a>
-			</div>
-			<div class="address">地址：&nbsp;&nbsp;Copyright&nbsp;©&nbsp;2019&nbsp;&nbsp;版权所有</div>
-			<div class="other-info">建议使用IE8及以上版本浏览器</div>
-		</div>
-	</div>
-</body> 
+</body>
 </html>
