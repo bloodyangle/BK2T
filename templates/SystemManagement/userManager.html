@@ -118,16 +118,17 @@
                 url:'/MyOp',
                 type:"get",
                 success:function(data){
-                    console.log(data)
                     $('#treeview').treeview({
                         data:data,
                         selectable: true,
-                        //color:"#ffffff",
                         selectedBackColor: "#5485F7",// 选中时的背景色
-                        //selectedColor: '#ffffff',//选中时的文本颜色
-                        //onhoverColor: "#5485F7",// hover时的颜色
-                        onNodeSelected: function(event, data) {// 选中事件
-                            console.log(data)
+                        onNodeSelected: function(event, data) {
+                            $('#tab').bootstrapTable('refresh',{
+                                query:{
+                                    id: data.value,
+                                    Name: $("#SearchVal").val()
+                                }
+                            });
                         }
                     });
                 },
@@ -187,7 +188,7 @@
                 Search:function(){
                     $('#tab').bootstrapTable('refresh',{
                         query:{
-                            id: code,
+                            id: "",
                             Name: $("#SearchVal").val()
                         }
                     });
