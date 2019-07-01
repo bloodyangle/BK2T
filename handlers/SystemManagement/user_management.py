@@ -68,8 +68,6 @@ def MyUserSelect():
             insertSyslog("error", "查询用户列表报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
-
-
 @user_manage.route('/user/addUser', methods=['POST', 'GET'])
 def addUser():
     if request.method == 'POST':

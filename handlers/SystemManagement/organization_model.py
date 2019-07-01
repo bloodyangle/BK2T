@@ -71,9 +71,7 @@ def organizationMap():
 def selectAll():
     if request.method == 'GET':
         try:
-            data = getMyOrganizationChildrenMap(id=0)
-            jsondatas = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
-            return jsondatas
+            return json.dumps(getMyOrganizationChildrenMap(id=0), cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
             insertSyslog("error", "查询组织结构报错Error：" + str(e), current_user.Name)
@@ -94,8 +92,6 @@ def getMyOrganizationChildrenMap(id):
 @organiza.route('/Myorganization')
 def myorganization():
     return render_template('./SystemManagement/Myorganization.html')
-
-
 def getMyOrganizationChildren(id=0):
     sz = []
     try:
@@ -110,8 +106,6 @@ def getMyOrganizationChildren(id=0):
     except Exception as e:
         print(e)
         return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
-
 def getMyEnterprise(id=0):
     sz = []
     try:
@@ -124,15 +118,12 @@ def getMyEnterprise(id=0):
         logger.error(e)
         insertSyslog("error", "获取树形结构报错Error：" + str(e), current_user.Name)
         return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
-
 @organiza.route('/MyOp')
 def MyOpFind():
     if request.method == 'GET':
         try:
             data = getMyOP(id=0)
-            jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
-            return jsondata
+            return json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
             logger.error(e)
@@ -154,9 +145,7 @@ def getMyOP(id):
 def myenterprise():
     if request.method == 'GET':
         try:
-            data = getMyEnterprise(id=0)
-            jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
-            return jsondata
+            return json.dumps(getMyEnterprise(id=0), cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
             logger.error(e)
