@@ -72,8 +72,7 @@ def selectAll():
     if request.method == 'GET':
         try:
             data = getMyOrganizationChildrenMap(id=0)
-            jsondata = [{"name":"北京康仁堂","value":"0","children":data}]
-            jsondatas = json.dumps(jsondata, cls=AlchemyEncoder, ensure_ascii=False)
+            jsondatas = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
             return jsondatas
         except Exception as e:
             print(e)
@@ -145,7 +144,7 @@ def getMyOP(id):
         for obj in orgs:
             if obj.ParentNode == id:
                 sz.append(
-                    {"text": obj.OrganizationName, "value": obj.ID, "nodes": getMyOrganizationChildrenMap(obj.ID)})
+                    {"text": obj.OrganizationName, "value": obj.ID, "nodes": getMyOP(obj.ID)})
         return sz
     except Exception as e:
         print(e)
