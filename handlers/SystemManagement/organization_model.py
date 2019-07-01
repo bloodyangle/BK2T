@@ -72,7 +72,7 @@ def selectAll():
     if request.method == 'GET':
         try:
             data = getMyOrganizationChildrenMap(id=0)
-            jsondata = [{"name":"北京康仁堂","value":"0","children":data}]
+            jsondata = [{"text":"北京康仁堂","value":"0","nodes":data}]
             jsondatas = json.dumps(jsondata, cls=AlchemyEncoder, ensure_ascii=False)
             return jsondatas
         except Exception as e:
@@ -86,7 +86,7 @@ def getMyOrganizationChildrenMap(id):
         for obj in orgs:
             if obj.ParentNode == id:
                 sz.append(
-                    {"name": obj.OrganizationName, "value": obj.ID, "children": getMyOrganizationChildrenMap(obj.ID)})
+                    {"text": obj.OrganizationName, "value": obj.ID, "nodes": getMyOrganizationChildrenMap(obj.ID)})
         return sz
     except Exception as e:
         print(e)
@@ -103,7 +103,7 @@ def getMyOrganizationChildren(id=0):
         orgs = db_session.query(Organization).filter().all()
         for obj in orgs:
             if obj.ParentNode == id:
-                sz.append({"id": obj.ID, "text": obj.OrganizationName, "children": getMyOrganizationChildren(obj.ID)})
+                sz.append({"id": obj.ID, "text": obj.OrganizationName, "nodes": getMyOrganizationChildren(obj.ID)})
         srep = ',' + 'items' + ':' + '[]'
         # data = string(sz)
         # data.replace(srep, '')
