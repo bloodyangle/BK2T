@@ -20,7 +20,7 @@ def ElectronicBatchRecord():
         BatchID = data.get('BatchID')
         ocal = db_session.query(BatchIDPUID).filter(BatchIDPUID.BatchID == BatchID).first()
         title = ocal.PUIDName
-        return render_template('./ProductionManagement/electronicBatchRecordNav.html', title = title, BatchID = BatchID)
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchID = BatchID)
 
 @batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
 def BatchIDPUIDSearch():
