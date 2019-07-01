@@ -135,10 +135,10 @@
                 },
                 Add:function(){
                     $("#myModal").modal('show')
-                    $('#ID').val();
-                    $('#RoleName').val();
+                    $('#ID').val("");
+                    $('#RoleName').val("");
                     $('#ParentNode option[value=""]').prop("selected", 'selected');
-                    $('#Description').val();
+                    $('#Description').val("");
                 },
                 Updata:function(){
                     var rows = $("#tab").bootstrapTable('getAllSelections');
