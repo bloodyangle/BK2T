@@ -143,8 +143,43 @@ def refractometerRedis():
             if len(jsonstr) > 10:
                 data_dict = {}
                 redis_conn = redis.Redis(connection_pool=pool)
-                for key in data:
-                    data_dict[key] = redis_conn.hget(constant.REDIS_TABLENAME, "t|"+str(key)).decode('utf-8')
+                data_dict["R101_1_SP01_SW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SP01_SW").decode(
+                    'utf-8')
+                data_dict["R101_1_SP01_BW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SP01_BW").decode(
+                    'utf-8')
+                data_dict["R101_1_SP01_DQ"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SP01_DQ").decode(
+                    'utf-8')
+                data_dict["R101_1_SV_ST01"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SV_ST01").decode(
+                    'utf-8')
+                data_dict["R101_1_SV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SV_BW_Time").decode(
+                    'utf-8')
+                data_dict["R101_1_PV_SW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_SW_Time").decode(
+                    'utf-8')
+                data_dict["R101_1_PV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_BW_Time").decode(
+                    'utf-8')
+                data_dict["R101_1_PV_XH_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_XH_Time").decode(
+                    'utf-8')
+                data_dict["R101_1_PV_CL_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_XH_Time").decode(
+                    'utf-8')
+
+                data_dict["R101_2_SP01_SW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SP01_SW").decode(
+                    'utf-8')
+                data_dict["R101_2_SP01_BW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SP01_BW").decode(
+                    'utf-8')
+                data_dict["R101_2_SP01_DQ"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SP01_DQ").decode(
+                    'utf-8')
+                data_dict["R101_2_SV_ST01"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SV_ST01").decode(
+                    'utf-8')
+                data_dict["R101_2_SV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SV_BW_Time").decode(
+                    'utf-8')
+                data_dict["R101_2_PV_SW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_SW_Time").decode(
+                    'utf-8')
+                data_dict["R101_2_PV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_BW_Time").decode(
+                    'utf-8')
+                data_dict["R101_2_PV_XH_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_XH_Time").decode(
+                    'utf-8')
+                data_dict["R101_2_PV_CL_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_CL_Time").decode(
+                    'utf-8')
                 return json.dumps(data_dict, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)

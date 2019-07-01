@@ -72,7 +72,7 @@ def selectAll():
     if request.method == 'GET':
         try:
             data = getMyOrganizationChildrenMap(id=0)
-            jsondata = [{"text":"北京康仁堂","value":"0","nodes":data}]
+            jsondata = [{"name":"北京康仁堂","value":"0","children":data}]
             jsondatas = json.dumps(jsondata, cls=AlchemyEncoder, ensure_ascii=False)
             return jsondatas
         except Exception as e:
@@ -86,7 +86,7 @@ def getMyOrganizationChildrenMap(id):
         for obj in orgs:
             if obj.ParentNode == id:
                 sz.append(
-                    {"text": obj.OrganizationName, "value": obj.ID, "nodes": getMyOrganizationChildrenMap(obj.ID)})
+                    {"name": obj.OrganizationName, "value": obj.ID, "children": getMyOrganizationChildrenMap(obj.ID)})
         return sz
     except Exception as e:
         print(e)
@@ -131,13 +131,25 @@ def getMyEnterprise(id=0):
 def MyOpFind():
     if request.method == 'GET':
         try:
-            data = getMyOrganizationChildren(id=0)
+            data = getMyOP(id=0)
             jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
             return jsondata
         except Exception as e:
             print(e)
             logger.error(e)
             return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+def getMyOP(id):
+    sz = []
+    try:
+        orgs = db_session.query(Organization).filter().all()
+        for obj in orgs:
+            if obj.ParentNode == id:
+                sz.append(
+                    {"text": obj.OrganizationName, "value": obj.ID, "nodes": getMyOrganizationChildrenMap(obj.ID)})
+        return sz
+    except Exception as e:
+        print(e)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
 @organiza.route('/Myenterprise')
 def myenterprise():
