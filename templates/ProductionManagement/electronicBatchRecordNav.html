@@ -5,12 +5,15 @@
     <title>电子批记录表</title>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../static/css/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../static/css/jquery.scrollbar.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/base.css" rel="stylesheet">
     <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootbox.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.scrollbar.min.js"></script>
+    <script type="text/javascript" src="../../static/js/admin.js"></script>
     <script src="../../static/js/base.js"></script>
 </head>
 <body>
@@ -18,12 +21,12 @@
         <!--流程图-->
         <div class="progress-head">
             <div class="host-progress bigPlan1">
-                <div class="host-ball batchRecord">提取</div>
+                <div class="host-ball batchRecord" rel="a">提取</div>
                 <div class="host-line"></div>
                 <div class="host-arrow"></div>
             </div>
             <div class="host-progress bigPlan2">
-                <div class="host-ball batchRecord">浓缩</div>
+                <div class="host-ball batchRecord" rel="b">浓缩</div>
             </div>
         </div>
         <div id="myModal" class="modal fade">
@@ -276,27 +279,17 @@
                 }
             }
 
-            //有此权限时增加tabs跳转到批记录
+            //子页面按钮增加选项卡
             $(".batchRecord").on('click',function(){
                 var text = $(this).html()
+                var rel = $(this).attr("rel")
                 var rows = $("#tab").bootstrapTable('getSelections');
-                addTab("电子批记录（" + text +"）","/ElectronicBatchRecord?title=" + text)
+                var extractType = rows[0].PUIDName
+                var BatchID = rows[0].BatchID
+                var url = "/ElectronicBatchRecord?extractType=" + extractType + "&BatchID=" + BatchID
+                addParentTab("电子批记录（" + text +"）",url,BatchID + rel)
             })
         })
-        //按钮点击后添加选项卡
-        function addTab(title, url) {
-            if (parent.parent.parent.$('.easyui-tabs1').tabs('exists', title)) {
-                parent.parent.parent.$('.easyui-tabs1').tabs('select', title);
-            }
-            else {
-                var content = '<iframe class="page-iframe" src="' + url + '" frameborder="no" border="no" height="100%" width="100%" scrolling="auto"></iframe>';
-                parent.parent.parent.$('.easyui-tabs1').tabs('add', {
-                    title: title,
-                    content: content,
-                    closable: true
-                });
-            }
-        }
     </script>
 </body>
 </html>
