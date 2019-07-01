@@ -102,7 +102,7 @@
     <script type="text/javascript">
         $(function(){
             $("#tab").bootstrapTable({
-                url: '/allOrganizations/Find',
+                url: '/OrganizationSelect',
                 method: 'get',
                 queryParams:function(params){
                     return {
@@ -194,10 +194,10 @@
                         return false;
                     }
                     if (idVal.length >= 1){
-                        urlStr = '/allOrganizations/Update'
+                        urlStr = '/OrganizationUpdate'
                     }
                     else {
-                        urlStr = '/allOrganizations/Create'
+                        urlStr = '/OrganizationCreate'
                     }
                     $.ajax({
                         url:urlStr,
@@ -256,7 +256,7 @@
                                     }
                                     var a = JSON.stringify(jsonarray);
                                     $.ajax({
-                                        url: '/allOrganizations/Delete',
+                                        url: '/OrganizationDelete',
                                         method: 'POST',
                                         traditional: true,
                                         data: a,
@@ -293,11 +293,9 @@
                 myChart.showLoading()
                 $.ajax({
                      type : "get",
-                     async : true, //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
                      url : "/organizationMap/selectAll",
-                     data : {},
-                     dataType : "json",
                      success : function(result) {
+                         console.log(result)
                          if (result) {
                              myChart.hideLoading(); //隐藏加载动画
                              myChart.setOption({  //加载数据图表
