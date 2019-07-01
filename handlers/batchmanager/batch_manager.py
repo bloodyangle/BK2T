@@ -9,13 +9,18 @@ from tools.common import insert,delete,update
 
 batch = Blueprint('batch', __name__, template_folder='templates')
 
+@batch.route('/ElectronicBatchRecordNav')
+def electronicBatchRecord():
+    return render_template('./ProductionManagement/electronicBatchRecordNav.html')
 # 生产数据管理-电子批记录
-@batch.route('/ElectronicBatchRecord')
+@batch.route('/ElectronicBatchRecord', methods=['POST', 'GET'])
 def ElectronicBatchRecord():
-    data = request.values
-    title = data.get('PUIDName')
-    BatchID = data.get('BatchID')
-    return render_template('electronicBatchRecordNav.html', title = title, BatchID = BatchID)
+    if request.method == 'GET':
+        data = request.values
+        BatchID = data.get('BatchID')
+        ocal = db_session.query(BatchIDPUID).filter(BatchIDPUID.BatchID == BatchID).first()
+        title = ocal.PUIDName
+        return render_template('./ProductionManagement/electronicBatchRecordNav.html', title = title, BatchID = BatchID)
 
 @batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
 def BatchIDPUIDSearch():

@@ -17,10 +17,4 @@ from dbset.database.db_operate import db_session
 
 produce = Blueprint('produce', __name__, template_folder='templates')
 
-# 组织机构建模
-@produce.route('/ElectronicBatchRecordNav')
-def electronicBatchRecord():
-    return render_template('./ProductionManagement/electronicBatchRecordNav.html')
-@produce.route('/ElectronicBatchRecord')
-def ElectronicBatchRecord():
-    return render_template('./ProductionManagement/electronicBatchRecord.html')
+
