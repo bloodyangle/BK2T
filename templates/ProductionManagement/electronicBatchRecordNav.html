@@ -284,10 +284,14 @@
                 var text = $(this).html()
                 var rel = $(this).attr("rel")
                 var rows = $("#tab").bootstrapTable('getSelections');
-                var extractType = rows[0].PUIDName
-                var BatchID = rows[0].BatchID
-                var url = "/ElectronicBatchRecord?extractType=" + extractType + "&BatchID=" + BatchID
-                addParentTab("电子批记录（" + text +"）",url,BatchID + rel)
+                if(rows.length == 1){
+                    var PUIDName = rows[0].PUIDName
+                    var BatchID = rows[0].BatchID
+                    var url = "/ElectronicBatchRecord?title=" + text + "&BatchID=" + BatchID
+                    addParentTab("电子批记录（" + text +"）",url,BatchID + rel)
+                }else{
+                    bootbox.alert('请单选一条数据查看批记录！');
+                }
             })
         })
     </script>
