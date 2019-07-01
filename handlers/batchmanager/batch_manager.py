@@ -64,3 +64,62 @@ def BatchIDPUIDDelete():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         return delete(BatchIDPUID, data)
+
+# 所有工艺段保存查询操作
+@batch.route('/allUnitDataMutual', methods=['POST', 'GET'])
+def allUnitDataMutual():
+    if request.method == 'POST':
+        data = request.values
+        data = data.to_dict()
+        try:
+            for key in data.keys():
+                if key == "PUIDName":
+                    continue
+                if key == "BatchID":
+                    continue
+                val = data.get(key)
+                addUpdateEletronicBatchDataStore(data.get("PUIDName"), data.get("BatchID"), key, val)
+            return 'OK'
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "所有工艺段保存查询操作报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder,ensure_ascii=False)
+    if request.method == 'GET':
+        data = request.values
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 2:
+                PUID = data['PUID']
+                BatchID = data['BatchID']
+                oclasss = db_session.query(BatchIDPUID).filter(BatchIDPUID.PUID == PUID,
+                                                               BatchIDPUID.BatchID == BatchID).all()
+                dic = {}
+                for oclass in oclasss:
+                    dic[oclass.Content] = oclass.OperationpValue
+            return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "所有工艺段保存查询操作报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder,ensure_ascii=False)
+def addUpdateEletronicBatchDataStore(PUIDName, BatchID, ke, val):
+    try:
+        oc = db_session.query(BatchIDPUID).filter(BatchIDPUID.PUIDName == PUIDName,
+                                                  BatchIDPUID.BatchID == BatchID,
+                                                  BatchIDPUID.Content == ke).first()
+        if oc == None:
+            db_session.add(BatchIDPUID(BatchID=BatchID, PUIDName=PUIDName, Content=ke, OperationpValue=val,Operator=current_user.Name))
+        else:
+            oc.Content = ke
+            oc.OperationpValue = val
+            oc.Operator = current_user.Name
+        db_session.commit()
+    except Exception as e:
+        db_session.rollback()
+        print(e)
+        logger.error(e)
+        insertSyslog("error", "保存更新EletronicBatchDataStore报错：" + str(e), current_user.Name)
+        return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,ensure_ascii=False)
