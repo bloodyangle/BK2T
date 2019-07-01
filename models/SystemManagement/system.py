@@ -180,7 +180,7 @@ class Organization(Base):
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
     # 组织结构编码:
-    OrganizationCode = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+    OrganizationCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 父组织机构:
     ParentNode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
@@ -192,19 +192,19 @@ class Organization(Base):
     OrganizationName = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
     # 说明:
-    Description = Column(Unicode(2048), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
     # 创建人:
     CreatePerson = Column(Unicode(20), primary_key=False, autoincrement=False, nullable=True)
 
     # 创建时间:
-    CreateDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=False)
+    CreateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 显示图标:
-    Img = Column(Unicode(40), default="antonio.jpg", primary_key=False, autoincrement=False, nullable=True)
+    Img = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True, default="antonio.jpg")
 
     # 显示图标:
-    Color = Column(Unicode(40),  default="#1696d3", primary_key=False, autoincrement=False, nullable=True)
+    Color = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True,  default="#1696d3")
 
 # Equipment:
 class Equipment(Base):
