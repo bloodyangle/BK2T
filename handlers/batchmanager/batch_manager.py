@@ -9,9 +9,12 @@ from tools.common import insert,delete,update
 
 batch = Blueprint('batch', __name__, template_folder='templates')
 
-@batch.route('/batchmanager')
-def batch_manager():
-    return render_template('./batchmanager/batch_manager.html')
+# 生产数据管理-电子批记录
+@batch.route('/ElectronicBatchRecord')
+def ElectronicBatchRecord():
+    data = request.values
+    title = data["PUIDName"]
+    return render_template('electronicBatchRecordNav.html',title = title)
 
 @batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
 def BatchIDPUIDSearch():
