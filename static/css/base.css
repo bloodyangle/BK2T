@@ -2,6 +2,8 @@
 .navCard{
     margin-top: 20px;
     margin-bottom: 15px;
+    clear:both;
+    overflow: hidden;
 }
 .card{
     position: relative;

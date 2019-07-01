@@ -285,10 +285,9 @@
                 var rel = $(this).attr("rel")
                 var rows = $("#tab").bootstrapTable('getSelections');
                 if(rows.length == 1){
-                    var PUIDName = rows[0].PUIDName
                     var BatchID = rows[0].BatchID
                     var url = "/ElectronicBatchRecord?title=" + text + "&BatchID=" + BatchID
-                    addParentTab("电子批记录（" + text +"）",url,BatchID + rel)
+                    addParentTab("电子批记录（" + BatchID +"）",url,BatchID + rel)
                 }else{
                     bootbox.alert('请单选一条数据查看批记录！');
                 }

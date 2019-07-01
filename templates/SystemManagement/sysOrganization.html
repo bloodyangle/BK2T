@@ -287,6 +287,7 @@
                 }
             }
             //图形展示
+            show()
             function show(){
                 var domMain = document.getElementById('example')
                 var myChart = echarts.init(domMain, 'macarons');
@@ -295,9 +296,10 @@
                      type : "get",
                      url : "/organizationMap/selectAll",
                      success : function(result) {
-                         console.log(result)
                          if (result) {
-                             myChart.hideLoading(); //隐藏加载动画
+                            result = JSON.parse(result)
+                            console.log(result)
+                             myChart.hideLoading();
                              myChart.setOption({  //加载数据图表
                                  title : {
                                     text: '北京康仁堂药业有限公司',
