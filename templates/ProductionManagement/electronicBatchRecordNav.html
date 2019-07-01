@@ -143,15 +143,17 @@
 
             toolbar = {
                 Search:function(){
-                    $('#tab').bootstrapTable('load',{
-                        BatchID: $("#SearchVal").val()
+                    $('#tab').bootstrapTable('refresh',{
+                        query:{
+                            BatchID: $("#SearchVal").val()
+                        }
                     });
                 },
                 Add:function(){
                     $("#myModal").modal('show')
-                    $('#ID').val();
-                    $('#BatchID').val();
-                    $('#BrandName').val();
+                    $('#ID').val('');
+                    $('#BatchID').val('');
+                    $('#BrandName').val('');
                     $('#PUIDName option[value=""]').prop("selected", 'selected');
                 },
                 Updata:function(){
@@ -160,8 +162,8 @@
                         if(rows){
                             $("#myModal").modal('show')
                             $('#ID').val(rows[0].ID);
-                            $('#BatchID').val(rows[0].OrganizationCode);
-                            $('#BrandName').val(rows[0].OrganizationName);
+                            $('#BatchID').val(rows[0].BatchID);
+                            $('#BrandName').val(rows[0].BrandName);
                             $('#PUIDName option:contains('+rows[0].PUIDName+')').prop("selected", 'selected');
                         }
                     } else {

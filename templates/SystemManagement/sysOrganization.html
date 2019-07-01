@@ -151,8 +151,10 @@
             })
             toolbar = {
                 Search:function(){
-                    $('#tab').bootstrapTable('load',{
-                        BillNo: $("#SearchVal").val()
+                    $('#tab').bootstrapTable('refresh',{
+                        query:{
+                            BillNo: $("#SearchVal").val()
+                        }
                     });
                 },
                 Add:function(){
