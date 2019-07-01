@@ -58,7 +58,7 @@ def login():
 
 
 # 退出登录
-@login_auth.route('/logout')
+@login_auth.route('/account/logout')
 @login_required
 def logout():
     logout_user()
