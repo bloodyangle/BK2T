@@ -13,7 +13,7 @@ batch = Blueprint('batch', __name__, template_folder='templates')
 @batch.route('/ElectronicBatchRecord')
 def ElectronicBatchRecord():
     data = request.values
-    title = data["PUIDName"]
+    title = data.get('PUIDName')["PUIDName"]
     return render_template('electronicBatchRecordNav.html',title = title)
 
 @batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
