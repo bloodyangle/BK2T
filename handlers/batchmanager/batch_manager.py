@@ -1,11 +1,13 @@
+import redis
 from flask import Blueprint, render_template, request, make_response
 import json
-from dbset.database.db_operate import db_session
+from dbset.database.db_operate import db_session,pool
 from dbset.main.BSFramwork import AlchemyEncoder
-from models.SystemManagement.system import BatchIDPUID
+from models.SystemManagement.system import BatchIDPUID, EletronicBatchDataStore
 from dbset.log.BK2TLogger import logger,insertSyslog
 from flask_login import login_required, logout_user, login_user,current_user,LoginManager
 from tools.common import insert,delete,update
+from dbset.database import constant
 
 batch = Blueprint('batch', __name__, template_folder='templates')
 
@@ -18,8 +20,12 @@ def ElectronicBatchRecord():
     if request.method == 'GET':
         data = request.values
         BatchID = data.get('BatchID')
+        title = data.get('title')
         ocal = db_session.query(BatchIDPUID).filter(BatchIDPUID.BatchID == BatchID).first()
-        title = ocal.PUIDName
+        if title == "浓缩":
+            title == "浓缩"
+        else:
+            title = ocal.PUIDName
         return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchID = BatchID)
 
 @batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
@@ -107,11 +113,11 @@ def allUnitDataMutual():
             return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder,ensure_ascii=False)
 def addUpdateEletronicBatchDataStore(PUIDName, BatchID, ke, val):
     try:
-        oc = db_session.query(BatchIDPUID).filter(BatchIDPUID.PUIDName == PUIDName,
-                                                  BatchIDPUID.BatchID == BatchID,
-                                                  BatchIDPUID.Content == ke).first()
+        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUIDName == PUIDName,
+                                                              EletronicBatchDataStore.BatchID == BatchID,
+                                                              EletronicBatchDataStore.Content == ke).first()
         if oc == None:
-            db_session.add(BatchIDPUID(BatchID=BatchID, PUIDName=PUIDName, Content=ke, OperationpValue=val,Operator=current_user.Name))
+            db_session.add(EletronicBatchDataStore(BatchID=BatchID, PUIDName=PUIDName, Content=ke, OperationpValue=val,Operator=current_user.Name))
         else:
             oc.Content = ke
             oc.OperationpValue = val
@@ -123,3 +129,62 @@ def addUpdateEletronicBatchDataStore(PUIDName, BatchID, ke, val):
         logger.error(e)
         insertSyslog("error", "保存更新EletronicBatchDataStore报错：" + str(e), current_user.Name)
         return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,ensure_ascii=False)
+
+@batch.route('/refractometerRedis', methods=['POST', 'GET'])
+def refractometerRedis():
+    '''
+    折光仪实时数据
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                data_dict = {}
+                redis_conn = redis.Redis(connection_pool=pool)
+                for key in data:
+                    data_dict[key] = redis_conn.hget(constant.REDIS_TABLENAME, "t|"+str(key)).decode('utf-8')
+                return json.dumps(data_dict, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "折光仪实时数据查询报错Error：" + str(e), current_user.Name)
+
+@batch.route('/refractometerDataHistory', methods=['POST', 'GET'])
+def refractometerDataHistory():
+    '''
+    折光仪历史数据
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 10:
+                begin = data.get('begin')
+                end = data.get('end')
+                if begin and end:#[t|ZGY_Temp] AS ZGY_Temp
+                    sql = "SELECT  [SampleTime],[t|ZGY_ZGL],[t|ZGY_Temp] FROM [MES].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + begin + "' AND '" + end +"' order by ID"
+                    re = db_session.execute(sql).fetchall()
+                    db_session.close()
+                    div = {}
+                    dic = []
+                    diy = []
+                    for i in re:
+                        t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                        v = i[1]
+                        r = i[2]
+                        if not v:
+                            v = ""
+                        if not r:
+                            r = ""
+                        dic.append([t,v])
+                        diy.append([t,r])
+                    div["ZGL"] = dic
+                    div["Temp"] = diy
+                    return json.dumps(div, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "路由：/EquipmentManagementManual/ManualShow，说明书信息获取Error：" + str(e), current_user.Name)
