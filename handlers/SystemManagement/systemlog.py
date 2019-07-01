@@ -60,7 +60,6 @@ def syslogsFindByDate():
             logger.error(e)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
-
 # 插入日志OperationType OperationContent OperationDate UserName ComputerName IP
 def insertSyslog(operationType, operationContent, userName):
     try:
