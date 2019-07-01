@@ -24,6 +24,46 @@ ul,ol{list-style-type:none;}
 button{border:none;cursor:pointer;font-size:12px;background-color:transparent;}
 a{text-decoration:none;color:#333;}
 
+/*登录页*/
+ .login-bg{
+    /*background: #eeeeee url() 0 0 no-repeat;*/
+    background:url(../../static/images/bg.png) no-repeat center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../static/images/bg.png',sizingMethod='scale');
+    overflow: hidden;
+}
+.login{
+    margin: 120px auto 0 auto;
+    min-height: 420px;
+    max-width: 420px;
+    padding: 40px;
+    background-color: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 4px;
+    /* overflow-x: hidden; */
+    box-sizing: border-box;
+}
+.login .message {
+    margin: 10px 0 0 -58px;
+    padding: 18px 10px 18px 60px;
+    background: #1c87b3;
+    position: relative;
+    color: #fff;
+    font-size: 16px;
+}
+.login #darkbannerwrap {
+    background: url(../../static/images/aiwrap.png);
+    width: 18px;
+    height: 10px;
+    margin: 0 0 20px -58px;
+    position: relative;
+}
+
+/*主页模板*/
 .wrapper{
     position: relative;
     width: 100%;
