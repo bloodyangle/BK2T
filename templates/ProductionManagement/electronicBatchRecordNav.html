@@ -141,7 +141,14 @@
                 }, {
                     field: 'UpdateDate',
                     title: '修改时间'
-                }]
+                }],
+                onClickRow:function (row,$element) {
+                    if($($element).is(".info")){
+                        $($element).removeClass('info');
+                    }else{
+                        $($element).addClass('info');
+                    }
+                }
             });
 
             toolbar = {
