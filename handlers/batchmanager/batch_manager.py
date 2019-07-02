@@ -223,3 +223,9 @@ def refractometerDataHistory():
             print(e)
             logger.error(e)
             insertSyslog("error", "路由：/EquipmentManagementManual/ManualShow，说明书信息获取Error：" + str(e), current_user.Name)
+@batch.route('/basketExtractConcentrationData')
+def basketExtractConcentrationData():
+    return render_template('./Qualitymanagement/basketExtractConcentrationData.html')
+@batch.route('/stirExtractConcentrationData')
+def stirExtractConcentrationData():
+    return render_template('./Qualitymanagement/stirExtractConcentrationData.html')
