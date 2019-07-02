@@ -79,6 +79,27 @@ function createKeyIDObj(keyID){
         id:keyID
     }
 }
+//根据key匹配id  加入数据
+function adddata(ids,res){
+    $("#" + ids).html(res)
+}
+//根据key匹配id,加入数据到表单
+function addInputData(ids,res){
+    $("#" + ids).val(res)
+    $("input[name=FilterCheckbox]").each(function(){
+        if($(this).val() == 'false'){
+            $(this).prop("checked",false)
+        }else if($(this).val() == 'true'){
+            $(this).prop("checked",true)
+        }
+    })
+}
+//获取页面传参
+  function getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = decodeURI(window.location.search).substr(1).match(reg); //匹配目标参数
+      if (r != null) return unescape(r[2]); return null; //返回参数值
+  }
 //给主页的tabs增加选项页
 function addParentTab(title,url,index){
     parent.nthTabs.addTab({
