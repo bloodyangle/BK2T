@@ -381,6 +381,28 @@ class QualityControlTree(Base):
 	# 父节点
 	ParentNode = Column(Integer, primary_key = False, autoincrement = False, nullable = True)
 
+# 批次表
+class BatchIDData(Base):
+    __tablename__ = "BatchIDData"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批次号
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名
+    BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段ID
+    PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间
+    CreateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 修改时间
+    UpdateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 # 批次维护表
 class BatchIDPUID(Base):
     __tablename__ = "BatchIDPUID"
@@ -392,7 +414,10 @@ class BatchIDPUID(Base):
     BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名
-    BrandName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+    BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备ID
+    EQPID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 品名ID
     BrandID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
