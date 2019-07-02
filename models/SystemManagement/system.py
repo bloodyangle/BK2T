@@ -382,20 +382,20 @@ class QualityControlTree(Base):
 	ParentNode = Column(Integer, primary_key = False, autoincrement = False, nullable = True)
 
 # 批次表
-class BatchIDData(Base):
-    __tablename__ = "BatchIDData"
+class BatchInfo(Base):
+    __tablename__ = "BatchInfo"
 
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
     # 批次号
-    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    BatchNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名
     BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段ID
-    PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 工艺生产线
+    PUIDLineName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
     # 创建时间
     CreateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -404,14 +404,14 @@ class BatchIDData(Base):
     UpdateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 # 批次维护表
-class BatchIDPUID(Base):
-    __tablename__ = "BatchIDPUID"
+class BatchInfoDetail(Base):
+    __tablename__ = "BatchInfoDetail"
 
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
     # 批次号
-    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    BatchNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名
     BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
@@ -460,6 +460,31 @@ class EletronicBatchDataStore(Base):
 
     # 描述:
     Description = Column(String(100), primary_key=False, autoincrement=False, nullable=True)
+
+# 批记录TYPE
+class BatchType(Base):
+    __tablename__ = 'BatchType'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批记录类型:
+    Type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 批记录类型说明:
+    Descrip = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+# 品名维护表
+class BrandFlag(Base):
+    __tablename__ = 'BrandFlag'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 品名:
+    BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名标识:
+    BrandNameFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)
