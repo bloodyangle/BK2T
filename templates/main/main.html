@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../../static/js/popper.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../static/js/jquery.scrollbar.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootbox.min.js"></script>
     <script type="text/javascript" src="../../static/js/admin.js"></script>
 </head>
 <body style="height: auto;min-height: 100%;">
@@ -26,7 +27,7 @@
                     <i class="glyphicon glyphicon-menu-down"></i>
                     <div class="navUserPanel">
                         <ul class="nav nav-pills nav-stacked">
-                            <li><a href="javascript:;">用户信息</a></li>
+                            <li><a href="javascript:;" id="seeUserMessage">用户信息</a></li>
                             <li><a href="/account/logout">退出</a></li>
                         </ul>
                     </div>
@@ -53,19 +54,31 @@
                                     <span class="linkName">电子批记录</span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="#" class="addTabLink" data-href="/Equipment">
+                                    <span class="glyphicon glyphicon-menu-right"></span>
+                                    <span class="linkName">设备信息管理</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li>
                         <a href="javascript:;" class="rootMenu">
                             <span class="glyphicon glyphicon-stats pull-left"></span>
-                            <span>过程质量分析</span>
+                            <span>过程数据采集</span>
                             <span class="glyphicon glyphicon-menu-left pull-right"></span>
                         </a>
                         <ul class="treeMenu">
                             <li>
                                 <a href="#" class="addTabLink" data-href="/ProcessContinuousData">
                                     <span class="glyphicon glyphicon-menu-right"></span>
-                                    <span class="linkName">过程连续数据</span>
+                                    <span class="linkName">篮式提取浓缩过程数据</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="addTabLink" data-href="/ProcessContinuousData">
+                                    <span class="glyphicon glyphicon-menu-right"></span>
+                                    <span class="linkName">搅拌提取浓缩过程数据</span>
                                 </a>
                             </li>
                         </ul>

@@ -6,7 +6,6 @@
 	<title>用户管理</title>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../static/css/base.css" rel="stylesheet">
-    <script src="../../static/js/echarts.common.min.js"></script>
     <script src="../../static/js/jquery-3.3.1.min.js"></script>
     <script src="../../static/js/bootstrap.min.js"></script>
     <script src="../../static/js/bootstrap-table.min.js"></script>
@@ -118,16 +117,17 @@
                 url:'/MyOp',
                 type:"get",
                 success:function(data){
-                    console.log(data)
                     $('#treeview').treeview({
                         data:data,
                         selectable: true,
-                        //color:"#ffffff",
                         selectedBackColor: "#5485F7",// 选中时的背景色
-                        //selectedColor: '#ffffff',//选中时的文本颜色
-                        //onhoverColor: "#5485F7",// hover时的颜色
-                        onNodeSelected: function(event, data) {// 选中事件
-                            console.log(data)
+                        onNodeSelected: function(event, data) {
+                            $('#tab').bootstrapTable('refresh',{
+                                query:{
+                                    id: data.value,
+                                    Name: $("#SearchVal").val()
+                                }
+                            });
                         }
                     });
                 },
@@ -157,7 +157,7 @@
                 paginationLoop:false,
                 paginationPreText:'上一页',
                 paginationNextText:'下一页',
-                singleSelect:true,
+                singleSelect:false,
                 clickToSelect:true,
 	            locale: "zh-CN",
 	            striped: true,
@@ -178,16 +178,29 @@
                 },{
                     field: 'RoleName',
                     title: '所属角色'
+                },{
+                    field: 'Creater',
+                    title: '创建用户'
+                },{
+                    field: 'CreateTime',
+                    title: '创建时间'
+                },{
+                    field: 'LastLoginTime',
+                    title: '上次登录时间'
                 }],
-                onCheck:function (row,$element) {
-
-                }
+                onClickRow:function (row,$element) {
+                    if($($element).is(".info")){
+                        $($element).removeClass('info');
+                    }else{
+                        $($element).addClass('info');
+                    }
+                }
             })
             toolbar = {
                 Search:function(){
                     $('#tab').bootstrapTable('refresh',{
                         query:{
-                            id: code,
+                            id: "",
                             Name: $("#SearchVal").val()
                         }
                     });

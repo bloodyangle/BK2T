@@ -252,6 +252,34 @@ $(function () {
 		$(this).find(".navUserPanel").css("display","none")
 	})
 
+	//查看用户信息
+	$("#seeUserMessage").on('click',function(){
+		var html= ''
+		$.ajax({
+			url:'/user_manage/MyUser/Select',
+			method: 'get',
+			data:{
+				id: '',
+				Name:$(".navUserName").html(),
+				limit : 1,
+                offset : 0
+			},
+			success:function(res){
+				res = JSON.parse(res)
+				html = '<table class="table table-bordered"><tr><td>用户名</td><td>' + res.rows[0].Name +'</td></tr>'+
+            	'<tr><td>工号</td><td>'+ res.rows[0].WorkNumber +'</td></tr><tr><td>所属部门</td><td>'+ res.rows[0].OrganizationName +'</td></tr>'+
+            	'<tr><td>所属角色</td><td>'+ res.rows[0].RoleName +'</td></tr>'+
+            	'<tr><td>创建用户</td><td>'+ res.rows[0].Creater +'</td></tr>'+
+            	'<tr><td>创建时间</td><td>'+ res.rows[0].CreateTime +'</td></tr>'+
+            	'<tr><td>上次登录时间</td><td>'+ res.rows[0].LastLoginTime +'</td></tr></table>'
+				bootbox.alert(html)
+			},
+			error:function (data) {
+				bootbox.alert("请求失败")
+            }
+		})
+	})
+
 	//装选项卡内容的高度设置
 	$(window).resize(function () {
 		$(".tab-content").css("height",$(document).innerHeight() - 95)
