@@ -43,3 +43,12 @@ B_drug = [j for j in materia_tracing_B_drug.keys()]
 Decocting_A_EquipID = eval(config['EquipID']['Decocting_A'])
 Decocting_B_EquipID = eval(config['EquipID']['Decocting_B'])
 AlcoholEquipID = eval(config['EquipID']['Alcohol'])
+
+
+CONFIG_retxt = os.path.join(BASE_DIR,r'database\redistxt.ini')
+config_retxt = configparser.ConfigParser()
+config_retxt.read(CONFIG_retxt,encoding='UTF-8')
+
+
+REDIS_retxt = config_retxt['BK']
+print(REDIS_retxt)

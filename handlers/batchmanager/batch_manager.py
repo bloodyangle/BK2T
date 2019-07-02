@@ -3,7 +3,8 @@ from flask import Blueprint, render_template, request, make_response
 import json
 from dbset.database.db_operate import db_session,pool
 from dbset.main.BSFramwork import AlchemyEncoder
-from models.SystemManagement.system import BatchIDPUID, EletronicBatchDataStore
+from models.SystemManagement.system import BatchInfoDetail, EletronicBatchDataStore, Equipment, BatchType, \
+    ElectronicBatchTwo, BatchInfo
 from dbset.log.BK2TLogger import logger,insertSyslog
 from flask_login import login_required, logout_user, login_user,current_user,LoginManager
 from tools.common import insert,delete,update
@@ -21,15 +22,15 @@ def ElectronicBatchRecord():
         data = request.values
         BatchID = data.get('BatchID')
         title = data.get('title')
-        ocal = db_session.query(BatchIDPUID).filter(BatchIDPUID.BatchID == BatchID).first()
+        ocal = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchID == BatchID).first()
         if title == "浓缩":
             title == "浓缩"
         else:
             title = ocal.PUIDName
         return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchID = BatchID)
 
-@batch.route('/BatchIDPUIDSearch', methods=['POST', 'GET'])
-def BatchIDPUIDSearch():
+@batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
+def BatchInfoSearch():
     if request.method == 'GET':
         data = request.values
         try:
@@ -39,13 +40,13 @@ def BatchIDPUIDSearch():
                 rowsnumber = int(data.get("limit"))
                 inipage = pages * rowsnumber + 0
                 endpage = pages * rowsnumber + rowsnumber
-                BatchID = data['BatchID']
-                if(BatchID == "" or BatchID == None):
-                    total = db_session.query(BatchIDPUID).order_by(("BatchID")).count()
-                    oclass = db_session.query(BatchIDPUID).order_by(("BatchID")).all()[inipage:endpage]
+                BatchNum = data['BatchNum']
+                if(BatchNum == "" or BatchNum == None):
+                    total = db_session.query(BatchInfo).order_by(("BatchNum")).count()
+                    oclass = db_session.query(BatchInfo).order_by(("BatchNum")).all()[inipage:endpage]
                 else:
-                    total = db_session.query(BatchIDPUID).filter(BatchIDPUID.BatchID.like("%" + BatchID + "%")).count()
-                    oclass = db_session.query(BatchIDPUID).filter(BatchIDPUID.BatchID.like("%" + BatchID + "%")).all()[inipage:endpage]
+                    total = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%")).count()
+                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%")).all()[inipage:endpage]
                 jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
                 return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
         except Exception as e:
@@ -53,23 +54,66 @@ def BatchIDPUIDSearch():
             logger.error(e)
             insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
 
-@batch.route('/BatchIDPUIDCreate', methods=['POST', 'GET'])
-def BatchIDPUIDCreate():
+@batch.route('/BatchInfoCreate', methods=['POST', 'GET'])
+def BatchInfoCreate():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
-        return insert(BatchIDPUID, data)
+        return insert(BatchInfo, data)
 
-@batch.route('/BatchIDPUIDUpdate', methods=['POST', 'GET'])
-def BatchIDPUIDUpdate():
+@batch.route('/BatchInfoUpdate', methods=['POST', 'GET'])
+def BatchInfoUpdate():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
-        return update(BatchIDPUID, data)
+        return update(BatchInfo, data)
 
-@batch.route('/BatchIDPUIDDelete', methods=['POST', 'GET'])
-def BatchIDPUIDDelete():
+@batch.route('/BatchInfoDelete', methods=['POST', 'GET'])
+def BatchInfoDelete():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
-        return delete(BatchIDPUID, data)
+        return delete(BatchInfo, data)
+
+@batch.route('/BatchInfoDetailSearch', methods=['POST', 'GET'])
+def BatchInfoDetailSearch():
+    if request.method == 'GET':
+        data = request.values
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                pages = int(data.get("offset"))
+                rowsnumber = int(data.get("limit"))
+                inipage = pages * rowsnumber + 0
+                endpage = pages * rowsnumber + rowsnumber
+                BatchNum = data['BatchNum']
+                if(BatchNum == "" or BatchNum == None):
+                    total = db_session.query(BatchInfoDetail).order_by(("BatchNum")).count()
+                    oclass = db_session.query(BatchInfoDetail).order_by(("BatchNum")).all()[inipage:endpage]
+                else:
+                    total = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum.like("%" + BatchNum + "%")).count()
+                    oclass = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum.like("%" + BatchNum + "%")).all()[inipage:endpage]
+                jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
+                return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
+
+@batch.route('/BatchInfoDetailCreate', methods=['POST', 'GET'])
+def BatchInfoDetailCreate():
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        return insert(BatchInfoDetail, data)
+
+@batch.route('/BatchInfoDetailUpdate', methods=['POST', 'GET'])
+def BatchInfoDetailUpdate():
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        return update(BatchInfoDetail, data)
+
+@batch.route('/BatchInfoDetailDelete', methods=['POST', 'GET'])
+def BatchInfoDetailDelete():
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        return delete(BatchInfoDetail, data)
 
 # 所有工艺段保存查询操作
 @batch.route('/allUnitDataMutual', methods=['POST', 'GET'])
@@ -99,8 +143,8 @@ def allUnitDataMutual():
             if len(json_str) > 2:
                 PUID = data['PUID']
                 BatchID = data['BatchID']
-                oclasss = db_session.query(BatchIDPUID).filter(BatchIDPUID.PUID == PUID,
-                                                               BatchIDPUID.BatchID == BatchID).all()
+                oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUID == PUID,
+                                                                           EletronicBatchDataStore.BatchID == BatchID).all()
                 dic = {}
                 for oclass in oclasss:
                     dic[oclass.Content] = oclass.OperationpValue
@@ -133,54 +177,22 @@ def addUpdateEletronicBatchDataStore(PUIDName, BatchID, ke, val):
 @batch.route('/refractometerRedis', methods=['POST', 'GET'])
 def refractometerRedis():
     '''
-    折光仪实时数据
+    Redis实时数据
     :return:
     '''
     if request.method == 'GET':
         data = request.values
         try:
             jsonstr = json.dumps(data.to_dict())
-            if len(jsonstr) > 10:
-                data_dict = {}
-                redis_conn = redis.Redis(connection_pool=pool)
-                data_dict["R101_1_SP01_SW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SP01_SW").decode(
-                    'utf-8')
-                data_dict["R101_1_SP01_BW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SP01_BW").decode(
-                    'utf-8')
-                data_dict["R101_1_SP01_DQ"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SP01_DQ").decode(
-                    'utf-8')
-                data_dict["R101_1_SV_ST01"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SV_ST01").decode(
-                    'utf-8')
-                data_dict["R101_1_SV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_SV_BW_Time").decode(
-                    'utf-8')
-                data_dict["R101_1_PV_SW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_SW_Time").decode(
-                    'utf-8')
-                data_dict["R101_1_PV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_BW_Time").decode(
-                    'utf-8')
-                data_dict["R101_1_PV_XH_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_XH_Time").decode(
-                    'utf-8')
-                data_dict["R101_1_PV_CL_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_1_PV_XH_Time").decode(
-                    'utf-8')
-
-                data_dict["R101_2_SP01_SW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SP01_SW").decode(
-                    'utf-8')
-                data_dict["R101_2_SP01_BW"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SP01_BW").decode(
-                    'utf-8')
-                data_dict["R101_2_SP01_DQ"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SP01_DQ").decode(
-                    'utf-8')
-                data_dict["R101_2_SV_ST01"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SV_ST01").decode(
-                    'utf-8')
-                data_dict["R101_2_SV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_SV_BW_Time").decode(
-                    'utf-8')
-                data_dict["R101_2_PV_SW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_SW_Time").decode(
-                    'utf-8')
-                data_dict["R101_2_PV_BW_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_BW_Time").decode(
-                    'utf-8')
-                data_dict["R101_2_PV_XH_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_XH_Time").decode(
-                    'utf-8')
-                data_dict["R101_2_PV_CL_Time"] = redis_conn.hget(constant.REDIS_TABLENAME, "R101_2_PV_CL_Time").decode(
-                    'utf-8')
-                return json.dumps(data_dict, cls=AlchemyEncoder, ensure_ascii=False)
+            data_dict = {}
+            redis_conn = redis.Redis(connection_pool=pool)
+            bls = constant.REDIS_retxt
+            for key in bls:
+                key = key.upper()
+                if "IME" in key:
+                    key = key[0:-3]+"ime"
+                data_dict[key] = redis_conn.hget(constant.REDIS_TABLENAME, "t|" + str(key)).decode('utf-8')
+            return json.dumps(data_dict, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
             logger.error(e)
@@ -229,3 +241,97 @@ def basketExtractConcentrationData():
 @batch.route('/stirExtractConcentrationData')
 def stirExtractConcentrationData():
     return render_template('./Qualitymanagement/stirExtractConcentrationData.html')
+
+# 批记录查询
+@batch.route('/BatchSearch')
+def BatchSearch():
+    if request.method == 'GET':
+        data = request.values
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 2:
+                BatchID = data.get("BatchID")
+                BrandName = data.get("BrandName")
+                types = db_session.query(BatchType).all()
+                dic = {}
+                if BrandName == "提取":
+                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchID == BatchID).first()
+                    eqps = db_session.query(ElectronicBatchTwo.EQPID).filter(ElectronicBatchTwo.PDUnitRouteID == "1").all()
+                    for i in eqps:
+                        EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i).first()
+                        if oclass.PUID == "1":
+                            db_session.query(BatchType).filter(BatchType.Descrip.like(""))
+                        dic["_Batch_TQ_Action01_" + str(i)] = EQPName[0]
+                return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "电子批记录查询报错Error：" + str(e), current_user.Name)
+            return json.dumps("电子批记录查询", cls=AlchemyEncoder,
+                              ensure_ascii=False)
+
+def changef(args):
+    if args != None and args != "":
+        return str(round(float(args), 2))
+    else:
+        return ""
+def strchange(args):
+    if args != None and args != "":
+        return str(args)[10:-10]
+    else:
+        return ""
+def strch(args):
+    if args != None and args != "":
+        return str(args)[0:-7]
+    else:
+        return ""
+def getmax(args):
+    num1 = []
+    for x in range(len(args)):
+        temp = float(args[x].SampleValue)
+        num1.append(temp)
+        if x == 0:
+            unit = args[x].Unit
+    return changef(max(num1)) + unit
+def getmin(args):
+    num1 = []
+    for x in range(len(args)):
+        temp = float(args[x].SampleValue)
+        num1.append(temp)
+        if x == 0:
+            unit = args[x].Unit
+    return changef(min(num1)) + unit
+def searO(BrandName, BatchID, PID, EQPID, Type):
+    re = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BrandName == BrandName,
+                                                     ElectronicBatchTwo.BatchID == BatchID,
+                                                     ElectronicBatchTwo.PDUnitRouteID == PID,
+                                                     ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == Type).first()
+    if re == None:
+        electronicBatch = ElectronicBatchTwo()
+        electronicBatch.SampleValue = ""
+        electronicBatch.Unit = ""
+        electronicBatch.SampleDate = ""
+        return electronicBatch
+    else:
+        return re
+def searJZ(BrandName, BatchID, PID, EQPID, Type):
+    re = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BrandName == BrandName,
+                                                     ElectronicBatchTwo.BatchID == BatchID,
+                                                     ElectronicBatchTwo.PDUnitRouteID == PID,
+                                                     ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == Type).first()
+    if re == None:
+        electronicBatch = ElectronicBatchTwo()
+        electronicBatch.SampleValue = ""
+        electronicBatch.Unit = ""
+        electronicBatch.SampleDate = ""
+        return electronicBatch
+    else:
+        return re
+def searchEqpID(BrandName, BatchID, PID, name):
+    EQPIDs = db_session.query(Equipment.ID).filter(Equipment.PUID == PID,
+                                                   Equipment.EQPName.like("%" + name + "%")).all()
+    EQPS = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PID,
+                                                                        ElectronicBatchTwo.BrandName == BrandName,
+                                                                        ElectronicBatchTwo.BatchID == BatchID).all()
+    tmp = [val for val in EQPIDs if val in EQPS]
+    return tmp
