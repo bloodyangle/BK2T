@@ -250,13 +250,17 @@ def BatchSearch():
         try:
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 2:
-                BatchID = data.get("BatchID")
+                BatchNum = data.get("BatchNum")
                 BrandName = data.get("BrandName")
                 types = db_session.query(BatchType).all()
                 dic = {}
                 if BrandName == "提取":
-                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchID == BatchID).first()
-                    eqps = db_session.query(ElectronicBatchTwo.EQPID).filter(ElectronicBatchTwo.PDUnitRouteID == "1").all()
+                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum == BatchNum).first()
+                    if oclass.PUIDLineName == "篮式":
+                        PUID = "1"
+                    elif oclass.PUIDLineName == "搅拌":
+                        PUID = "3"
+                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).all()
                     for i in eqps:
                         EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i).first()
                         if oclass.PUID == "1":
