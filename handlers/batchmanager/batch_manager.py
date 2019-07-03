@@ -19,7 +19,10 @@ def electronicBatchRecord():
 def ElectronicBatchRecord():
     if request.method == 'GET':
         data = request.values
-        return render_template('./ProductionManagement/electronicBatchRecord.html', title = data.get('title'), BatchNum = data.get('BatchID'))
+        BatchNum = data.get('BatchID')
+        title = data.get('title')
+        PUIDLineName = db_session.query(BatchInfo.PUIDLineName).filter(BatchInfo.BatchNum==BatchNum).first()
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = PUIDLineName[0] + data.get('title'), BatchNum = BatchNum)
 
 @batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
 def BatchInfoSearch():
@@ -115,12 +118,12 @@ def allUnitDataMutual():
         data = data.to_dict()
         try:
             for key in data.keys():
-                if key == "PUIDName":
+                if key == "Name":
                     continue
                 if key == "BatchID":
                     continue
                 val = data.get(key)
-                addUpdateEletronicBatchDataStore(data.get("PUIDName"), data.get("BatchID"), key, val)
+                addUpdateEletronicBatchDataStore(data.get("Name"), data.get("BatchID"), key, val)
             return 'OK'
         except Exception as e:
             db_session.rollback()
@@ -133,7 +136,7 @@ def allUnitDataMutual():
         try:
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 2:
-                PUID = data['PUID']
+                PUID = data['Name']
                 BatchID = data['BatchID']
                 oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUID == PUID,
                                                                            EletronicBatchDataStore.BatchID == BatchID).all()
