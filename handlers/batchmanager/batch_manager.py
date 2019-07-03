@@ -19,14 +19,7 @@ def electronicBatchRecord():
 def ElectronicBatchRecord():
     if request.method == 'GET':
         data = request.values
-        BatchNum = data.get('BatchID')
-        title = data.get('title')
-        ocal = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).first()
-        if title == "浓缩":
-            title == "浓缩"
-        else:
-            title = ocal.PUIDName
-        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchNum = BatchNum)
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = data.get('title'), BatchNum = data.get('BatchID'))
 
 @batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
 def BatchInfoSearch():
