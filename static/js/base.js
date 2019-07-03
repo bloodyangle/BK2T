@@ -86,7 +86,7 @@ function adddata(ids,res){
 //根据key匹配id,加入数据到表单
 function addInputData(ids,res){
     $("#" + ids).val(res)
-    $("input[name=FilterCheckbox]").each(function(){
+    $(".FilterCheckbox").each(function(){
         if($(this).val() == 'false'){
             $(this).prop("checked",false)
         }else if($(this).val() == 'true'){
