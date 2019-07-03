@@ -171,11 +171,17 @@
                     title: '修改时间'
                 }],
                 onClickRow:function (row,$element) {
+                    console.log(row)
                     if($($element).is(".info")){
                         $($element).removeClass('info');
                     }else{
                         $($element).addClass('info');
                     }
+                    $('#planTab').bootstrapTable('refresh',{
+                        query:{
+                            BatchNum: row.BatchNum
+                        }
+                    });
                 }
             });
             $('#planTab').bootstrapTable({
