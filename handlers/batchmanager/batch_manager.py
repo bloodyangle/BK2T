@@ -15,19 +15,18 @@ batch = Blueprint('batch', __name__, template_folder='templates')
 @batch.route('/ElectronicBatchRecordNav')
 def electronicBatchRecord():
     return render_template('./ProductionManagement/electronicBatchRecordNav.html')
-# 生产数据管理-电子批记录
 @batch.route('/ElectronicBatchRecord', methods=['POST', 'GET'])
 def ElectronicBatchRecord():
     if request.method == 'GET':
         data = request.values
-        BatchID = data.get('BatchID')
+        BatchNum = data.get('BatchID')
         title = data.get('title')
-        ocal = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchID == BatchID).first()
+        ocal = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).first()
         if title == "浓缩":
             title == "浓缩"
         else:
             title = ocal.PUIDName
-        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchID = BatchID)
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchNum = BatchNum)
 
 @batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
 def BatchInfoSearch():
@@ -40,7 +39,7 @@ def BatchInfoSearch():
                 rowsnumber = int(data.get("limit"))
                 inipage = pages * rowsnumber + 0
                 endpage = pages * rowsnumber + rowsnumber
-                BatchNum = data['BatchNum']
+                BatchNum = data.get('BatchNum')
                 if(BatchNum == "" or BatchNum == None):
                     total = db_session.query(BatchInfo).order_by(("BatchNum")).count()
                     oclass = db_session.query(BatchInfo).order_by(("BatchNum")).all()[inipage:endpage]
@@ -251,29 +250,33 @@ def BatchSearch():
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 2:
                 BatchNum = data.get("BatchNum")
-                BrandName = data.get("BrandName")
-                types = db_session.query(BatchType).all()
+                Name = data.get("Name")
                 dic = {}
-                if BrandName == "提取":
-                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum == BatchNum).first()
+                oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum == BatchNum).first()
+                if Name == "提取":
                     if oclass.PUIDLineName == "篮式":
                         PUID = "1"
                     elif oclass.PUIDLineName == "搅拌":
                         PUID = "3"
-                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).all()
+                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("ID")).all()
                     for i in eqps:
-                        EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i).first()
-                        if oclass.PUID == "1":
-                            db_session.query(BatchType).filter(BatchType.Descrip.like(""))
-                        dic["_Batch_TQ_Action01_" + str(i)] = EQPName[0]
-                return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+                        EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i[0]).first()
+                        types = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
+                        for type in types:
+                            if type == "_Batch_LS_Action01" or type == "_Batch_JB_Action01":
+                                dic[type + "_" + str(i)] = EQPName[0]
+                            else:
+                                dic[type+"_"+str(i)] = db_session.query(ElectronicBatchTwo.SampleValue).filter(
+                                    ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == int(i), ElectronicBatchTwo.Type == type).first()
+                    return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+                else:
+                    return ""
         except Exception as e:
             print(e)
             logger.error(e)
             insertSyslog("error", "电子批记录查询报错Error：" + str(e), current_user.Name)
             return json.dumps("电子批记录查询", cls=AlchemyEncoder,
                               ensure_ascii=False)
-
 def changef(args):
     if args != None and args != "":
         return str(round(float(args), 2))
@@ -305,32 +308,6 @@ def getmin(args):
         if x == 0:
             unit = args[x].Unit
     return changef(min(num1)) + unit
-def searO(BrandName, BatchID, PID, EQPID, Type):
-    re = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BrandName == BrandName,
-                                                     ElectronicBatchTwo.BatchID == BatchID,
-                                                     ElectronicBatchTwo.PDUnitRouteID == PID,
-                                                     ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == Type).first()
-    if re == None:
-        electronicBatch = ElectronicBatchTwo()
-        electronicBatch.SampleValue = ""
-        electronicBatch.Unit = ""
-        electronicBatch.SampleDate = ""
-        return electronicBatch
-    else:
-        return re
-def searJZ(BrandName, BatchID, PID, EQPID, Type):
-    re = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BrandName == BrandName,
-                                                     ElectronicBatchTwo.BatchID == BatchID,
-                                                     ElectronicBatchTwo.PDUnitRouteID == PID,
-                                                     ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == Type).first()
-    if re == None:
-        electronicBatch = ElectronicBatchTwo()
-        electronicBatch.SampleValue = ""
-        electronicBatch.Unit = ""
-        electronicBatch.SampleDate = ""
-        return electronicBatch
-    else:
-        return re
 def searchEqpID(BrandName, BatchID, PID, name):
     EQPIDs = db_session.query(Equipment.ID).filter(Equipment.PUID == PID,
                                                    Equipment.EQPName.like("%" + name + "%")).all()

@@ -394,6 +394,9 @@ class BatchInfo(Base):
     # 品名
     BrandName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
+    # 药材规格
+    MedicinalType = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
     # 工艺生产线
     PUIDLineName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
