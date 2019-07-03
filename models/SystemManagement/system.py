@@ -450,13 +450,13 @@ class EletronicBatchDataStore(Base):
     BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段ID:
-    PUID = Column(Integer, nullable=False, primary_key=False)
+    PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 操作步骤内容:
     Content = Column(String(60), primary_key=False, autoincrement=False, nullable=True)
 
     # 操作值:
-    OperationpValue = Column(Unicode(20), primary_key=False, autoincrement=False, nullable=True)
+    OperationpValue = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     #操作人:
     Operator = Column(Unicode(32), primary_key = False, autoincrement = False, nullable = True)

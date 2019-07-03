@@ -140,8 +140,7 @@ def allUnitDataMutual():
             if len(json_str) > 2:
                 PUID = data['Name']
                 BatchID = data['BatchID']
-                oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUID == PUID,
-                                                                           EletronicBatchDataStore.BatchID == BatchID).all()
+                oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BatchID == BatchID, EletronicBatchDataStore.PUID == PUID).all()
                 dic = {}
                 for oclass in oclasss:
                     dic[oclass.Content] = oclass.OperationpValue
@@ -152,13 +151,13 @@ def allUnitDataMutual():
             logger.error(e)
             insertSyslog("error", "所有工艺段保存查询操作报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder,ensure_ascii=False)
-def addUpdateEletronicBatchDataStore(PUIDName, BatchID, ke, val):
+def addUpdateEletronicBatchDataStore(PUID, BatchID, ke, val):
     try:
-        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUIDName == PUIDName,
+        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUID == PUID,
                                                               EletronicBatchDataStore.BatchID == BatchID,
                                                               EletronicBatchDataStore.Content == ke).first()
         if oc == None:
-            db_session.add(EletronicBatchDataStore(BatchID=BatchID, PUIDName=PUIDName, Content=ke, OperationpValue=val,Operator=current_user.Name))
+            db_session.add(EletronicBatchDataStore(BatchID=BatchID, PUID=PUID, Content=ke, OperationpValue=val,Operator=current_user.Name))
         else:
             oc.Content = ke
             oc.OperationpValue = val
@@ -282,18 +281,12 @@ def queryvalue(BatchNum, EQPID, type):
     SampleValues = db_session.query(ElectronicBatchTwo.SampleValue).filter(
                                         ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == type).order_by(("SampleDate")).all()
     dir = []
-    if SampleValues == None or SampleValues == "":
-        dir.append("")
-        dir.append("")
-    elif len(SampleValues) == 1:
+    if len(SampleValues) == 1:
         SampleValue1 = SampleValues[0][0]
-        if SampleValue1 == None or SampleValue1 == "":
-            dir.append("")
+        if len(SampleValue1) > 18:
+            dir.append(strch(SampleValue1))
         else:
-            if len(SampleValue1) > 18:
-                dir.append(strch(SampleValue1))
-            else:
-                dir.append(SampleValue1)
+            dir.append(SampleValue1)
         dir.append("")
     elif len(SampleValues) == 2:
         SampleValue1 = SampleValues[0][0]
@@ -312,6 +305,9 @@ def queryvalue(BatchNum, EQPID, type):
                 dir.append(strch(SampleValue2))
             else:
                 dir.append(SampleValue2)
+    elif SampleValues == None or len(SampleValues) < 1 or len(SampleValues) > 2:
+        dir.append("")
+        dir.append("")
     return dir
 def changef(args):
     if args != None and args != "":
