@@ -266,6 +266,7 @@ def BatchSearch():
                             else:
                                 dic[type+"_"+str(i)] = db_session.query(ElectronicBatchTwo.SampleValue).filter(
                                     ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == int(i), ElectronicBatchTwo.Type == type).first()
+                    dic["MedicinalType"] = oclass.MedicinalType
                     return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
                 else:
                     return ""
