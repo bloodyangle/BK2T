@@ -20,14 +20,14 @@ def electronicBatchRecord():
 def ElectronicBatchRecord():
     if request.method == 'GET':
         data = request.values
-        BatchID = data.get('BatchID')
+        BatchNum = data.get('BatchID')
         title = data.get('title')
-        ocal = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchID == BatchID).first()
+        ocal = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).first()
         if title == "浓缩":
             title == "浓缩"
         else:
             title = ocal.PUIDName
-        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchID = BatchID)
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchNum = BatchNum)
 
 @batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
 def BatchInfoSearch():
@@ -40,7 +40,7 @@ def BatchInfoSearch():
                 rowsnumber = int(data.get("limit"))
                 inipage = pages * rowsnumber + 0
                 endpage = pages * rowsnumber + rowsnumber
-                BatchNum = data['BatchNum']
+                BatchNum = data.get('BatchNum')
                 if(BatchNum == "" or BatchNum == None):
                     total = db_session.query(BatchInfo).order_by(("BatchNum")).count()
                     oclass = db_session.query(BatchInfo).order_by(("BatchNum")).all()[inipage:endpage]
@@ -251,22 +251,25 @@ def BatchSearch():
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 2:
                 BatchNum = data.get("BatchNum")
-                BrandName = data.get("BrandName")
-                types = db_session.query(BatchType).all()
+                Name = data.get("Name")
                 dic = {}
-                if BrandName == "提取":
-                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum == BatchNum).first()
+                oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum == BatchNum).first()
+                if Name == "提取":
                     if oclass.PUIDLineName == "篮式":
                         PUID = "1"
                     elif oclass.PUIDLineName == "搅拌":
                         PUID = "3"
-                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).all()
+                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("ID")).all()
                     for i in eqps:
+                        db_session.query(BatchType)
                         EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i).first()
-                        if oclass.PUID == "1":
-                            db_session.query(BatchType).filter(BatchType.Descrip.like(""))
-                        dic["_Batch_TQ_Action01_" + str(i)] = EQPName[0]
-                return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+                        types = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
+                        for type in types:
+                            dic[type+"_"+str(i)] = db_session.query(ElectronicBatchTwo.SampleValue).filter(
+                                ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == int(i), ElectronicBatchTwo.Type == type).first()
+                    return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+                else:
+                    return ""
         except Exception as e:
             print(e)
             logger.error(e)
