@@ -139,8 +139,8 @@
 	            pagination: true,
                 toolbar:"#Toolbar",
                 pageNumber:1,
-	            pageSize: 10,
-	            pageList: [10, 20, 30, 50],
+	            pageSize: 5,
+	            pageList: [5, 10, 20, 30, 50],
                 sidePagination: "server",
                 paginationLoop:false,
                 paginationPreText:'上一页',
@@ -191,8 +191,8 @@
 	            pagination: true,
                 toolbar:"#planToolbar",
                 pageNumber:1,
-	            pageSize: 10,
-	            pageList: [10, 20, 30, 50],
+	            pageSize: 5,
+	            pageList: [5, 10, 20, 30, 50],
                 sidePagination: "server",
                 paginationLoop:false,
                 paginationPreText:'上一页',
@@ -438,7 +438,7 @@
                 var rows = $("#tab").bootstrapTable('getSelections');
                 if(rows.length == 1){
                     var BatchNum = rows[0].BatchNum
-                    var url = "/ElectronicBatchRecord?title=" + text + "&BatchID=" + BatchNum + "&BrandName=" + BrandName
+                    var url = "/ElectronicBatchRecord?title=" + text + "&BatchID=" + BatchNum
                     addParentTab("电子批记录（" + BatchNum +"）",url,rel+BatchNum)
                 }else{
                     bootbox.alert('请单选一条数据查看批记录！');
