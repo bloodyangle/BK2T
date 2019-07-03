@@ -21,8 +21,10 @@ def ElectronicBatchRecord():
         data = request.values
         BatchNum = data.get('BatchID')
         title = data.get('title')
-        PUIDLineName = db_session.query(BatchInfo.PUIDLineName).filter(BatchInfo.BatchNum==BatchNum).first()
-        return render_template('./ProductionManagement/electronicBatchRecord.html', title = PUIDLineName[0] + data.get('title'), BatchNum = BatchNum)
+        if title == "提取":
+            PUIDLineName = db_session.query(BatchInfo.PUIDLineName).filter(BatchInfo.BatchNum == BatchNum).first()
+            title = PUIDLineName[0] + data.get('title')
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchNum = BatchNum)
 
 @batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
 def BatchInfoSearch():
