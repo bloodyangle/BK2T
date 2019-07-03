@@ -256,16 +256,18 @@ def BatchSearch():
                         PUID = "1"
                     elif oclass.PUIDLineName == "搅拌":
                         PUID = "3"
-                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("ID")).all()
+                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("EQPID")).all()
                     for i in eqps:
                         EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i[0]).first()
-                        types = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
-                        for type in types:
+                        btss = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
+                        for bt in btss:
+                            type = bt.Type
                             if type == "_Batch_LS_Action01" or type == "_Batch_JB_Action01":
-                                dic[type + "_" + str(i)] = EQPName[0]
+                                dic[type + "_" + str(i[0])] = EQPName[0]
                             else:
-                                dic[type+"_"+str(i)] = db_session.query(ElectronicBatchTwo.SampleValue).filter(
-                                    ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == int(i), ElectronicBatchTwo.Type == type).first()
+                                ret = queryvalue(BatchNum, int(i[0]), bt.Descrip)
+                                dic[type+"_"+str(i[0])+"_1"] = ret[0]
+                                dic[type + "_" + str(i[0]) + "_2"] = ret[1]
                     dic["MedicinalType"] = oclass.MedicinalType
                     return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
                 else:
@@ -276,6 +278,41 @@ def BatchSearch():
             insertSyslog("error", "电子批记录查询报错Error：" + str(e), current_user.Name)
             return json.dumps("电子批记录查询", cls=AlchemyEncoder,
                               ensure_ascii=False)
+def queryvalue(BatchNum, EQPID, type):
+    SampleValues = db_session.query(ElectronicBatchTwo.SampleValue).filter(
+                                        ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == type).order_by(("SampleDate")).all()
+    dir = []
+    if SampleValues == None or SampleValues == "":
+        dir.append("")
+        dir.append("")
+    elif len(SampleValues) == 1:
+        SampleValue1 = SampleValues[0][0]
+        if SampleValue1 == None or SampleValue1 == "":
+            dir.append("")
+        else:
+            if len(SampleValue1) > 18:
+                dir.append(strch(SampleValue1))
+            else:
+                dir.append(SampleValue1)
+        dir.append("")
+    elif len(SampleValues) == 2:
+        SampleValue1 = SampleValues[0][0]
+        if SampleValue1 == None or SampleValue1 == "":
+            dir.append("")
+        else:
+            if len(SampleValue1) > 18:
+                dir.append(strch(SampleValue1))
+            else:
+                dir.append(SampleValue1)
+        SampleValue2 = SampleValues[1][0]
+        if SampleValue1 == None or SampleValue1 == "":
+            dir.append("")
+        else:
+            if len(SampleValue2) > 18:
+                dir.append(strch(SampleValue2))
+            else:
+                dir.append(SampleValue2)
+    return dir
 def changef(args):
     if args != None and args != "":
         return str(round(float(args), 2))
