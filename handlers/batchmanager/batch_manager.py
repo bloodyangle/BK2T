@@ -194,11 +194,10 @@ def refractometerRedis():
             logger.error(e)
             insertSyslog("error", "折光仪实时数据查询报错Error：" + str(e), current_user.Name)
 
-@batch.route('/refractometerDataHistory', methods=['POST', 'GET'])
-def refractometerDataHistory():
+@batch.route('/DataHistorySelect', methods=['POST', 'GET'])
+def DataHistorySelect():
     '''
-    折光仪历史数据
-    :return:
+    历史数据曲线
     '''
     if request.method == 'GET':
         data = request.values
@@ -207,30 +206,52 @@ def refractometerDataHistory():
             if len(json_str) > 10:
                 begin = data.get('begin')
                 end = data.get('end')
-                if begin and end:#[t|ZGY_Temp] AS ZGY_Temp
-                    sql = "SELECT  [SampleTime],[t|ZGY_ZGL],[t|ZGY_Temp] FROM [MES].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + begin + "' AND '" + end +"' order by ID"
+                variable = data.get('variable')
+                Name = data.get('Name')
+                if begin and end:
+                    sql = "SELECT  [SampleTime],"+variable+" FROM [MES].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + begin + "' AND '" + end +"' order by ID"
                     re = db_session.execute(sql).fetchall()
                     db_session.close()
                     div = {}
                     dic = []
-                    diy = []
-                    for i in re:
-                        t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
-                        v = i[1]
-                        r = i[2]
-                        if not v:
-                            v = ""
-                        if not r:
-                            r = ""
-                        dic.append([t,v])
-                        diy.append([t,r])
-                    div["ZGL"] = dic
-                    div["Temp"] = diy
+                    dir = []
+                    die = []
+                    if Name == "提取":
+                        for i in re:
+                            t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                            v = i[1]
+                            if not v:
+                                v = ""
+                            r = i[2]
+                            if not r:
+                                r = ""
+                            dir.append([t, r])
+                            dic.append([t, v])
+                        div["WD"] = dic
+                        div["YL"] = dir
+                    elif Name == "浓缩":
+                        for i in re:
+                            t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                            v = i[1]
+                            if not v:
+                                v = ""
+                            r = i[2]
+                            if not r:
+                                r = ""
+                            e = i[3]
+                            if not e:
+                                e = ""
+                            dic.append([t, v])
+                            dir.append([t, r])
+                            die.append([t, e])
+                        div["LS"] = dic
+                        div["LS"] = dir
+                        div["LS"] = die
                     return json.dumps(div, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
             logger.error(e)
-            insertSyslog("error", "路由：/EquipmentManagementManual/ManualShow，说明书信息获取Error：" + str(e), current_user.Name)
+            insertSyslog("error", "路由：/DataHistorySelect，历史数据曲线获取Error：" + str(e), current_user.Name)
 @batch.route('/basketExtractConcentrationData')
 def basketExtractConcentrationData():
     return render_template('./Qualitymanagement/basketExtractConcentrationData.html')
@@ -267,7 +288,9 @@ def BatchSearch():
                                 ret = queryvalue(BatchNum, int(i[0]), bt.Descrip)
                                 dic[type+"_"+str(i[0])+"_1"] = ret[0]
                                 dic[type + "_" + str(i[0]) + "_2"] = ret[1]
+                    dic["BatchNum"] = oclass.BatchNum
                     dic["MedicinalType"] = oclass.MedicinalType
+                    dic["BrandName"] = oclass.BrandName
                     return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
                 else:
                     return ""
@@ -348,3 +371,23 @@ def searchEqpID(BrandName, BatchID, PID, name):
                                                                         ElectronicBatchTwo.BatchID == BatchID).all()
     tmp = [val for val in EQPIDs if val in EQPS]
     return tmp
+@batch.route('/BatchUpdate', methods=['POST', 'GET'])
+def BatchUpdate():
+    if request.method == 'POST':
+        try:
+            data = request.values
+            BatchID = data.get("BatchNum")
+            EQPName = data.get("EQPName")
+            SampleValue = data.get("SampleValue")
+            EQPID = db_session.query(Equipment.ID).filter(Equipment.EQPName == EQPName).first()[0]
+            Type = data.get("Type")
+            Type = Type[0:-5]
+            oclass = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BatchID == BatchID,ElectronicBatchTwo.Type == Type,ElectronicBatchTwo.EQPID == EQPID).first()
+            oclass.SampleValue = SampleValue
+            db_session.commit()
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "电子批记录修改报错Error：" + str(e), current_user.Name)
+            return json.dumps("电子批记录修改", cls=AlchemyEncoder,ensure_ascii=False)
+
