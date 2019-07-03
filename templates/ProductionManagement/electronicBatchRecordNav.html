@@ -61,6 +61,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="MedicinalType" class="col-sm-2 control-label">药材规格</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="MedicinalType" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="PUIDLineName" class="col-sm-2 control-label">工艺生产线</label>
                                 <div class="col-sm-10">
                                     <select id="PUIDLineName" class="form-control" type="text" placeholder="">
@@ -100,6 +106,17 @@
                 <table class="table table-bordered" id="tab"></table>
             </div>
         </div>
+        <!--计划明细表-->
+        <div id="planToolbar">
+            <form class="form-inline">
+                <div class="form-group">
+                    <p>
+                        <button type="button" class="btn btn-danger" onclick="toolbar.planDelete()">删除</button>
+                        <button type="button" class="btn btn-default" onclick="toolbar.planreload()">刷新</button>
+                    </p>
+                </div>
+            </form>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading">计划明细</div>
             <div class="panel-body">
@@ -120,6 +137,7 @@
                     };
                 },
 	            pagination: true,
+                toolbar:"#Toolbar",
                 pageNumber:1,
 	            pageSize: 10,
 	            pageList: [10, 20, 30, 50],
@@ -139,6 +157,9 @@
                 }, {
                     field: 'BrandName',
                     title: '品名'
+                }, {
+                    field: 'MedicinalType',
+                    title: '药材规格'
                 }, {
                     field: 'PUIDLineName',
                     title: '工艺生产线'
@@ -168,6 +189,7 @@
                     };
                 },
 	            pagination: true,
+                toolbar:"#planToolbar",
                 pageNumber:1,
 	            pageSize: 10,
 	            pageList: [10, 20, 30, 50],
@@ -228,6 +250,7 @@
                     $('#ID').val('');
                     $('#BatchNum').val('');
                     $('#BrandName').val('');
+                    $('#MedicinalType').val('');
                     $('#PUIDLineName option[value=""]').prop("selected", 'selected');
                 },
                 Updata:function(){
@@ -238,6 +261,7 @@
                             $('#ID').val(rows[0].ID);
                             $('#BatchNum').val(rows[0].BatchNum);
                             $('#BrandName').val(rows[0].BrandName);
+                            $('#MedicinalType').val(rows[0].MedicinalType);
                             $('#PUIDLineName option:contains('+rows[0].PUIDLineName+')').prop("selected", 'selected');
                         }
                     } else {
@@ -252,6 +276,9 @@
                         return false;
                     }else if($('#BrandName').val() == "") {
                         bootbox.alert('品名不能为空！');
+                        return false;
+                    }else if($('#MedicinalType').val() == "") {
+                        bootbox.alert('药材规格不能为空！');
                         return false;
                     }else if($('#PUIDLineName').val() == "") {
                         bootbox.alert('工艺生产线不能为空！');
@@ -270,6 +297,7 @@
                             ID:$('#ID').val(),
                             BatchNum:$('#BatchNum').val(),
                             BrandName:$('#BrandName').val(),
+                            MedicinalType:$('#MedicinalType').val(),
                             PUIDLineName:$('#PUIDLineName').find("option:selected").val()
                         },
                         success:function(data){
@@ -347,6 +375,59 @@
                 },
                 reload:function(){
                     $("#tab").bootstrapTable('refresh');
+                },
+                planDelete:function(){
+                    var rows = $("#planTab").bootstrapTable('getAllSelections');
+                    if (rows.length > 0) {
+                        var jsonarray=[];
+                        bootbox.confirm({
+                            message: "您确认要删除所选的记录吗？",
+                            buttons: {
+                                confirm: {
+                                    label: '删除',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '返回',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if(result){
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                        jsonarray.push(obj);
+                                    }
+                                    var a = JSON.stringify(jsonarray);
+                                    $.ajax({
+                                        url: '/BatchInfoDetailDelete',
+                                        method: 'POST',
+                                        traditional: true,
+                                        data: a,
+                                        success: function (data) {
+                                            if(data == "OK"){
+                                                var dialog = bootbox.dialog({
+                                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                                    closeButton: false
+                                                });
+                                                dialog.init(function(){
+                                                    setTimeout(function(){
+                                                        dialog.modal('hide');
+                                                    }, 2000);
+                                                });
+                                                $("#planTab").bootstrapTable('refresh');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        bootbox.alert('请选择要删除的记录')
+                    }
+                },
+                planreload:function(){
+                    $("#planTab").bootstrapTable('refresh');
                 }
             }
 
