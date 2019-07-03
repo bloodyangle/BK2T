@@ -15,7 +15,6 @@ batch = Blueprint('batch', __name__, template_folder='templates')
 @batch.route('/ElectronicBatchRecordNav')
 def electronicBatchRecord():
     return render_template('./ProductionManagement/electronicBatchRecordNav.html')
-# 生产数据管理-电子批记录
 @batch.route('/ElectronicBatchRecord', methods=['POST', 'GET'])
 def ElectronicBatchRecord():
     if request.method == 'GET':
@@ -261,12 +260,14 @@ def BatchSearch():
                         PUID = "3"
                     eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("ID")).all()
                     for i in eqps:
-                        db_session.query(BatchType)
-                        EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i).first()
+                        EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i[0]).first()
                         types = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
                         for type in types:
-                            dic[type+"_"+str(i)] = db_session.query(ElectronicBatchTwo.SampleValue).filter(
-                                ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == int(i), ElectronicBatchTwo.Type == type).first()
+                            if type == "_Batch_LS_Action01" or type == "_Batch_JB_Action01":
+                                dic[type + "_" + str(i)] = EQPName[0]
+                            else:
+                                dic[type+"_"+str(i)] = db_session.query(ElectronicBatchTwo.SampleValue).filter(
+                                    ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.EQPID == int(i), ElectronicBatchTwo.Type == type).first()
                     return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
                 else:
                     return ""
@@ -276,7 +277,6 @@ def BatchSearch():
             insertSyslog("error", "电子批记录查询报错Error：" + str(e), current_user.Name)
             return json.dumps("电子批记录查询", cls=AlchemyEncoder,
                               ensure_ascii=False)
-
 def changef(args):
     if args != None and args != "":
         return str(round(float(args), 2))
@@ -308,32 +308,6 @@ def getmin(args):
         if x == 0:
             unit = args[x].Unit
     return changef(min(num1)) + unit
-def searO(BrandName, BatchID, PID, EQPID, Type):
-    re = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BrandName == BrandName,
-                                                     ElectronicBatchTwo.BatchID == BatchID,
-                                                     ElectronicBatchTwo.PDUnitRouteID == PID,
-                                                     ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == Type).first()
-    if re == None:
-        electronicBatch = ElectronicBatchTwo()
-        electronicBatch.SampleValue = ""
-        electronicBatch.Unit = ""
-        electronicBatch.SampleDate = ""
-        return electronicBatch
-    else:
-        return re
-def searJZ(BrandName, BatchID, PID, EQPID, Type):
-    re = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BrandName == BrandName,
-                                                     ElectronicBatchTwo.BatchID == BatchID,
-                                                     ElectronicBatchTwo.PDUnitRouteID == PID,
-                                                     ElectronicBatchTwo.EQPID == EQPID, ElectronicBatchTwo.Type == Type).first()
-    if re == None:
-        electronicBatch = ElectronicBatchTwo()
-        electronicBatch.SampleValue = ""
-        electronicBatch.Unit = ""
-        electronicBatch.SampleDate = ""
-        return electronicBatch
-    else:
-        return re
 def searchEqpID(BrandName, BatchID, PID, name):
     EQPIDs = db_session.query(Equipment.ID).filter(Equipment.PUID == PID,
                                                    Equipment.EQPName.like("%" + name + "%")).all()
