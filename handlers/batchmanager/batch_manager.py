@@ -314,17 +314,19 @@ def BatchSearch():
                     elif oclass.PUIDLineName == "搅拌":
                         PUID = "3"
                     eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("EQPID")).all()
+                    j = 1
                     for i in eqps:
                         EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i[0]).first()
                         btss = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
                         for bt in btss:
                             type = bt.Type
                             if type == "_Batch_LS_Action01" or type == "_Batch_JB_Action01":
-                                dic[type + "_" + str(i[0])] = EQPName[0]
+                                dic[type + "_" + str(j)] = EQPName[0]
                             else:
                                 ret = queryvalue(BatchNum, int(i[0]), bt.Descrip)
-                                dic[type+"_"+str(i[0])+"_1"] = ret[0]
-                                dic[type + "_" + str(i[0]) + "_2"] = ret[1]
+                                dic[type+"_"+str(j)+"_1"] = ret[0]
+                                dic[type + "_" + str(j) + "_2"] = ret[1]
+                        j = j + 1
                     dic["BatchNum"] = oclass.BatchNum
                     dic["MedicinalType"] = oclass.MedicinalType
                     dic["BrandName"] = oclass.BrandName
