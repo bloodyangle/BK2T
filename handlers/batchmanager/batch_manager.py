@@ -424,6 +424,7 @@ def BatchUpdate():
             oclass = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BatchID == BatchID,ElectronicBatchTwo.Type == Type,ElectronicBatchTwo.EQPID == EQPID).first()
             oclass.SampleValue = SampleValue
             db_session.commit()
+            return 'OK'
         except Exception as e:
             print(e)
             logger.error(e)
