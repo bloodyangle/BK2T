@@ -95,11 +95,11 @@ function addInputData(ids,res){
     })
 }
 //获取页面传参
-  function getUrlParam(name) {
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-      var r = decodeURI(window.location.search).substr(1).match(reg); //匹配目标参数
-      if (r != null) return unescape(r[2]); return null; //返回参数值
-  }
+function getUrlParam(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var r = decodeURI(window.location.search).substr(1).match(reg); //匹配目标参数
+  if (r != null) return unescape(r[2]); return null; //返回参数值
+}
 //给主页的tabs增加选项页
 function addParentTab(title,url,index){
     parent.nthTabs.addTab({
@@ -109,4 +109,21 @@ function addParentTab(title,url,index){
     })
     parent.nthTabs.setActTab(index)
     parent.nthTabs.locationTab()
+}
+//时间格式转换
+function Appendzero(obj){
+    if(obj < 10){
+        return "0" + obj
+    }else{
+        return obj
+    }
+}
+function myformatter(date){
+    var y = date.getFullYear();
+    var m = date.getMonth()+1;
+    var d = date.getDate();
+    var h = date.getHours()
+    var minutes = date.getMinutes()
+    var s = date.getSeconds()
+    return Appendzero(y) + '-' + Appendzero(m) + '-' + Appendzero(d) + ' ' + Appendzero(h) + ':' + Appendzero(minutes);
 }
