@@ -4,44 +4,414 @@
     <meta charset="UTF-8">
     <title>搅拌提取浓缩过程数据</title>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="../../static/css/base.css" rel="stylesheet">
     <script src="../../static/js/echarts.common.min.js"></script>
     <script src="../../static/js/jquery-3.3.1.min.js"></script>
     <script src="../../static/js/bootstrap.min.js"></script>
     <script src="../../static/js/bootstrap-table.min.js"></script>
     <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../static/js/bootstrap-datetimepicker.min.js"></script>
     <script src="../../static/js/bootbox.min.js"></script>
     <script src="../../static/js/base.js"></script>
     <style>
         .main{
-            width:1536px;height:864px;position: relative;margin:0 auto;background-image:url("../../static/images/JBTQ.png");background-size:1536px 864px;
+            width:1536px;height:864px;position: relative;margin:0 auto;background-image:url("../../static/images/LSTQ.png");background-size:1536px 864px;
+        }
+        .headMes{
+            position: absolute;top: 100px;left: 100px;font-size: 18px;color:#fff;
         }
         .jar{
-            position: absolute;
-            width: 120px;
-            height: 220px;
-            background: #fff;
-            opacity: 1;
-            border-radius: 40px;
-            cursor: pointer;
+            position: absolute;width: 120px;height: 220px;border-radius: 40px;cursor: pointer;
         }
         .EndJar{
-            position: absolute;
-            width: 80px;
-            height: 255px;
-            background: #fff;
-            opacity: 1;
-            border-radius: 40px;
-            cursor: pointer;
+            position: absolute; width: 80px;height: 255px;border-radius: 40px;cursor: pointer;
+        }
+        .jarMes{
+            position: relative;width: 100%;height: 100%;font-weight: bold;font-size: 17px;color: #61ce63;
+        }
+        .jarMes .jarYL{
+            position: absolute;top:-73px;
+        }
+        .jarMes .jarWD{
+            position:absolute;width: 100%;top:50%;text-align: center;color: #1766e0;
+        }
+        .jarMes .jarMD{
+            position:absolute;width: 100%;top:40%;text-align: center;color: #c15514;
         }
     </style>
+    <script>
+        $(function(){
+            //时间选择控件
+           $.fn.datetimepicker.dates['zh'] = {
+                days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],
+                daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],
+                daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],
+                months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],
+                monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+                meridiem:    ["上午", "下午"],
+                //suffix:      ["st", "nd", "rd", "th"],
+                today:       "今天"
+            };
+            $('#startTime,#endTime').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii', // 标签上可用data-date-format="hh:ii" data-link-format="hh:ii"
+                autoclose: true, //选择完成自动关闭下拉框
+                startView : 2,
+                minView:0, //0到分钟结束，1到小时，2到日
+                language: 'zh-CN'
+            })
+        })
+    </script>
 </head>
 <body style="background-color: #404040">
     <div class="main">
-        <div class="jar" style="top: 500px;left: 160px;"></div>
-        <div class="jar" style="top: 500px;left: 382px;"></div>
-        <div class="jar" style="top: 500px;left: 605px;"></div>
-        <div class="EndJar" style="top: 470px;left: 1120px;"></div>
+        <div class="headMes">
+            <div class="form-group">
+                <label class="control-label">流量计瞬时流量： <span id="PV_R201_SF01"></span></label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">流量计累计流量： <span id="SV_R201_SF01"></span></label>
+            </div>
+        </div>
+        <div class="jar dataLink" style="top: 500px;left: 160px;" rel="a">
+            <div class="jarMes">
+                <div class="jarYL" style="left: -35px;" id="PV_R201_1_PC01"></div>
+                <div class="jarWD" id="PV_R201_1_ST01"></div>
+            </div>
+        </div>
+        <div class="jar dataLink" style="top: 500px;left: 382px;" rel="b">
+            <div class="jarMes">
+                <div class="jarYL" style="left: 20px;" id="PV_R201_2_PC01"></div>
+                <div class="jarWD" id="PV_R201_2_ST01"></div>
+            </div>
+        </div>
+        <div class="jar dataLink" style="top: 500px;left: 605px;" rel="c">
+            <div class="jarMes">
+                <div class="jarYL" style="left: 20px;" id="PV_R201_3_PC01"></div>
+                <div class="jarWD" id="PV_R201_3_ST01"></div>
+            </div>
+        </div>
+        <div class="EndJar dataLink" style="top: 470px;left: 1120px;" rel="d">
+            <div class="jarMes">
+                <div class="jarYL" style="top: 115px;left: -130px;" id="PV_R204_PC01"></div>
+                <div class="jarMD" id="PV_R204_MD01"></div>
+                <div class="jarWD" id="PV_R204_WD01"></div>
+            </div>
+        </div>
     </div>
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        趋势图表
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <p>
+                                <div class="input-group">
+                                    <label class="input-group-addon">开始时间</label>
+                                    <input type="text" class="form-control datetimepicker" id="startTime" readonly>
+                                    <label class="input-group-addon">结束时间</label>
+                                    <input type="text" class="form-control datetimepicker" id="endTime" readonly>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="SearchData">查询</button>
+                                <button type="button" class="btn btn-primary" id="seeRealTimeData">查看实时</button>
+                            </p>
+                        </div>
+                    </form>
+                    <div id="chartBox" style="width: 100%;height: 420px;">
+                        <div id="chart" style="width: 900px; height: 420px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            getNewData()
+            setInterval(function(){
+                getNewData();
+            }, 2000);
+            function getNewData(){
+                $.ajax({
+                    url: '/refractometerRedis',
+                    method: 'GET',
+                    success: function (res) {
+                        res = JSON.parse(res)
+                        for(var key in res){
+                            adddata(key,res[key])
+                        }
+                    },
+                    error: function () {
+                        console.log("请求数据失败，请稍后重试！")
+                    }
+                });
+            }
+
+            var legendData = []
+            var query = {}
+            var rel = ""
+
+            var myDiv = document.getElementById("chart")
+            var myChartContainer = function () {
+                var width = $("#chartBox").width()
+                myDiv.style.width = width +'px';
+            };
+            myChartContainer();
+            var myChart = echarts.init(myDiv)
+            $(".dataLink").on('click',function(){
+                $("#myModal").modal('show')
+                $("#startTime").val("")
+                $("#endTime").val("")
+                rel = $(this).attr("rel")
+                myChart.clear()
+                optionQuery(rel)
+                renderChart()
+                var ref = setInterval(IntervalFun, 2000);
+
+                $("#SearchData").on('click',function(){
+                    var dffDate = (new Date($('#endTime').val())).getTime() -  (new Date($('#beginTime').val())).getTime()
+                    if(dffDate > 7200000){
+                        bootbox.alert('您选择的时间段数据量较大，为保证系统流畅性，起止时间相差不能大于2小时')
+                    }else if(dffDate <= 0){
+                        bootbox.alert('截止时间不能小于开始时间')
+                    }else{
+                        clearInterval(ref);
+                        optionHistoryQuery(rel)
+                        renderChart()
+                    }
+                })
+                $("#seeRealTimeData").on('click',function(){
+                    optionQuery(rel)
+                    renderChart()
+                    ref = setInterval(IntervalFun, 2000);
+                })
+            })
+            $("#chartBox").resize(function(){
+                myChartContainer();
+                myChart.resize();
+            })
+            function optionQuery(rel){
+                if(rel == "a"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R201_1_PC01],[t|PV_R201_1_ST01]"
+                    query.begin = myTimeformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myTimeformatter(new Date())
+                    query.Name = "提取"
+                }else if(rel == "b"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R201_2_PC01],[t|PV_R201_2_ST01]"
+                    query.begin = myTimeformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myTimeformatter(new Date())
+                    query.Name = "提取"
+                }else if(rel == "c"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R201_3_PC01],[t|PV_R201_3_ST01]"
+                    query.begin = myTimeformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myTimeformatter(new Date())
+                    query.Name = "提取"
+                }else if(rel == "d"){
+                    legendData = ["加热蒸汽压力","密度","温度"]
+                    query.variable = "[t|PV_R204_PC01],[t|PV_R204_MD01],[t|PV_R204_WD01]"
+                    query.begin = myTimeformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myTimeformatter(new Date())
+                    query.Name = "浓缩"
+                }
+            }
+            function optionHistoryQuery(rel){
+                if(rel == "a"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R201_1_PC01],[t|PV_R201_1_ST01]"
+                    query.begin = $("#startTime").val()
+                    query.end = $("#endTime").val()
+                    query.Name = "提取"
+                }else if(rel == "b"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R201_2_PC01],[t|PV_R201_2_ST01]"
+                    query.begin = $("#startTime").val()
+                    query.end = $("#endTime").val()
+                    query.Name = "提取"
+                }else if(rel == "c"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R201_3_PC01],[t|PV_R201_3_ST01]"
+                    query.begin = $("#startTime").val()
+                    query.end = $("#endTime").val()
+                    query.Name = "提取"
+                }else if(rel == "d"){
+                    legendData = ["加热蒸汽压力","密度","温度"]
+                    query.variable = "[t|PV_R204_PC01],[t|PV_R204_MD01],[t|PV_R204_WD01]"
+                    query.begin = $("#startTime").val()
+                    query.end = $("#endTime").val()
+                    query.Name = "浓缩"
+                }
+            }
+            function IntervalFun(){
+                optionQuery(rel)
+                $.ajax({
+                    url: '/DataHistorySelect',
+                    type: 'get',
+                    data: query,
+                    success: function (result) {
+                        result = JSON.parse(result)
+                        if(rel == "a" || rel == "b" || rel == "c"){
+                            option.series[0].data = result.YL
+                            option.series[1].data = result.WD
+                        }else if(rel == "d"){
+                            option.series[0].data = result.YL
+                            option.series[1].data = result.MD
+                            option.series[2].data = result.WD
+                        }
+                        myChart.setOption(option);
+                    }
+                })
+            }
+            function renderChart(){
+                $.ajax({
+                    url: '/DataHistorySelect',
+                    type: 'get',
+                    data: query,
+                    success: function (data) {
+                        data = JSON.parse(data)
+                        if(rel == "a" || rel == "b" || rel == "c"){
+                            myChart.setOption(option = {
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data: legendData
+                                },
+                                toolbox: {
+                                    feature: {
+                                        mark : {show: true},
+                                        dataView: {show: true, readOnly: false},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                dataZoom: {
+                                    show: true,
+                                    start : 0
+                                },
+                                grid: {
+                                    y2: 80
+                                },
+                                xAxis: {
+                                    type : 'time',
+                                    splitNumber:10
+                                },
+                                yAxis: [
+                                    {
+                                        type : 'value',
+                                        name: '压力值',
+                                        axisLabel: {
+                                            formatter: '{value} Mpa'
+                                        }
+                                    }, {
+                                        type: 'value',
+                                        name: '温度',
+                                        axisLabel: {
+                                            formatter: '{value} °C'
+                                        }
+                                    }
+                                ],
+                                series:[{
+                                    name: "加热蒸汽压力",
+                                    type: 'line',
+                                    yAxisIndex:0,
+                                    symbol: 'none', //拐点
+                                    showAllSymbol: true,
+                                    smooth:true, //曲线
+                                    data: data.YL,
+                                },{
+                                    name: "温度",
+                                    type: 'line',
+                                    yAxisIndex:1,
+                                    symbol: 'none', //拐点
+                                    showAllSymbol: true,
+                                    smooth:true,
+                                    data: data.WD,
+                                }]
+                            });
+                        }else if(rel == "d"){
+                            myChart.setOption(option = {
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data: legendData
+                                },
+                                toolbox: {
+                                    feature: {
+                                        mark : {show: true},
+                                        dataView: {show: true, readOnly: false},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                dataZoom: {
+                                    show: true,
+                                    start : 0
+                                },
+                                grid: {
+                                    y2: 80
+                                },
+                                xAxis: {
+                                    type : 'time',
+                                    splitNumber:10
+                                },
+                                yAxis: [
+                                    {
+                                        type : 'value',
+                                        name: '压力值',
+                                        axisLabel: {
+                                            formatter: '{value} Mpa'
+                                        }
+                                    }, {
+                                        type: 'value',
+                                        name: '温度',
+                                        axisLabel: {
+                                            formatter: '{value} °C'
+                                        }
+                                    }
+                                ],
+                                series:[{
+                                    name: "加热蒸汽压力",
+                                    type: 'line',
+                                    yAxisIndex:0,
+                                    symbol: 'none', //拐点
+                                    showAllSymbol: true,
+                                    smooth:true, //曲线
+                                    data: data.YL,
+                                },{
+                                    name: "密度",
+                                    type: 'line',
+                                    yAxisIndex:1,
+                                    symbol: 'none', //拐点
+                                    showAllSymbol: true,
+                                    smooth:true,
+                                    data: data.MD,
+                                },{
+                                    name: "温度",
+                                    type: 'line',
+                                    yAxisIndex:1,
+                                    symbol: 'none', //拐点
+                                    showAllSymbol: true,
+                                    smooth:true,
+                                    data: data.WD,
+                                }]
+                            });
+                        }
+                        myChart.setOption(option);
+                    }
+                })
+            }
+        })
+    </script>
 </body>
 </html>
