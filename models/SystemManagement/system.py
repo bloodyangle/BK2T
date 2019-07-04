@@ -488,6 +488,30 @@ class BrandFlag(Base):
     # 品名标识:
     BrandNameFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+# 流程确认表
+class FlowConfirm(Base):
+    __tablename__ = 'FlowConfirm'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批次:
+    BatchNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 确认流程:
+    ConfirmFlow = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 确认人:
+    Confirmer = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 确认时间:
+    ConfirmTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 修改时间:
+    UpdateTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # key:
+    key = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)
