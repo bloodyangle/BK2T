@@ -1,6 +1,9 @@
 import redis
 from flask import Blueprint, render_template, request, make_response
 import json
+
+from sqlalchemy import desc
+
 from dbset.database.db_operate import db_session,pool
 from dbset.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import BatchInfoDetail, EletronicBatchDataStore, Equipment, BatchType, \
@@ -41,11 +44,11 @@ def BatchInfoSearch():
                 end = data.get('end')
                 BatchNum = data.get('BatchNum')
                 if(BatchNum == "" or BatchNum == None):
-                    total = db_session.query(BatchInfo).filter(BatchInfoDetail.between(begin, end)).order_by(("BatchNum")).count()
-                    oclass = db_session.query(BatchInfo).filter(BatchInfoDetail.between(begin, end)).order_by(("BatchNum")).all()[inipage:endpage]
+                    total = db_session.query(BatchInfo).filter(BatchInfo.CreateDate.between(begin, end)).order_by(desc("CreateDate")).count()
+                    oclass = db_session.query(BatchInfo).filter(BatchInfo.CreateDate.between(begin, end)).order_by(desc("CreateDate")).all()[inipage:endpage]
                 else:
-                    total = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%"), BatchInfoDetail.between(begin, end)).count()
-                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%"), BatchInfoDetail.between(begin, end)).all()[inipage:endpage]
+                    total = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%"), BatchInfo.CreateDate.between(begin, end)).order_by(desc("CreateDate")).count()
+                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%"), BatchInfo.CreateDate.between(begin, end)).order_by(desc("CreateDate")).all()[inipage:endpage]
                 jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
                 return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
         except Exception as e:
@@ -82,13 +85,9 @@ def BatchInfoDetailSearch():
                 rowsnumber = int(data.get("limit"))
                 inipage = pages * rowsnumber + 0
                 endpage = pages * rowsnumber + rowsnumber
-                BatchNum = data['BatchNum']
-                if(BatchNum == "" or BatchNum == None):
-                    total = db_session.query(BatchInfoDetail).order_by(("BatchNum")).count()
-                    oclass = db_session.query(BatchInfoDetail).order_by(("BatchNum")).all()[inipage:endpage]
-                else:
-                    total = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).count()
-                    oclass = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).all()[inipage:endpage]
+                BatchNum = data.get('BatchNum')
+                total = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).count()
+                oclass = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).all()[inipage:endpage]
                 jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
                 return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
         except Exception as e:
@@ -209,16 +208,17 @@ def DataHistorySelect():
                 begin = data.get('begin')
                 end = data.get('end')
                 variable = data.get('variable')
+                print(format(variable))
                 Name = data.get('Name')
                 if begin and end:
-                    sql = "SELECT  [SampleTime],'"+variable+"' FROM [MES].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + begin + "' AND '" + end +"' order by ID"
-                    re = db_session.execute(sql).fetchall()
-                    db_session.close()
                     div = {}
                     dic = []
                     dir = []
                     die = []
                     if Name == "提取":
+                        sql = "SELECT  [SampleTime]," + format(variable) + " FROM [BK].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + format(begin) + "' AND '" + format(end) + "' order by ID"
+                        re = db_session.execute(sql).fetchall()
+                        db_session.close()
                         for i in re:
                             t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
                             v = i[1]
@@ -232,6 +232,9 @@ def DataHistorySelect():
                         div["WD"] = dic
                         div["YL"] = dir
                     elif Name == "浓缩":
+                        sql = "SELECT  [SampleTime]," + format(variable) + " FROM [BK].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + format(begin) + "' AND '" + format(end) + "' order by ID"
+                        re = db_session.execute(sql).fetchall()
+                        db_session.close()
                         for i in re:
                             t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
                             v = i[1]
