@@ -1,13 +1,13 @@
 import redis
 from flask import Blueprint, render_template, request, make_response
 import json
-
+import datetime
 from sqlalchemy import desc
 
 from dbset.database.db_operate import db_session,pool
 from dbset.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import BatchInfoDetail, EletronicBatchDataStore, Equipment, BatchType, \
-    ElectronicBatchTwo, BatchInfo
+    ElectronicBatchTwo, BatchInfo, AuditTrace
 from dbset.log.BK2TLogger import logger,insertSyslog
 from flask_login import login_required, logout_user, login_user,current_user,LoginManager
 from tools.common import insert,delete,update
@@ -170,6 +170,39 @@ def addUpdateEletronicBatchDataStore(PUID, BatchID, ke, val):
         logger.error(e)
         insertSyslog("error", "保存更新EletronicBatchDataStore报错：" + str(e), current_user.Name)
         return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,ensure_ascii=False)
+@batch.route('/OperatorCheckSaveUpdate', methods=['POST', 'GET'])
+def OperatorCheckSaveUpdate():
+    if request.method == 'POST':
+        data = request.values
+        try:
+            PUID = data.get("Name")
+            BatchID = data.get("BatchID")
+            for key in data.keys():
+                if key == "Name":
+                    continue
+                if key == "BatchID":
+                    continue
+                val = data.get(key)
+                oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUID == PUID,
+                                                                      EletronicBatchDataStore.BatchID == BatchID,
+                                                                      EletronicBatchDataStore.Content == key).first()
+                if oc == None:
+                    db_session.add(EletronicBatchDataStore(BatchID=BatchID, PUID=PUID, Content=key, OperationpValue=val,Operator=current_user.Name))
+                    db_session.add(AuditTrace(Operation="确认成功", DeitalMSG="用户:"+current_user.Name+" 节点：操作确认", ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User=current_user.Name))
+                else:
+                    oc.Content = key
+                    oc.OperationpValue = val
+                    oc.Operator = current_user.Name
+                    db_session.add(AuditTrace(Operation="确认成功", DeitalMSG="用户:" + current_user.Name + " 节点：操作确认",
+                                              ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                              User=current_user.Name))
+                db_session.commit()
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "/OperatorCheckSaveUpdate报错：" + str(e), current_user.Name)
+            return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,ensure_ascii=False)
 
 @batch.route('/refractometerRedis', methods=['POST', 'GET'])
 def refractometerRedis():
@@ -208,7 +241,6 @@ def DataHistorySelect():
                 begin = data.get('begin')
                 end = data.get('end')
                 variable = data.get('variable')
-                print(format(variable))
                 Name = data.get('Name')
                 if begin and end:
                     div = {}
@@ -281,7 +313,7 @@ def BatchSearch():
                         PUID = "1"
                     elif oclass.PUIDLineName == "搅拌":
                         PUID = "3"
-                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("EQPID")).all()
+                    eqps = db_session.query(ElectronicBatchTwo.EQPID).distinct().filter(ElectronicBatchTwo.BatchID == BatchNum, ElectronicBatchTwo.PDUnitRouteID == PUID).order_by(("EQPID")).all()
                     for i in eqps:
                         EQPName = db_session.query(Equipment.EQPName).filter(Equipment.ID == i[0]).first()
                         btss = db_session.query(BatchType).filter(BatchType.Descrip.like("%"+oclass.PUIDLineName+"%")).all()
