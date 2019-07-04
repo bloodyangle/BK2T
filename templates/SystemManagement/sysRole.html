@@ -45,7 +45,7 @@
                                 <div class="form-group">
                                     <label for="ParentNode" class="col-sm-2 control-label">父节点</label>
                                     <div class="col-sm-10">
-                                        <select id="ParentNode" type="text" style="width:157px;" autocomplete="off" placeholder="">
+                                        <select id="ParentNode" type="text" class="form-control">
                                             <option value="">请选择</option>
                                             {% for RoleInfo in RoleInfos %}
                                                 <option value="{{ RoleInfo['RoleID'] }}">{{ RoleInfo['RoleName'] }}</option>
