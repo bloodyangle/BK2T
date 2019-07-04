@@ -141,6 +141,10 @@
                 });
             }
 
+            var legendData = []
+            var query = {}
+            var series = []
+
             var myDiv = document.getElementById("chart")
             var myChartContainer = function () {
                 var width = $("#chartBox").width()
@@ -150,118 +154,14 @@
             var myChart = echarts.init(myDiv)
             $(".dataLink").on('click',function(){
                 $("#myModal").modal('show')
-                var legendData = []
-                var query = {}
-                var series = []
-                if($(this).attr("rel") == "a"){
-                    legendData = ["加热蒸汽压力","温度"]
-                    query.variable = "[t|PV_R101_1_PC01],[t|PV_R101_1_ST01]"
-                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
-                    query.end = myformatter(new Date())
-                }else if($(this).attr("rel") == "b"){
-                    legendData = ["加热蒸汽压力","温度"]
-                    query.variable = "[t|PV_R101_2_PC01],[t|PV_R101_2_ST01]"
-                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
-                    query.end = myformatter(new Date())
-                }else if($(this).attr("rel") == "c"){
-                    legendData = ["加热蒸汽压力","温度"]
-                    query.variable = "[t|PV_R101_3_PC01],[t|PV_R101_3_ST01]"
-                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
-                    query.end = myformatter(new Date())
-                }else if($(this).attr("rel") == "d"){
-                    legendData = ["加热蒸汽压力","密度","温度"]
-                    query.variable = "[t|PV_R103_PC01],[t|PV_R103_MD01],[t|PV_R103_WD01]"
-                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
-                    query.end = myformatter(new Date())
-                }
+                optionQuery($(this).attr("rel"))
                 $.ajax({
                     url: '/DataHistorySelect',
                     type: 'get',
                     data: query,
                     success: function (data) {
                         data = JSON.parse(data)
-                        console.log(data)
-                        if($(this).attr("rel") == "a"){
-                            series = [{
-                                name: "加热蒸汽压力",
-                                type: 'line',
-                                yAxisIndex:0,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true, //曲线
-                                data: data.YL,
-                            },{
-                                name: "温度",
-                                type: 'line',
-                                yAxisIndex:1,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true,
-                                data: data.WD,
-                            }]
-                        }else if($(this).attr("rel") == "b"){
-                            series = [{
-                                name: "加热蒸汽压力",
-                                type: 'line',
-                                yAxisIndex:0,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true, //曲线
-                                data: data.YL,
-                            },{
-                                name: "温度",
-                                type: 'line',
-                                yAxisIndex:1,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true,
-                                data: data.WD,
-                            }]
-                        }else if($(this).attr("rel") == "c"){
-                            series = [{
-                                name: "加热蒸汽压力",
-                                type: 'line',
-                                yAxisIndex:0,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true, //曲线
-                                data: data.YL,
-                            },{
-                                name: "温度",
-                                type: 'line',
-                                yAxisIndex:1,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true,
-                                data: data.WD,
-                            }]
-                        }else if($(this).attr("rel") == "d"){
-                            series = [{
-                                name: "加热蒸汽压力",
-                                type: 'line',
-                                yAxisIndex:0,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true, //曲线
-                                data: data.YL,
-                            },{
-                                name: "密度",
-                                type: 'line',
-                                yAxisIndex:1,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true,
-                                data: data.MD,
-                            },{
-                                name: "温度",
-                                type: 'line',
-                                yAxisIndex:1,
-                                symbol: 'none', //拐点
-                                showAllSymbol: true,
-                                smooth:true,
-                                data: data.WD,
-                            }]
-                        }
+                        optionSeries($(this).attr("rel"),data)
                         myChart.setOption(option = {
                             tooltip: {
                                 trigger: 'axis'
@@ -304,18 +204,6 @@
                 var ref = setInterval(function(){
                     getNewChart(query,series)
                 }, 2000);
-                function getNewChart(query,series){
-                    $.ajax({
-                        url: '/refractometerRedis',
-                        type: 'get',
-                        data: query,
-                        success: function (result) {
-                            result = JSON.parse(result)
-                            myChart.option.series = series
-                            myChart.setOption(option);
-                        }
-                    })
-                }
             })
             $("#SearchData").on('click',function(){
                 var dffDate = (new Date($('#endTime').val())).getTime() -  (new Date($('#beginTime').val())).getTime()
@@ -327,7 +215,129 @@
 
                 }
             })
-
+            function getNewChart(query,series){
+                $.ajax({
+                    url: '/DataHistorySelect',
+                    type: 'get',
+                    data: query,
+                    success: function (result) {
+                        result = JSON.parse(result)
+                        optionSeries($(this).attr("rel"),result)
+                        myChart.option.series = series
+                        myChart.setOption(option);
+                    }
+                })
+            }
+            function optionQuery(rel){
+                if(rel == "a"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R101_1_PC01],[t|PV_R101_1_ST01]"
+                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myformatter(new Date())
+                    query.Name = "提取"
+                }else if(rel == "b"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R101_2_PC01],[t|PV_R101_2_ST01]"
+                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myformatter(new Date())
+                    query.Name = "提取"
+                }else if(rel == "c"){
+                    legendData = ["加热蒸汽压力","温度"]
+                    query.variable = "[t|PV_R101_3_PC01],[t|PV_R101_3_ST01]"
+                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myformatter(new Date())
+                    query.Name = "提取"
+                }else if(rel == "d"){
+                    legendData = ["加热蒸汽压力","密度","温度"]
+                    query.variable = "[t|PV_R103_PC01],[t|PV_R103_MD01],[t|PV_R103_WD01]"
+                    query.begin = myformatter(new Date(new Date().getTime() - 3*60*1000))
+                    query.end = myformatter(new Date())
+                    query.Name = "浓缩"
+                }
+            }
+            function optionSeries(rel,data){
+                if(rel == "a"){
+                    series = [{
+                        name: "加热蒸汽压力",
+                        type: 'line',
+                        yAxisIndex:0,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true, //曲线
+                        data: data.YL,
+                    },{
+                        name: "温度",
+                        type: 'line',
+                        yAxisIndex:1,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true,
+                        data: data.WD,
+                    }]
+                }else if(rel == "b"){
+                    series = [{
+                        name: "加热蒸汽压力",
+                        type: 'line',
+                        yAxisIndex:0,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true, //曲线
+                        data: data.YL,
+                    },{
+                        name: "温度",
+                        type: 'line',
+                        yAxisIndex:1,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true,
+                        data: data.WD,
+                    }]
+                }else if(rel == "c"){
+                    series = [{
+                        name: "加热蒸汽压力",
+                        type: 'line',
+                        yAxisIndex:0,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true, //曲线
+                        data: data.YL,
+                    },{
+                        name: "温度",
+                        type: 'line',
+                        yAxisIndex:1,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true,
+                        data: data.WD,
+                    }]
+                }else if(rel == "d"){
+                    series = [{
+                        name: "加热蒸汽压力",
+                        type: 'line',
+                        yAxisIndex:0,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true, //曲线
+                        data: data.YL,
+                    },{
+                        name: "密度",
+                        type: 'line',
+                        yAxisIndex:1,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true,
+                        data: data.MD,
+                    },{
+                        name: "温度",
+                        type: 'line',
+                        yAxisIndex:1,
+                        symbol: 'none', //拐点
+                        showAllSymbol: true,
+                        smooth:true,
+                        data: data.WD,
+                    }]
+                }
+            }
         })
     </script>
 </body>
