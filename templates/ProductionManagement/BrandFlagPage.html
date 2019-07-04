@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>品名管理</title>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/css/base.css" rel="stylesheet">
+    <script src="../../static/js/jquery-3.3.1.min.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
+    <script src="../../static/js/bootstrap-table.min.js"></script>
+    <script src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../static/js/bootbox.min.js"></script>
+    <script src="../../static/js/base.js"></script>
+</head>
+<body>
+    <div class="col-md-12" style="padding: 15px 0;">
+        <div class="col-sm-12">
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                ×
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                品名表单信息
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" action="">
+                                <div class="form-group">
+                                    <label for="ID" class="col-sm-2 control-label">id</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="ID" placeholder="" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="BrandName" class="col-sm-2 control-label">品名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="BrandName" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="BrandNameFlag" class="col-sm-2 control-label">品名标识</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="BrandNameFlag" placeholder="">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- dialog buttons -->
+                        <div class="modal-footer"><button type="button" class="btn btn-primary" onclick="toolbar.Save()">保存</button></div>
+                    </div>
+                </div>
+            </div>
+            <div id="Toolbar">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <p>
+                            <div class="input-group">
+                                <label class="input-group-addon">名称</label>
+                                <input type="text" class="form-control" id="SearchVal">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="toolbar.Search()">查询</button>
+                            <button type="button" class="btn btn-info" onclick="toolbar.Add()">添加</button>
+                            <button type="button" class="btn btn-warning" onclick="toolbar.Updata()">编辑</button>
+                            <button type="button" class="btn btn-danger" onclick="toolbar.Delete()">删除</button>
+                            <button type="button" class="btn btn-default" onclick="toolbar.reload()">刷新</button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <table class="table-bordered" id="tab"></table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            $("#tab").bootstrapTable({
+                url: '/BrandFlagSearch',
+                method: 'get',
+                queryParams:function(params){
+                    return {
+                        BrandName: '',
+                        limit : params.limit,
+                        offset : parseInt(params.offset/params.limit)
+                    };
+                },
+	            pagination: true,
+                toolbar:"#Toolbar",
+                pageNumber:1,
+	            pageSize: 10,
+	            pageList: [10, 20, 30, 40, 50],
+                sidePagination: "server",
+                paginationLoop:false,
+                paginationPreText:'上一页',
+                paginationNextText:'下一页',
+                singleSelect:false,
+                clickToSelect:true,
+	            locale: "zh-CN",
+	            striped: true,
+                columns: [{
+                    checkbox: true
+                },{
+                    field: 'ID',
+                    title: 'ID'
+                },{
+                    field: 'BrandName',
+                    title: '品名'
+                },{
+                    field: 'BrandNameFlag',
+                    title: '品名标识'
+                }],
+                onClickRow:function (row,$element) {
+                    if($($element).is(".info")){
+                        $($element).removeClass('info');
+                    }else{
+                        $($element).addClass('info');
+                    }
+                }
+            })
+            toolbar = {
+                Search:function(){
+                    $('#tab').bootstrapTable('refresh',{
+                        query:{
+                            BrandName: $("#SearchVal").val()
+                        }
+                    });
+                },
+                Add:function(){
+                    $("#myModal").modal('show')
+                    $('#ID').val("");
+                    $('#BrandName').val("");
+                    $('#BrandNameFlag').val("");
+                },
+                Updata:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if(rows.length == 1){
+                        if(rows){
+                            $("#myModal").modal('show')
+                            $('#ID').val(rows[0].ID);
+                            $('#BrandName').val(rows[0].BrandName);
+                            $('#BrandNameFlag').val(rows[0].BrandNameFlag);
+                        }
+                    } else {
+                        bootbox.alert('请单选一条数据进行编辑！');
+                    }
+                },
+                Save:function(){
+                    var idVal = $('#ID').val();
+                    var urlStr = ''
+                    if($('#BrandName').val() == "") {
+                        bootbox.alert('品名不能为空！');
+                        return false;
+                    }else if($('#BrandNameFlag').val() == "") {
+                        bootbox.alert('品名标识不能为空！');
+                        return false;
+                    }
+                    if (idVal.length >= 1){
+                        urlStr = '/BrandFlagUpdate'
+                    }
+                    else {
+                        urlStr = '/BrandFlagCreate'
+                    }
+                    $.ajax({
+                        url:urlStr,
+                        type:"post",
+                        data:{
+                            ID:$('#ID').val(),
+                            BrandName:$('#BrandName').val(),
+                            BrandNameFlag:$('#BrandNameFlag').val()
+                        },
+                        success:function(data){
+                            if(data == "OK"){
+                                $("#myModal").modal('hide')
+                                var dialog = bootbox.dialog({
+                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                    closeButton: false
+                                });
+                                dialog.init(function(){
+                                    setTimeout(function(){
+                                        dialog.modal('hide');
+                                    }, 2000);
+                                });
+                                $('#tab').bootstrapTable('refresh');
+                            } else {
+                                bootbox.alert(data)
+                            }
+                        },
+                        error: function(data){
+                           console.log(data.responseText)
+                           bootbox.alert('请求失败')
+                        },
+                    })
+                },
+                Delete:function(){
+                    var rows = $("#tab").bootstrapTable('getAllSelections');
+                    if (rows.length > 0) {
+                        var jsonarray=[];
+                        bootbox.confirm({
+                            message: "您确认要删除所选的记录吗？",
+                            buttons: {
+                                confirm: {
+                                    label: '删除',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: '返回',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if(result){
+                                    for (var i = 0; i < rows.length; i++) {
+                                        var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                        jsonarray.push(obj);
+                                    }
+                                    var a = JSON.stringify(jsonarray);
+                                    $.ajax({
+                                        url: '/BrandFlagDelete',
+                                        method: 'POST',
+                                        traditional: true,
+                                        data: a,
+                                        success: function (data) {
+                                            if(data == "OK"){
+                                                var dialog = bootbox.dialog({
+                                                    message: '<p class="text-center mb-0"><i class="fa fa-spin fa-cog"></i>操作成功！</p>',
+                                                    closeButton: false
+                                                });
+                                                dialog.init(function(){
+                                                    setTimeout(function(){
+                                                        dialog.modal('hide');
+                                                    }, 2000);
+                                                });
+                                                $("#tab").bootstrapTable('refresh');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        bootbox.alert('请选择要删除的记录')
+                    }
+                },
+                reload:function(){
+                    $("#tab").bootstrapTable('refresh');
+                }
+            }
+        })
+    </script>
+</body>
+</html>
