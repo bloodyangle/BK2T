@@ -37,19 +37,21 @@ def BatchInfoSearch():
                 rowsnumber = int(data.get("limit"))
                 inipage = pages * rowsnumber + 0
                 endpage = pages * rowsnumber + rowsnumber
+                begin = data.get('begin')
+                end = data.get('end')
                 BatchNum = data.get('BatchNum')
                 if(BatchNum == "" or BatchNum == None):
-                    total = db_session.query(BatchInfo).order_by(("BatchNum")).count()
-                    oclass = db_session.query(BatchInfo).order_by(("BatchNum")).all()[inipage:endpage]
+                    total = db_session.query(BatchInfo).filter(BatchInfoDetail.between(begin, end)).order_by(("BatchNum")).count()
+                    oclass = db_session.query(BatchInfo).filter(BatchInfoDetail.between(begin, end)).order_by(("BatchNum")).all()[inipage:endpage]
                 else:
-                    total = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%")).count()
-                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%")).all()[inipage:endpage]
+                    total = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%"), BatchInfoDetail.between(begin, end)).count()
+                    oclass = db_session.query(BatchInfo).filter(BatchInfo.BatchNum.like("%" + BatchNum + "%"), BatchInfoDetail.between(begin, end)).all()[inipage:endpage]
                 jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
                 return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
         except Exception as e:
             print(e)
             logger.error(e)
-            insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
+            insertSyslog("error", "/BatchInfoSearch查询报错Error：" + str(e), current_user.Name)
 
 @batch.route('/BatchInfoCreate', methods=['POST', 'GET'])
 def BatchInfoCreate():
@@ -85,8 +87,8 @@ def BatchInfoDetailSearch():
                     total = db_session.query(BatchInfoDetail).order_by(("BatchNum")).count()
                     oclass = db_session.query(BatchInfoDetail).order_by(("BatchNum")).all()[inipage:endpage]
                 else:
-                    total = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum.like("%" + BatchNum + "%")).count()
-                    oclass = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum.like("%" + BatchNum + "%")).all()[inipage:endpage]
+                    total = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).count()
+                    oclass = db_session.query(BatchInfoDetail).filter(BatchInfoDetail.BatchNum == BatchNum).all()[inipage:endpage]
                 jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
                 return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
         except Exception as e:
@@ -216,54 +218,37 @@ def DataHistorySelect():
                     dic = []
                     dir = []
                     die = []
-                    for i in re:
-                        t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
-                        v = i[1]
-                        if not v:
-                            v = ""
-                        r = i[2]
-                        if not r:
-                            r = ""
-                        e = i[3]
-                        if not e:
-                            e = ""
-                        dic.append([t, v])
-                        dir.append([t, r])
-                        die.append([t, e])
-                    div["YL"] = dic
-                    div["MD"] = dir
-                    div["WD"] = die
-                    # if Name == "提取":
-                    #     for i in re:
-                    #         t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
-                    #         v = i[1]
-                    #         if not v:
-                    #             v = ""
-                    #         r = i[2]
-                    #         if not r:
-                    #             r = ""
-                    #         dir.append([t, r])
-                    #         dic.append([t, v])
-                    #     div["WD"] = dic
-                    #     div["YL"] = dir
-                    # elif Name == "浓缩":
-                    #     for i in re:
-                    #         t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
-                    #         v = i[1]
-                    #         if not v:
-                    #             v = ""
-                    #         r = i[2]
-                    #         if not r:
-                    #             r = ""
-                    #         e = i[3]
-                    #         if not e:
-                    #             e = ""
-                    #         dic.append([t, v])
-                    #         dir.append([t, r])
-                    #         die.append([t, e])
-                    #     div["YL"] = dic
-                    #     div["MD"] = dir
-                    #     div["WD"] = die
+                    if Name == "提取":
+                        for i in re:
+                            t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                            v = i[1]
+                            if not v:
+                                v = ""
+                            r = i[2]
+                            if not r:
+                                r = ""
+                            dir.append([t, r])
+                            dic.append([t, v])
+                        div["WD"] = dic
+                        div["YL"] = dir
+                    elif Name == "浓缩":
+                        for i in re:
+                            t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                            v = i[1]
+                            if not v:
+                                v = ""
+                            r = i[2]
+                            if not r:
+                                r = ""
+                            e = i[3]
+                            if not e:
+                                e = ""
+                            dic.append([t, v])
+                            dir.append([t, r])
+                            die.append([t, e])
+                        div["YL"] = dic
+                        div["MD"] = dir
+                        div["WD"] = die
                     return json.dumps(div, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
