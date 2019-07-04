@@ -25,7 +25,7 @@ def ElectronicBatchRecord():
         BatchNum = data.get('BatchID')
         title = data.get('title')
         user = db_session.query(User.Name).all()
-        operters = db_session.query(User.ID, User.Name).filter_by(User.RoleName == "操作人").all()
+        operters = db_session.query(User.id, User.Name).filter(User.RoleName == "操作人").all()
         operatorlist = []
         if operters != None:
             for i in operters:
@@ -33,7 +33,7 @@ def ElectronicBatchRecord():
                 name = i[1]
                 op = {'ID': id, 'text': name}
                 operatorlist.append(op)
-        checkers = db_session.query(User.ID, User.Name).filter_by(User.RoleName == "检查人").all()
+        checkers = db_session.query(User.id, User.Name).filter(User.RoleName == "检查人").all()
         checklist = []
         if checkers != None:
             for i in checkers:
@@ -189,6 +189,7 @@ def addUpdateEletronicBatchDataStore(PUID, BatchID, ke, val):
         return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,ensure_ascii=False)
 @batch.route('/OperatorCheckSaveUpdate', methods=['POST', 'GET'])
 def OperatorCheckSaveUpdate():
+    '''操作人检查人确认'''
     if request.method == 'POST':
         data = request.values
         try:
@@ -217,6 +218,24 @@ def OperatorCheckSaveUpdate():
             logger.error(e)
             insertSyslog("error", "/OperatorCheckSaveUpdate报错：" + str(e), current_user.Name)
             return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,ensure_ascii=False)
+@batch.route('/FlowConfirmSearch', methods=['POST', 'GET'])
+def FlowConfirmSearch():
+    '''操作人检查人查询'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                BatchNum = data.get('BatchNum')
+                oclass = db_session.query(FlowConfirm).filter(FlowConfirm.BatchNum == BatchNum).all()
+                dic = {}
+                for oc in oclass:
+                    dic[oclass.key] = oclass.Confirmer
+                return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
 
 @batch.route('/refractometerRedis', methods=['POST', 'GET'])
 def refractometerRedis():
@@ -429,12 +448,13 @@ def BatchUpdate():
     if request.method == 'POST':
         try:
             data = request.values
-            BatchID = data.get("BatchNum")
+            BatchID = data.get("BatchID")
             EQPName = data.get("EQPName")
             SampleValue = data.get("SampleValue")
             EQPID = db_session.query(Equipment.ID).filter(Equipment.EQPName == EQPName).first()[0]
             Type = data.get("Type")
-            Type = Type[0:-5]
+            Type = Type[0:-4]
+            Type = db_session.query(BatchType.Descrip).filter(BatchType.Type == Type).first()[0]
             oclass = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BatchID == BatchID,ElectronicBatchTwo.Type == Type,ElectronicBatchTwo.EQPID == EQPID).first()
             oclass.SampleValue = SampleValue
             db_session.commit()
