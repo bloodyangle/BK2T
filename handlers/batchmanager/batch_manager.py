@@ -7,7 +7,7 @@ from sqlalchemy import desc
 from dbset.database.db_operate import db_session,pool
 from dbset.main.BSFramwork import AlchemyEncoder
 from models.SystemManagement.system import BatchInfoDetail, EletronicBatchDataStore, Equipment, BatchType, \
-    ElectronicBatchTwo, BatchInfo, AuditTrace, BrandFlag
+    ElectronicBatchTwo, BatchInfo, AuditTrace, BrandFlag, FlowConfirm, User
 from dbset.log.BK2TLogger import logger,insertSyslog
 from flask_login import login_required, logout_user, login_user,current_user,LoginManager
 from tools.common import insert,delete,update
@@ -24,10 +24,27 @@ def ElectronicBatchRecord():
         data = request.values
         BatchNum = data.get('BatchID')
         title = data.get('title')
+        user = db_session.query(User.Name).all()
+        operters = db_session.query(User.ID, User.Name).filter_by(User.RoleName == "操作人").all()
+        operatorlist = []
+        if operters != None:
+            for i in operters:
+                id = i[0]
+                name = i[1]
+                op = {'ID': id, 'text': name}
+                operatorlist.append(op)
+        checkers = db_session.query(User.ID, User.Name).filter_by(User.RoleName == "检查人").all()
+        checklist = []
+        if checkers != None:
+            for i in checkers:
+                id = i[0]
+                name = i[1]
+                ch = {'ID': id, 'text': name}
+                checklist.append(ch)
         if title == "提取":
             PUIDLineName = db_session.query(BatchInfo.PUIDLineName).filter(BatchInfo.BatchNum == BatchNum).first()
             title = PUIDLineName[0] + data.get('title')
-        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchNum = BatchNum)
+        return render_template('./ProductionManagement/electronicBatchRecord.html', title = title, BatchNum = BatchNum, operatorlist = operatorlist,checklist = checklist)
 
 @batch.route('/BatchInfoSearch', methods=['POST', 'GET'])
 def BatchInfoSearch():
@@ -175,28 +192,25 @@ def OperatorCheckSaveUpdate():
     if request.method == 'POST':
         data = request.values
         try:
-            PUID = data.get("Name")
-            BatchID = data.get("BatchID")
-            for key in data.keys():
-                if key == "Name":
-                    continue
-                if key == "BatchID":
-                    continue
-                val = data.get(key)
-                oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.PUID == PUID,
-                                                                      EletronicBatchDataStore.BatchID == BatchID,
-                                                                      EletronicBatchDataStore.Content == key).first()
-                if oc == None:
-                    db_session.add(EletronicBatchDataStore(BatchID=BatchID, PUID=PUID, Content=key, OperationpValue=val,Operator=current_user.Name))
-                    db_session.add(AuditTrace(Operation="确认成功", DeitalMSG="用户:"+current_user.Name+" 节点：操作确认", ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User=current_user.Name))
-                else:
-                    oc.Content = key
-                    oc.OperationpValue = val
-                    oc.Operator = current_user.Name
-                    db_session.add(AuditTrace(Operation="确认成功", DeitalMSG="用户:" + current_user.Name + " 节点：操作确认",
-                                              ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                              User=current_user.Name))
-                db_session.commit()
+            ConfirmFlow = data.get("ConfirmFlow")
+            BatchNum = data.get("BatchID")
+            Confirmer = data.get("Confirmer")
+            UserName = data.get("UserName")
+            key = data.get("key")
+            oclass = db_session.query(FlowConfirm).filter(FlowConfirm.BatchNum == BatchNum, FlowConfirm.key == key).first()
+            if oclass == None or oclass == "":
+                db_session.add(FlowConfirm(BatchNum=BatchNum, ConfirmFlow=ConfirmFlow, Confirmer=Confirmer, ConfirmTime=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),key=key))
+                db_session.add(AuditTrace(Operation=ConfirmFlow, DeitalMSG="用户:" + UserName + " 节点：" + ConfirmFlow,
+                                          ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                          User=current_user.Name))
+            else:
+                oclass.Confirmer = Confirmer
+                oclass.UpdateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                db_session.add(AuditTrace(Operation=ConfirmFlow+"修改", DeitalMSG="用户:" + UserName + " 节点：" + ConfirmFlow,
+                                          ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                          User=current_user.Name))
+            db_session.commit()
+            return 'OK'
         except Exception as e:
             db_session.rollback()
             print(e)
