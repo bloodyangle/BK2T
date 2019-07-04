@@ -209,44 +209,61 @@ def DataHistorySelect():
                 variable = data.get('variable')
                 Name = data.get('Name')
                 if begin and end:
-                    sql = "SELECT  [SampleTime],"+variable+" FROM [MES].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + begin + "' AND '" + end +"' order by ID"
+                    sql = "SELECT  [SampleTime],'"+variable+"' FROM [MES].[dbo].[DataHistory] WHERE SampleTime BETWEEN '" + begin + "' AND '" + end +"' order by ID"
                     re = db_session.execute(sql).fetchall()
                     db_session.close()
                     div = {}
                     dic = []
                     dir = []
                     die = []
-                    if Name == "提取":
-                        for i in re:
-                            t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
-                            v = i[1]
-                            if not v:
-                                v = ""
-                            r = i[2]
-                            if not r:
-                                r = ""
-                            dir.append([t, r])
-                            dic.append([t, v])
-                        div["WD"] = dic
-                        div["YL"] = dir
-                    elif Name == "浓缩":
-                        for i in re:
-                            t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
-                            v = i[1]
-                            if not v:
-                                v = ""
-                            r = i[2]
-                            if not r:
-                                r = ""
-                            e = i[3]
-                            if not e:
-                                e = ""
-                            dic.append([t, v])
-                            dir.append([t, r])
-                            die.append([t, e])
-                        div["LS"] = dic
-                        div["LS"] = dir
-                        div["LS"] = die
+                    for i in re:
+                        t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                        v = i[1]
+                        if not v:
+                            v = ""
+                        r = i[2]
+                        if not r:
+                            r = ""
+                        e = i[3]
+                        if not e:
+                            e = ""
+                        dic.append([t, v])
+                        dir.append([t, r])
+                        die.append([t, e])
+                    div["YL"] = dic
+                    div["MD"] = dir
+                    div["WD"] = die
+                    # if Name == "提取":
+                    #     for i in re:
+                    #         t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                    #         v = i[1]
+                    #         if not v:
+                    #             v = ""
+                    #         r = i[2]
+                    #         if not r:
+                    #             r = ""
+                    #         dir.append([t, r])
+                    #         dic.append([t, v])
+                    #     div["WD"] = dic
+                    #     div["YL"] = dir
+                    # elif Name == "浓缩":
+                    #     for i in re:
+                    #         t = str(i[0].strftime("%Y-%m-%d %H:%M:%S"))
+                    #         v = i[1]
+                    #         if not v:
+                    #             v = ""
+                    #         r = i[2]
+                    #         if not r:
+                    #             r = ""
+                    #         e = i[3]
+                    #         if not e:
+                    #             e = ""
+                    #         dic.append([t, v])
+                    #         dir.append([t, r])
+                    #         die.append([t, e])
+                    #     div["YL"] = dic
+                    #     div["MD"] = dir
+                    #     div["WD"] = die
                     return json.dumps(div, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
