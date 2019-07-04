@@ -190,24 +190,23 @@ def addUpdateEletronicBatchDataStore(PUID, BatchID, ke, val):
 @batch.route('/OperatorCheckSaveUpdate', methods=['POST', 'GET'])
 def OperatorCheckSaveUpdate():
     '''操作人检查人确认'''
-    if request.method == 'POST':
+    if request.method == 'GET':
         data = request.values
         try:
             ConfirmFlow = data.get("ConfirmFlow")
-            BatchNum = data.get("BatchID")
+            BatchNum = data.get("BatchNum")
             Confirmer = data.get("Confirmer")
-            UserName = data.get("UserName")
             key = data.get("key")
             oclass = db_session.query(FlowConfirm).filter(FlowConfirm.BatchNum == BatchNum, FlowConfirm.key == key).first()
             if oclass == None or oclass == "":
                 db_session.add(FlowConfirm(BatchNum=BatchNum, ConfirmFlow=ConfirmFlow, Confirmer=Confirmer, ConfirmTime=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),key=key))
-                db_session.add(AuditTrace(Operation=ConfirmFlow, DeitalMSG="用户:" + UserName + " 节点：" + ConfirmFlow,
+                db_session.add(AuditTrace(Operation=ConfirmFlow, DeitalMSG="用户:" + Confirmer + " 节点：" + ConfirmFlow,
                                           ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                           User=current_user.Name))
             else:
                 oclass.Confirmer = Confirmer
                 oclass.UpdateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                db_session.add(AuditTrace(Operation=ConfirmFlow+"修改", DeitalMSG="用户:" + UserName + " 节点：" + ConfirmFlow,
+                db_session.add(AuditTrace(Operation=ConfirmFlow+"修改", DeitalMSG="用户:" + Confirmer + " 节点：" + ConfirmFlow,
                                           ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                           User=current_user.Name))
             db_session.commit()
@@ -230,7 +229,7 @@ def FlowConfirmSearch():
                 oclass = db_session.query(FlowConfirm).filter(FlowConfirm.BatchNum == BatchNum).all()
                 dic = {}
                 for oc in oclass:
-                    dic[oclass.key] = oclass.Confirmer
+                    dic[oc.key] = oc.Confirmer
                 return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
