@@ -533,10 +533,20 @@ def indexboot():
                 batchs = []
                 dirtl = []
                 dircy = []
+                dirjs = []
                 if oclass is not None:
                     for oc in oclass:
                         batchs.append(oc.BatchNum)
                         if oc.PUIDLineName == "篮式":
+                            addwaters = db_session.query(ElectronicBatchTwo.SampleValue).filter(ElectronicBatchTwo.BatchID == oc.BatchNum,
+                                                                        ElectronicBatchTwo.Type == "篮式提取加水量").all()
+                            lsjs = 0
+                            for aw in addwaters:
+                                if aw is not None:
+                                    aw = aw[0]
+                                    if aw is not "":
+                                        lsjs = float(lsjs) + float(aw)
+                            dirjs.append(lsjs)
                             lstl =["LSTL1","LSTL2","LSTL3"]
                             tl = 0
                             for i in lstl:
@@ -548,6 +558,16 @@ def indexboot():
                                 cy = float(cy) + queryDataStore(oc.BatchNum, c)
                             dircy.append(str(cy))
                         elif oc.PUIDLineName == "搅拌":
+                            addwaterjb = db_session.query(ElectronicBatchTwo.SampleValue).filter(
+                                ElectronicBatchTwo.BatchID == oc.BatchNum,
+                                ElectronicBatchTwo.Type == "搅拌提取加水量").all()
+                            jbjs = 0
+                            for jbaw in addwaterjb:
+                                if jbaw is not None:
+                                    jbaw = jbaw[0]
+                                    if jbaw is not "":
+                                        jbjs = float(jbjs) + float(jbaw)
+                            dirjs.append(jbjs)
                             jbtl =["JBTL1","JBTL2","JBTL3"]
                             tlj = 0
                             for i in jbtl:
@@ -563,6 +583,7 @@ def indexboot():
                 dir["BatchNum"] = batchs
                 dir["TL"] = dirtl
                 dir["CY"] = dircy
+                dir["JS"] = dirjs
                 return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
