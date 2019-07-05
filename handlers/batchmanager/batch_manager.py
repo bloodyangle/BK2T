@@ -200,13 +200,13 @@ def OperatorCheckSaveUpdate():
             oclass = db_session.query(FlowConfirm).filter(FlowConfirm.BatchNum == BatchNum, FlowConfirm.key == key).first()
             if oclass == None or oclass == "":
                 db_session.add(FlowConfirm(BatchNum=BatchNum, ConfirmFlow=ConfirmFlow, Confirmer=Confirmer, ConfirmTime=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),key=key))
-                db_session.add(AuditTrace(Operation=ConfirmFlow, DeitalMSG="用户:" + Confirmer + " 节点：" + ConfirmFlow,
+                db_session.add(AuditTrace(Operation=ConfirmFlow, DeitalMSG="用户：" + Confirmer + " 节点：" + ConfirmFlow + "确认",
                                           ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                           User=current_user.Name))
             else:
                 oclass.Confirmer = Confirmer
                 oclass.UpdateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                db_session.add(AuditTrace(Operation=ConfirmFlow+"修改", DeitalMSG="用户:" + Confirmer + " 节点：" + ConfirmFlow,
+                db_session.add(AuditTrace(Operation=ConfirmFlow+"修改", DeitalMSG="用户：" + Confirmer + " 节点：" + ConfirmFlow + "修改",
                                           ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                           User=current_user.Name))
             db_session.commit()
