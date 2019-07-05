@@ -10,7 +10,7 @@ import re
 from dbset.database import db_operate
 from dbset.log.BK2TLogger import insertSyslog, MESLogger
 from dbset.main.BSFramwork import AlchemyEncoder
-from models.SystemManagement.system import Organization, SysLog
+from models.SystemManagement.system import Organization, SysLog, AuditTrace
 from collections import Counter
 from dbset.log.BK2TLogger import logger,insertSyslog
 from tools.common import insert,delete,update
@@ -32,10 +32,10 @@ def syslogsFindByDate():
         try:
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 10:
-                pages = int(data['page'])  # 页数
-                rowsnumber = int(data['rows'])  # 行数
-                inipage = (pages - 1) * rowsnumber + 0  # 起始页
-                endpage = (pages - 1) * rowsnumber + rowsnumber  # 截止页
+                pages = int(data.get("offset"))  # 页数
+                rowsnumber = int(data.get("limit"))  # 行数
+                inipage = pages * rowsnumber + 0  # 起始页
+                endpage = pages * rowsnumber + rowsnumber  # 截止页
                 startTime = data['startTime']  # 开始时间
                 endTime = data['endTime']  # 结束时间
                 if startTime == "" and endTime == "":
@@ -79,3 +79,40 @@ def insertSyslog(operationType, operationContent, userName):
         db_session.rollback()
         print(e)
         logger.error(e)
+
+
+# 日志查询
+@systemlog.route('/syslogs/AuditTraceSelecct')
+def AuditTraceSelecct():
+    if request.method == 'GET':
+        data = request.values  # 返回请求中的参数和form
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 10:
+                pages = int(data.get("offset"))  # 页数
+                rowsnumber = int(data.get("limit"))  # 行数
+                inipage = pages * rowsnumber + 0  # 起始页
+                endpage = pages * rowsnumber + rowsnumber  # 截止页
+                startTime = data['startTime']  # 开始时间
+                endTime = data['endTime']  # 结束时间
+                if startTime == "" and endTime == "":
+                    total = db_session.query(AuditTrace).count()
+                    syslogs = db_session.query(AuditTrace).order_by(desc("ReviseDate")).all()[inipage:endpage]
+                elif startTime != "" and endTime == "":
+                    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    total = db_session.query(AuditTrace).filter(AuditTrace.ReviseDate.between(startTime, nowTime)).count()
+                    syslogs = db_session.query(AuditTrace).filter(
+                        SysLog.OperationDate.between(startTime, nowTime)).order_by(desc("ReviseDate")).all()[
+                              inipage:endpage]
+                else:
+                    total = db_session.query(AuditTrace).filter(AuditTrace.ReviseDate.between(startTime, endTime)).count()
+                    syslogs = db_session.query(AuditTrace).filter(
+                        AuditTrace.ReviseDate.between(startTime, endTime)).order_by(desc("OperationDate")).all()[
+                              inipage:endpage]
+                jsonsyslogs = json.dumps(syslogs, cls=AlchemyEncoder, ensure_ascii=False)
+                jsonsyslogs = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonsyslogs + "}"
+                return jsonsyslogs
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
