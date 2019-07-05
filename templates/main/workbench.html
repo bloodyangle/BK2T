@@ -58,8 +58,8 @@
     </div>
     <div class="col-md-12" style="margin: 20px 0;">
         <div class="col-sm-8">
-            <div class="card" id="chartBox">
-                <div id="chartMain" style="width: 1000px; height: 555px; margin: 10px auto;"></div>
+            <div class="card" id="chartBox" style="padding: 15px">
+                <div id="chartMain" style="width: 1000px; height: 545px;"></div>
             </div>
         </div>
         <div class="col-sm-4">
@@ -111,13 +111,17 @@
                     endTime:myTimeformatter(new Date())
                 },
                 success: function (data) {
+                    data = JSON.parse(data)
                     chart.hideLoading();
                     chart.setOption(option = {
                         title:{
                             text: "最近一周生产数据"
                         },
                         tooltip: {
-                            trigger: 'axis'
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
                         },
                         toolbox: {
                             feature: {
@@ -137,7 +141,6 @@
                                 type: 'value',
                                 name: '重量',
                                 min: 0,
-                                interval: 500,
                                 axisLabel: {
                                     formatter: '{value} kg'
                                 }
@@ -146,32 +149,18 @@
                         series: [{
                             name: "总投料量",
                             type: 'bar',
-                            smooth:true,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    position: 'top'
-                                }
-                            },
                             itemStyle:{
                                 normal:{
-                                    color:'rgb(144, 237, 125)'
+                                    color:'#fcce10'
                                 }
                             },
                             data: data.TL
                         }, {
                             name: "总出液量",
                             type: 'bar',
-                            smooth:true,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    position: 'top'
-                                }
-                            },
                             itemStyle:{
                                 normal:{
-                                    color:'rgb(247, 163, 92)'
+                                    color:'#90ed7d'
                                 }
                             },
                             data: data.CY
