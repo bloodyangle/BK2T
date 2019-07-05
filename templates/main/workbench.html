@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>工作台</title>
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../static/css/bootstrap-table.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/jquery.scrollbar.min.css" rel="stylesheet" type="text/css">
     <link href="../../static/css/admin.css" rel="stylesheet" type="text/css">
@@ -14,6 +15,8 @@
     <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../static/js/popper.min.js"></script>
     <script type="text/javascript" src="../../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap-table-zh-CN.min.js"></script>
     <script type="text/javascript" src="../../static/js/jquery.scrollbar.min.js"></script>
     <script type="text/javascript" src="../../static/js/admin.js"></script>
     <script type="text/javascript" src="../../static/js/base.js"></script>
@@ -23,153 +26,201 @@
         <div class="col-sm-3">
             <div class="card">
                 <div class="cardblock">
-                    <h3>3290</h3>
-                    <span>xx数据</span>
+                    <h3 id="PV_R101_SF01"></h3>
+                    <span>篮式提取 瞬时流量</span>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card">
                 <div class="cardblock">
-                    <h3>98°C</h3>
-                    <span>xx数据</span>
+                    <h3 id="SV_R101_SF01"></h3>
+                    <span>篮式提取 累计流量</span>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card">
                 <div class="cardblock">
-                    <h3>46%</h3>
-                    <span>xx数据</span>
+                    <h3 id="PV_R201_SF01"></h3>
+                    <span>搅拌提取 瞬时流量</span>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card">
                 <div class="cardblock">
-                    <h3>7</h3>
-                    <span>xx数据</span>
+                    <h3 id="SV_R201_SF01"></h3>
+                    <span>搅拌提取 累计流量</span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-12" style="margin: 20px 0;">
         <div class="col-sm-8">
             <div class="card" id="chartBox">
-                <div id="chartMain" style="width: 1000px; height: 400px; margin: 10px auto;"></div>
+                <div id="chartMain" style="width: 1000px; height: 555px; margin: 10px auto;"></div>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="card">
-                <div></div>
+                <div class="panel panel-default" style="margin-bottom: 0;border: none;">
+                    <div class="panel-heading">最近一周的批次信息</div>
+                    <div class="panel-body">
+                        <table class="table table-bordered" id="tab"></table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <script type="text/javascript">
         $(function () {
-            {#setInterval(function(){#}
-            {#    getNewChart();#}
-            {# }, 2000)#}
+            getNewData()
+            setInterval(function(){
+                getNewData();
+            }, 2000);
+            function getNewData(){
+                $.ajax({
+                    url: '/refractometerRedis',
+                    method: 'GET',
+                    success: function (res) {
+                        res = JSON.parse(res)
+                        for(var key in res){
+                            adddata(key,res[key])
+                        }
+                    },
+                    error: function () {
+                        console.log("请求数据失败，请稍后重试！")
+                    }
+                });
+            }
 
             var myDiv = document.getElementById("chartMain")
             var myChartContainer = function () {
                 var width = $("#chartBox").width()
                 myDiv.style.width = width +'px';
-            };
+             };
             myChartContainer();
-            var myChart = echarts.init(myDiv)
-            myChart.showLoading();
+            var chart = echarts.init(myDiv)
+            chart.showLoading();
             $.ajax({
-                url: '',
-                type: 'get',
-                data: {
-                    begin:$('#beginTime').val(),
-                    end:$('#endTime').val()
+                url: "/indexboot",
+                type: "get",
+                data:{
+                    startTime:myTimeformatter(new Date(new Date().getTime() - 1000*60*60*24*7)),
+                    endTime:myTimeformatter(new Date())
                 },
                 success: function (data) {
-                    data = JSON.parse(data)
-                    myChart.hideLoading();
-                    myChart.setOption(option = {
+                    chart.hideLoading();
+                    chart.setOption(option = {
+                        title:{
+                            text: "最近一周生产数据"
+                        },
                         tooltip: {
                             trigger: 'axis'
                         },
-                        legend: {
-                            data: ["折光率","温度"]
-                        },
                         toolbox: {
                             feature: {
-                                mark : {show: true},
-                                dataView: {show: true, readOnly: false},
-                                restore: {show: true},
-                                saveAsImage: {show: true}
+                                magicType: {show: true, type: ['line', 'bar']},
+                                restore: {show: true}
                             }
                         },
-                        dataZoom: {
-                            show: true,
-                            start : 0
-                        },
-                        grid: {
-                            y2: 80
+                        legend: {
+                            data: ['总投料量', '总出液量']
                         },
                         xAxis: {
-                            type : 'time',
-                            splitNumber:10
+                            type: 'category',
+                            data: data.BatchNum
                         },
                         yAxis: [
                             {
-                                type : 'value',
-                                name: '折光率',
-                                axisLabel: {
-                                    formatter: '{value} Brix'
-                                }
-                            }, {
                                 type: 'value',
-                                name: '温度',
+                                name: '重量',
+                                min: 0,
+                                interval: 500,
                                 axisLabel: {
-                                    formatter: '{value} °C'
+                                    formatter: '{value} kg'
                                 }
                             }
                         ],
                         series: [{
-                            name: "折光率",
-                            type: 'line',
-                            yAxisIndex:0,
-                            symbol: 'none', //拐点
-                            showAllSymbol: true,
-                            smooth:true, //曲线
-                            data: data.ZGL,
-                        },{
-                            name: "温度",
-                            type: 'line',
-                            yAxisIndex:1,
-                            symbol: 'none', //拐点
-                            showAllSymbol: true,
+                            name: "总投料量",
+                            type: 'bar',
                             smooth:true,
-                            data: data.Temp,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top'
+                                }
+                            },
+                            itemStyle:{
+                                normal:{
+                                    color:'rgb(144, 237, 125)'
+                                }
+                            },
+                            data: data.TL
+                        }, {
+                            name: "总出液量",
+                            type: 'bar',
+                            smooth:true,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top'
+                                }
+                            },
+                            itemStyle:{
+                                normal:{
+                                    color:'rgb(247, 163, 92)'
+                                }
+                            },
+                            data: data.CY
                         }]
                     });
-                    myChart.setOption(option);
+                    chart.setOption(option);
                 }
             })
+
             $("#chartBox").resize(function(){
                 myChartContainer();
-                myChart.resize();
-            })
-            function getNewChart(){
-                $.ajax({
-                    url: '',
-                    type: 'get',
-                    data: {
+                chart.resize();
+             })
 
-                    },
-                    success: function (data) {
-                        data = JSON.parse(data)
-                        option.series[0].data = data.ZGL
-                        option.series[1].data = data.Temp
-                        myChart.setOption(option);
-                    }
-                })
-            }
+            $("#tab").bootstrapTable({
+                url: '/BatchInfoSearch',
+                method: 'get',
+                queryParams:function(params){
+                    return {
+                        BatchNum:"",
+                        begin:myformatter(new Date(new Date().getTime() - 7*24*60*60*1000)),
+                        end:myformatter(new Date()),
+                        limit : params.limit,
+                        offset : parseInt(params.offset/params.limit)
+                    };
+                },
+	            pagination: true,
+                pageNumber:1,
+	            pageSize: 10,
+                sidePagination: "server",
+                paginationLoop:false,
+                singleSelect:false,
+                clickToSelect:true,
+	            locale: "zh-CN",
+	            striped: true,
+                columns: [{
+                    field: 'BatchNum',
+                    title: '批次号'
+                }, {
+                    field: 'BrandName',
+                    title: '品名'
+                }, {
+                    field: 'MedicinalType',
+                    title: '药材规格'
+                }, {
+                    field: 'PUIDLineName',
+                    title: '工艺生产线'
+                }]
+            });
         });
     </script>
 </body>

@@ -1,7 +1,6 @@
 /*首页功能块样式*/
 .navCard{
     margin-top: 20px;
-    margin-bottom: 15px;
     clear:both;
     overflow: hidden;
 }
@@ -10,13 +9,14 @@
     min-height: 100px;
     overflow: hidden!important;
     background-color: #fff;
-    color: #888;
+    color: #666;
     border: none;
     border-radius: 5px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 .cardblock{
     padding: 20px;
+    font-size: 16px;
 }
 
 /*横向时间轴*/

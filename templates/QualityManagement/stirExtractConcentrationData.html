@@ -176,10 +176,10 @@
                 var ref = setInterval(IntervalFun, 2000);
 
                 $("#SearchData").on('click',function(){
-                    var dffDate = (new Date($('#endTime').val())).getTime() -  (new Date($('#beginTime').val())).getTime()
-                    if(dffDate > 7200000){
-                        bootbox.alert('您选择的时间段数据量较大，为保证系统流畅性，起止时间相差不能大于2小时')
-                    }else if(dffDate <= 0){
+                    var dffDate = (new Date($('#endTime').val())).getTime() -  (new Date($('#startTime').val())).getTime()
+                    if(dffDate > 1000*60*60*24){
+                        bootbox.alert('您选择的时间段数据量较大，为保证系统流畅性，起止时间相差不能大于一天')
+                    }else if(dffDate < 0){
                         bootbox.alert('截止时间不能小于开始时间')
                     }else{
                         clearInterval(ref);
