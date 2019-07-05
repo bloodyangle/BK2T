@@ -46,7 +46,7 @@ def MyUserSelect():
                 id = data.get('id')
                 Name = data.get('Name')
                 if id != '':
-                    OrganizationCodeData = db_session.query(Organization).filter_by(id=id).first()
+                    OrganizationCodeData = db_session.query(Organization).filter_by(ID=id).first()
                     if OrganizationCodeData != None:
                         OrganizationName = str(OrganizationCodeData.OrganizationName)
                         total = db_session.query(User).filter(and_(User.OrganizationName.like("%" + OrganizationName + "%") if OrganizationName is not None else "",
