@@ -59,13 +59,13 @@
     <div class="col-md-12" style="margin: 20px 0;">
         <div class="col-sm-8">
             <div class="card" id="chartBox" style="padding: 15px">
-                <div id="chartMain" style="width: 1000px; height: 545px;"></div>
+                <div id="chartMain" style="width: 1000px; height: 555px;"></div>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="card">
                 <div class="panel panel-default" style="margin-bottom: 0;border: none;">
-                    <div class="panel-heading">最近一周的批次信息</div>
+                    <div class="panel-heading" style="padding-top: 20px;">最近一周的批次信息</div>
                     <div class="panel-body">
                         <table class="table table-bordered" id="tab"></table>
                     </div>
@@ -130,7 +130,7 @@
                             }
                         },
                         legend: {
-                            data: ['总投料量', '总出液量']
+                            data: ['总投料量','总加水量','总出液量']
                         },
                         xAxis: {
                             type: 'category',
@@ -155,6 +155,15 @@
                                 }
                             },
                             data: data.TL
+                        }, {
+                            name: "总加水量",
+                            type: 'bar',
+                            itemStyle:{
+                                normal:{
+                                    color:'#5ab1ef'
+                                }
+                            },
+                            data: data.JS
                         }, {
                             name: "总出液量",
                             type: 'bar',
