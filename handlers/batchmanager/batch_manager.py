@@ -533,30 +533,30 @@ def indexboot():
                 batchs = []
                 dirtl = []
                 dircy = []
-                if oclass != None:
-                    batchs.append(oclass.BatchNum)
+                if oclass is not None:
                     for oc in oclass:
+                        batchs.append(oc.BatchNum)
                         if oc.PUIDLineName == "篮式":
                             lstl =["LSTL1","LSTL2","LSTL3"]
                             tl = 0
                             for i in lstl:
-                                tl = float(i) + queryDataStore(oclass.BatchNum, i)
+                                tl = float(tl) + queryDataStore(oc.BatchNum, i)
                             dirtl.append(str(tl))
                             lscy = ["LSCY1", "LSCY2", "LSCY3", "LSCY4", "LSCY5", "LSCY6"]
                             cy = 0
                             for c in lscy:
-                                cy = float(cy) + queryDataStore(oclass.BatchNum, c)
+                                cy = float(cy) + queryDataStore(oc.BatchNum, c)
                             dircy.append(str(cy))
                         elif oc.PUIDLineName == "搅拌":
                             jbtl =["JBTL1","JBTL2","JBTL3"]
                             tlj = 0
                             for i in jbtl:
-                                tlj = float(tlj) + queryDataStore(oclass.BatchNum, i)
+                                tlj = float(tlj) + queryDataStore(oc.BatchNum, i)
                             dirtl.append(str(tlj))
                             jbcy = ["JBCY1", "JBCY2", "JBCY3"]
                             cyj = 0
                             for c in jbcy:
-                                cyj = float(cyj) + queryDataStore(oclass.BatchNum, c)
+                                cyj = float(cyj) + queryDataStore(oc.BatchNum, c)
                             dircy.append(str(cyj))
                         else:
                             continue
@@ -572,7 +572,12 @@ def indexboot():
 def queryDataStore(BatchID, key):
     OperationpValue = db_session.query(EletronicBatchDataStore.OperationpValue).filter(EletronicBatchDataStore.BatchID == BatchID,
                                                      EletronicBatchDataStore.Content == key).first()
+    print(OperationpValue)
     if OperationpValue is not None:
-        return float(OperationpValue[0])
+        OperationpValue = OperationpValue[0]
+        if OperationpValue is not "":
+            return float(OperationpValue)
+        else:
+            return float("0.0")
     else:
         return float("0.0")
