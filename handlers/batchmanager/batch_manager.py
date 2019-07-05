@@ -452,9 +452,15 @@ def BatchUpdate():
             SampleValue = data.get("SampleValue")
             EQPID = db_session.query(Equipment.ID).filter(Equipment.EQPName == EQPName).first()[0]
             Type = data.get("Type")
+            JZNum = data.get("JZNum")
             Type = Type[0:-4]
             Type = db_session.query(BatchType.Descrip).filter(BatchType.Type == Type).first()[0]
-            oclass = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BatchID == BatchID,ElectronicBatchTwo.Type == Type,ElectronicBatchTwo.EQPID == EQPID).first()
+            if JZNum == "二煎":
+                oclass = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BatchID == BatchID,ElectronicBatchTwo.Type == Type,ElectronicBatchTwo.EQPID == EQPID).order_by(desc("SampleDate")).first()
+            else:
+                oclass = db_session.query(ElectronicBatchTwo).filter(ElectronicBatchTwo.BatchID == BatchID,
+                                                                     ElectronicBatchTwo.Type == Type,
+                                                                     ElectronicBatchTwo.EQPID == EQPID).order_by(("SampleDate")).first()
             oclass.SampleValue = SampleValue
             db_session.commit()
             return 'OK'

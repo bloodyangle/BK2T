@@ -39,13 +39,13 @@ def EquipmentSearch():
                 rowsnumber = int(data.get("limit"))  # 行数
                 inipage = pages * rowsnumber + 0  # 起始页
                 endpage = pages * rowsnumber + rowsnumber  # 截止页
-                EQPName = data['EQPName']  # 设备名称
+                EQPName = data.get('EQPName')  # 设备名称
                 if(EQPName == "" or EQPName == None):
-                    total = db_session.query(Equipment).count()
-                    oclass = db_session.query(Equipment).all()[inipage:endpage]
+                    total = db_session.query(Equipment).order_by(desc("ID")).count()
+                    oclass = db_session.query(Equipment).order_by(desc("ID")).all()[inipage:endpage]
                 else:
-                    total = db_session.query(Equipment).filter(Equipment.EQPName.like("%" + EQPName + "%")).count()
-                    oclass = db_session.query(Equipment).filter(Equipment.EQPName.like("%" + EQPName + "%")).all()[inipage:endpage]
+                    total = db_session.query(Equipment).filter(Equipment.EQPName.like("%" + EQPName + "%")).order_by(desc("ID")).count()
+                    oclass = db_session.query(Equipment).filter(Equipment.EQPName.like("%" + EQPName + "%")).order_by(desc("ID")).all()[inipage:endpage]
                 jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
                 return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
         except Exception as e:
