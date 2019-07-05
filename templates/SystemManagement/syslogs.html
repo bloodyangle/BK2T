@@ -36,10 +36,12 @@
             })
 
             $("#tab").bootstrapTable({
-                url: '/syslogs/findByDate',
+                url: '/syslogs/AuditTraceSelecct',
                 method: 'get',
                 queryParams:function(params){
                     return {
+                        startTime:"",
+                        endTime:"",
                         limit : params.limit,
                         offset : parseInt(params.offset/params.limit)
                     };
@@ -63,20 +65,20 @@
                     field: 'IP',
                     title: 'IP'
                 },{
-                    field: 'ComputerName',
-                    title: '计算机名称'
+                    field: 'Operation',
+                    title: '操作'
                 },{
-                    field: 'UserName',
-                    title: '操作用户'
+                    field: 'DeitalMSG',
+                    title: '详细信息'
                 },{
-                    field: 'OperationDate',
-                    title: '操作日期'
+                    field: 'ReviseDate',
+                    title: '修改日期'
                 },{
-                    field: 'OperationContent',
-                    title: '操作内容'
+                    field: 'User',
+                    title: '用户'
                 },{
-                    field: 'OperationType',
-                    title: '类型'
+                    field: 'Other',
+                    title: '其他'
                 }],
                 onClickRow:function (row,$element) {
                     if($($element).is(".info")){
@@ -87,9 +89,6 @@
                 }
             })
             $("#SearchLog").on('click',function(){
-                $('#tab').bootstrapTable('load',{
-
-                });
                 $('#tab').bootstrapTable('refresh',{
                     query:{
                         startTime: $('#startTime').val(),
