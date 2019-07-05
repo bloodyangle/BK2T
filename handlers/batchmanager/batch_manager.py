@@ -516,3 +516,63 @@ def BrandFlagDelete():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         return delete(BrandFlag, data)
+
+@batch.route('/indexboot', methods=['POST', 'GET'])
+def indexboot():
+    '''首页图表显示'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 10:
+                startTime = data['startTime']  # 开始时间
+                endTime = data['endTime']  # 结束时间
+                oclass = db_session.query(BatchInfo).distinct().filter(
+                    BatchInfo.CreateDate.between(startTime, endTime)).order_by(("CreateDate")).all()
+                dir = {}
+                batchs = []
+                dirtl = []
+                dircy = []
+                if oclass != None:
+                    batchs.append(oclass.BatchNum)
+                    for oc in oclass:
+                        if oc.PUIDLineName == "篮式":
+                            lstl =["LSTL1","LSTL2","LSTL3"]
+                            tl = 0
+                            for i in lstl:
+                                tl = float(i) + queryDataStore(oclass.BatchNum, i)
+                            dirtl.append(str(tl))
+                            lscy = ["LSCY1", "LSCY2", "LSCY3", "LSCY4", "LSCY5", "LSCY6"]
+                            cy = 0
+                            for c in lscy:
+                                cy = float(cy) + queryDataStore(oclass.BatchNum, c)
+                            dircy.append(str(cy))
+                        elif oc.PUIDLineName == "搅拌":
+                            jbtl =["JBTL1","JBTL2","JBTL3"]
+                            tlj = 0
+                            for i in jbtl:
+                                tlj = float(tlj) + queryDataStore(oclass.BatchNum, i)
+                            dirtl.append(str(tlj))
+                            jbcy = ["JBCY1", "JBCY2", "JBCY3"]
+                            cyj = 0
+                            for c in jbcy:
+                                cyj = float(cyj) + queryDataStore(oclass.BatchNum, c)
+                            dircy.append(str(cyj))
+                        else:
+                            continue
+                dir["BatchNum"] = batchs
+                dir["TL"] = dirtl
+                dir["CY"] = dircy
+                return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "/indexboot报错Error：" + str(e), current_user.Name)
+            return json.dumps("/indexboot", cls=AlchemyEncoder,ensure_ascii=False)
+def queryDataStore(BatchID, key):
+    OperationpValue = db_session.query(EletronicBatchDataStore.OperationpValue).filter(EletronicBatchDataStore.BatchID == BatchID,
+                                                     EletronicBatchDataStore.Content == key).first()
+    if OperationpValue is not None:
+        return float(OperationpValue[0])
+    else:
+        return float("0.0")
