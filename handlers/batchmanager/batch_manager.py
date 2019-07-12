@@ -236,7 +236,7 @@ def FlowConfirmSearch():
             logger.error(e)
             insertSyslog("error", "设备建模查询报错Error：" + str(e), current_user.Name)
 
-# @batch.route('/refractometerRedis', methods=['POST', 'GET'])
+@batch.route('/refractometerRedis', methods=['POST', 'GET'])
 def refractometerRedis():
     '''
     Redis实时数据
