@@ -219,7 +219,7 @@
                     if(rows.length == 1){
                         if(rows){
                             $("#myModal").modal('show')
-                            $('#ID').val(rows[0].ID);
+                            $('#ID').val(rows[0].id);
                             $('#Name').val(rows[0].Name);
                             $('#Password').val(rows[0].Password);
                             $('#WorkNumber').val(rows[0].WorkNumber);
@@ -309,10 +309,11 @@
                             callback: function (result) {
                                 if(result){
                                     for (var i = 0; i < rows.length; i++) {
-                                        var obj=createKeyIDObj(parseInt(rows[i].ID));
+                                        var obj=createKeyIDObj(parseInt(rows[i].id));
                                         jsonarray.push(obj);
                                     }
                                     var a = JSON.stringify(jsonarray);
+                                    console.info(a)
                                     $.ajax({
                                         url: '/user_manage/user/deleteUser',
                                         method: 'POST',
