@@ -220,9 +220,9 @@
                         if(rows){
                             $("#myModal").modal('show')
                             $('#ID').val(rows[0].ID);
-                            $('#Name').val(rows[0].OrganizationCode);
-                            $('#Password').val(rows[0].OrganizationName);
-                            $('#WorkNumber').val(rows[0].Description);
+                            $('#Name').val(rows[0].Name);
+                            $('#Password').val(rows[0].Password);
+                            $('#WorkNumber').val(rows[0].WorkNumber);
                             $('#OrganizationName option:contains('+rows[0].OrganizationName+')').prop("selected", 'selected');
                             $('#RoleName option:contains('+rows[0].RoleName+')').prop("selected", 'selected');
                         }
@@ -232,6 +232,7 @@
                 },
                 Save:function(){
                     var idVal = $('#ID').val();
+                    console.log(idVal.length)
                     var urlStr = ''
                     if($('#Name').val() == "") {
                         bootbox.alert('用户名不能为空！');
