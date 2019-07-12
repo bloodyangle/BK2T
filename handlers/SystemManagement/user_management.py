@@ -85,7 +85,7 @@ def addUser():
                 user.Password=user.password(data['Password'])
                 # print(user.Password)
                 user.Status="1" # 登录状态先设置一个默认值1：已登录，0：未登录
-                user.Creater=data['Creater']
+                user.Creater=current_user.Name
                 user.CreateTime=datetime.datetime.now()
                 user.LastLoginTime=datetime.datetime.now()
                 user.IsLock='false' # data['IsLock'],

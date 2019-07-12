@@ -1,8 +1,0 @@
-.idea/
-dbset/
-logs/
-models/
-handlers/
-tools/__pycache__/MESLogger.cpython-36.pyc
-tools/
-__pycache__/MICS_Server.cpython-36.pyc

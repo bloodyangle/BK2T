@@ -1,5 +1,4 @@
 import json
-import pymysql
 from flask import Blueprint, render_template, request, redirect, session, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
