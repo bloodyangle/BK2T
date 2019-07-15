@@ -109,7 +109,7 @@ def UpdateUser():
         try:
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 10:
-                id = int(data['id'])
+                id = int(data['ID'])
                 user = db_session.query(User).filter_by(id=id).first()
                 user.Name = data['Name']
                 user.WorkNumber = data['WorkNumber']
@@ -119,7 +119,7 @@ def UpdateUser():
                         return "工号重复，请重新修改！"
                 user.Password = user.password(data['Password'])
                 # user.Status = data['Status']
-                user.Creater = data['Creater']
+                # user.Creater = data['Creater']
                 # user.CreateTime = data['CreateTime']
                 # user.LastLoginTime = data['LastLoginTime']
                 # user.IsLock = data['IsLock']
