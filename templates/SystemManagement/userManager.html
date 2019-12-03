@@ -264,8 +264,8 @@
                             Name:$('#Name').val(),
                             Password:$('#Password').val(),
                             WorkNumber:$('#WorkNumber').val(),
-                            OrganizationName:$('#OrganizationName').find("option:selected").val(),
-                            RoleName:$('#RoleName').find("option:selected").val()
+                            OrganizationName:$('#OrganizationName').find("option:selected").html(),
+                            RoleName:$('#RoleName').find("option:selected").html()
                         },
                         success:function(data){
                             if(data == "OK"){
