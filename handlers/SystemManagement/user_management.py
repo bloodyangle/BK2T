@@ -118,12 +118,8 @@ def UpdateUser():
                     if ocal.id != id:
                         return "工号重复，请重新修改！"
                 user.Password = user.password(data['Password'])
-                # user.Status = data['Status']
-                # user.Creater = data['Creater']
-                # user.CreateTime = data['CreateTime']
-                # user.LastLoginTime = data['LastLoginTime']
-                # user.IsLock = data['IsLock']
                 user.OrganizationName = data['OrganizationName']
+                user.RoleName = data['RoleName']
                 db_session.commit()
                 return 'OK'
         except Exception as e:
