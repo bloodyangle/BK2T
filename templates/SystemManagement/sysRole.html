@@ -132,7 +132,10 @@
                     }else{
                         $($element).addClass('info');
                     }
-                }
+                },
+                onLoadSuccess:function (data) {
+                    console.log(data)
+                }
             })
             toolbar = {
                 Search:function(){
