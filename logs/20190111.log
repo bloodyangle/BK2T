@@ -1,0 +1,4 @@
+[2019-01-11 10:03:17] [ERROR] [organization_model.py] [organization_model] [allOrganizationsCreate] [153] 'AnonymousUserMixin' object has no attribute 'Name'
+[2019-01-11 10:05:00] [ERROR] [organization_model.py] [organization_model] [allOrganizationsCreate] [153] 'AnonymousUserMixin' object has no attribute 'Name'
+[2019-01-11 10:07:34] [ERROR] [organization_model.py] [organization_model] [allOrganizationsCreate] [153] 'AnonymousUserMixin' object has no attribute 'Name'
+[2019-01-11 11:12:06] [ERROR] [user_management.py] [user_management] [MyUserSelect] [67] Entity '<class 'models.SystemManagement.system.Organization'>' has no property 'id'
